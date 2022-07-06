@@ -16,4 +16,3 @@ fps = 60
 
 screen = pg.display.set_mode(dimensions, pg.SCALED)
 
-

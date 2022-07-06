@@ -1,17 +1,22 @@
 from Setup import *
 
 areas = set()
+def do_nothing(node): # placeholder func
+    pass
+
 
 class Area:
 
-    def __init__(self, pos,offset, width ,height, target_node_type):
+    def __init__(self, pos,offset, width ,height, target_node_type, func=do_nothing):
         self.position = pg.Vector2(pos)
         self.offset = pg.Vector2(offset)
         self.width = width
         self.height = height
         self.target = target_node_type
+        self.func = func
         global areas
         areas.add(self)
+
 
     def update(self, delta, pos):
         self.position = pos
@@ -22,6 +27,8 @@ class Area:
                 return True
         return False
 
+    def signal(self, node):
+        self.func(node)
 
     def get_collision_rect(self):
         return pg.Rect(self.position + self.offset, (self.width, self.height))
