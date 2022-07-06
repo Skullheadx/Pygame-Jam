@@ -9,11 +9,7 @@ List of Dimensions:
 
 Gameplay:
 - dialogue between npcs
-<<<<<<< HEAD
-- combat, exploration
-=======
 - combat, exploration with parkour or platforming
->>>>>>> 37f90fc3e905b6de9f3dc742a368383efeffe158
 
 story
 - stars fall out of the sky and other people collected them including the player
