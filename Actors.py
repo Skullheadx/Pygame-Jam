@@ -1,10 +1,10 @@
 from Setup import *
 
 class Actor:
-    width, height = 25, 50
+    width, height = 50, 100
     colour = (76, 82, 92)
     speed = 0.2
-    jump_strength = 0.5
+    jump_strength = 1
     gravity = 0.098
     friction = 0.9
     
@@ -19,24 +19,18 @@ class Actor:
         self.collision_mask = collision_mask  # the layer the actor detects collisions against
 
         self.health = 100
-
-        self.crouching = False
-        self.crouch_timer = None
+        self.dead = False
 
         self.areas = dict()
 
 
     def update(self, delta):
-
-        if self.crouching and self.crouch_timer == 0:
-            self.position.y -= self.height/2
-            self.crouching = False
-        if self.crouch_timer is not None:
-            self.crouch_timer -= delta
-            self.crouch_timer = max(0, self.crouch_timer)
-
         for area in self.areas.values():
             area.update(delta,self.position)
+
+        if self.is_dead():
+            return
+
 
         # Apply friction so the enemy isn't walking on ice
         if self.on_ground:
@@ -45,14 +39,22 @@ class Actor:
         # Apply gravity
         self.velocity.y += self.gravity
 
+    def is_dead(self):
+        if self.health <= 0:
+            self.dead = True
+
+    def modify_health(self):
 
 
 
-    def follow_target(self, node):
+    def follow_target(self, node, follow_range=None, stop_dist=None):
+        if stop_dist is None:
+            stop_dist = max(self.height, self.width) * 1.5
+
         target = node.position
 
         # So that actor doesn't come up and hug u lol
-        if (self.position - target).length_squared() < pow(max(self.height, self.width) * 1.5,2):
+        if (self.position - target).length_squared() < pow(stop_dist,2):
             return
 
         if target.x < self.position.x:
@@ -62,15 +64,6 @@ class Actor:
 
         if target.y < self.position.y:
             self.jump()
-
-    def crouch(self, time=None):
-        self.crouching = True
-        self.position.y += self.height/2
-        if time is not None:
-            self.crouch_timer = time
-        else:
-            self.crouch_timer = None
-
 
     def jump(self):
         if self.on_ground:
@@ -103,11 +96,10 @@ class Actor:
             for thing in mask:
                 if thing == self:
                     continue
+                for area in self.areas.values():
+                    if area.is_colliding(thing):
+                        area.signal(thing)
                 if collision_rect.colliderect(thing.get_collision_rect()):
-                    for area in self.areas.values():
-                        if area.is_colliding(thing):
-                            print('b')
-                            area.signal(thing)
                     if vel.y > 0:
                         pos.y = thing.position.y - self.height
                         vel.y = min(vel.y + thing.velocity.y, 0)
@@ -120,14 +112,11 @@ class Actor:
     def get_collision_rect(self, pos=None):
         if pos is None:
             pos = self.position
-        if self.crouching:
-            return pg.Rect(pos, (self.width, self.height/2))
-        else:
-            return pg.Rect(pos, (self.width, self.height))
+        return pg.Rect(pos, (self.width, self.height))
 
     def draw(self, surf):
         pg.draw.rect(surf, self.colour, self.get_collision_rect(), border_radius=8)
 
         # Uncomment for debugging area hitboxes
-        for area in self.areas.values():
-            area.draw(surf)
+        # for area in self.areas.values():
+        #     area.draw(surf)

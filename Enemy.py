@@ -15,7 +15,7 @@ class Enemy(Actor):
     def __init__(self, pos, collision_layer, collision_mask):
         super().__init__(pos, collision_layer, collision_mask)
 
-        self.areas = {"head":Area(self.position,pg.Vector2(0,-25), self.width, 25, Player, self.knockout)}
+        self.areas = {"head":Area(self.position,pg.Vector2(self.width * 1/3 * 1/2,-5), self.width * 2/3, 25, Player, self.knockout)}
 
         self.dizzy_time = 0
 
@@ -31,7 +31,7 @@ class Enemy(Actor):
 
     def knockout(self, node):
         self.dizzy_time = 5000
-        print(node)
+        self.health -= 50
         node.on_ground = True
         node.jump()
         # self.crouch(1000)

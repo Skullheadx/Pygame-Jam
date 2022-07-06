@@ -20,10 +20,12 @@ class Game:
 
     def update(self, delta):
         self.player.update(delta)
-        # self.pet.update(delta, self.player)
+        self.pet.update(delta, self.player)
 
         for enemy in self.enemies:
             enemy.update(delta, self.player)
+            if enemy.dead:
+                print('a')
 
         for block in self.blocks:
             block.update(delta)
