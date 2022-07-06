@@ -49,7 +49,7 @@ class Player(Actor):
         pg.draw.rect(surf, (54, 54, 54), background_rect)
         pg.draw.rect(surf, (255, 0, 0), foreground_rect)
         
-        font = pg.font.Font(None , 20)
+        font = pg.font.Font("Font/Exo2-Regular.ttf", 20)
         current_health = str(self.health) + "/100"
         current_health_display = font.render(current_health, True, (255, 255, 255))
         surf.blit(current_health_display, foreground_rect)
