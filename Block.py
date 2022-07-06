@@ -10,6 +10,8 @@ class Block:
         self.velocity = pg.Vector2(0,0) # So that we may have moving blocks
         collision_layer.add(self)
 
+        self.movable = False
+
     def update(self, delta):
         pass # when player "moves", it's actually the blocks
 

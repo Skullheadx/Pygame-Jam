@@ -3,6 +3,7 @@ from Player import Player
 from Pet import Pet
 from Enemy import Enemy
 from Block import Block
+from PhysicsBody import PhysicsBody
 
 class Game:
 
@@ -19,17 +20,21 @@ class Game:
 
 
     def update(self, delta):
-        self.player.update(delta)
-        self.pet.update(delta, self.player)
 
-        for enemy in self.enemies:
+
+        for i,enemy in enumerate(self.enemies):
             enemy.update(delta, self.player)
             if enemy.dead:
-                print('enemy died')
+                self.enemies[i] = PhysicsBody(enemy.position,enemy.velocity,enemy.width,enemy.height,enemy.colour,enemy.collision_layer,enemy.collision_mask)
+                self.collision_layer["enemy"].remove(enemy)
+                self.collision_layer["enemy"].add(self.enemies[i])
 
         for block in self.blocks:
             block.update(delta)
-        
+
+        self.player.update(delta)
+        self.pet.update(delta, self.player)
+
     def draw(self, surf):
         screen.fill((255, 255, 255))
         for enemy in self.enemies:
