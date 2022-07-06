@@ -1,6 +1,6 @@
 from Setup import *
 from Game import Game
-from Menu import Menu
+from MainMenu import Menu
 
 delta = 1000//fps
 is_running = True
