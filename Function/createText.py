@@ -1,7 +1,7 @@
 from pygame import font
 
 def createText(X, Y, size, textColour, weight, textInfo, alignment = "l"):
-        fontx = font.Font(f"./Font/Lato-{weight}.ttf", size)
+        fontx = font.Font(f"./Font/Exo2-{weight}.ttf", size)
         text = fontx.render(textInfo, True, textColour)
         textRect = text.get_rect()
         if(alignment == "left" or alignment == "l"):
