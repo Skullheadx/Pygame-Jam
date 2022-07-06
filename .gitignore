@@ -14,3 +14,4 @@ __pycache__/Game.cpython-39.pyc
 __pycache__/Player.cpython-39.pyc
 __pycache__/Setup.cpython-39.pyc
 *.pyc
+.idea/workspace.xml
