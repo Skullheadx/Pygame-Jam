@@ -27,7 +27,7 @@ class Menu:
 
                     if (x1 <= mouseX <= x2 and y1 <= mouseY <= y2):
                         self.menuFunctions(i)
-            return;
+            return
 
     def draw(self, surf):
         screen.fill((255, 255, 255))

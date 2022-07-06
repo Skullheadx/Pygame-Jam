@@ -1,4 +1,5 @@
 import pygame as pg
+import math
 from Area import Area
 
 pg.init()
@@ -15,4 +16,3 @@ clock = pg.time.Clock()
 fps = 60
 
 screen = pg.display.set_mode(dimensions, pg.SCALED)
-
