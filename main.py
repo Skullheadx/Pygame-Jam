@@ -6,9 +6,7 @@ scene = Game()
 delta = 1000//fps
 is_running = True
 while is_running:
-    screen.fill((255,255,255))
-
-    if pg.event.peek(pg.QUIT, pump=True):
+    if pg.event.peek(pg.QUIT):
         is_running = False
 
     scene.update(delta)
