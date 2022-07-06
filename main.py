@@ -16,9 +16,7 @@ fps = 60
 
 screen = pg.display.set_mode(dimensions, pg.SCALED)
 
-
 delta = 1000//fps
-
 is_running = True
 while is_running:
     screen.fill((255,255,255))
