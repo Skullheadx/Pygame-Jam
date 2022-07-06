@@ -8,3 +8,9 @@ __pycache__/Block.cpython-39.pyc
 .idea/Pygame-Jam.iml
 __pycache__/Game.cpython-39.pyc
 __pycache__/Player.cpython-39.pyc
+__pycache__/Area.cpython-39.pyc
+__pycache__/Enemy.cpython-39.pyc
+__pycache__/Game.cpython-39.pyc
+__pycache__/Player.cpython-39.pyc
+__pycache__/Setup.cpython-39.pyc
+*.pyc
