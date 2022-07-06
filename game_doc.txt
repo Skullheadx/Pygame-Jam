@@ -1,0 +1,20 @@
+Interdimension Pirate
+- spaceship is a pirate ship (art)
+- 
+
+List of Dimensions:
+- sky
+- cave
+- boss dimension
+
+Gameplay:
+- dialogue between npcs
+- combat, parkour, building, mining
+
+story
+- stars fall out of the sky and other people collected them including the player
+- player tries to collect them from each dimension to get to the boss dimension where they came from
+
+to find the big treasure
+but u have to fight the end dimensional being
+

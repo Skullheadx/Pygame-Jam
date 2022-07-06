@@ -1,20 +1,7 @@
-import pygame as pg
+from Setup import *
+from Game import Game
 
-
-pg.init()
-
-SCREEN_WIDTH, SCREEN_HEIGHT = 1080, 640
-dimensions = (SCREEN_WIDTH, SCREEN_HEIGHT)
-center = pg.Vector2(dimensions) / 2
-
-pg.display.set_caption("Jam")
-# icon = pg.transform.scale(pg.image.load("logo.ico"), (32, 32))
-# pg.display.set_icon(icon)
-
-clock = pg.time.Clock()
-fps = 60
-
-screen = pg.display.set_mode(dimensions, pg.SCALED)
+scene = Game()
 
 delta = 1000//fps
 is_running = True
@@ -23,6 +10,9 @@ while is_running:
 
     if pg.event.peek(pg.QUIT, pump=True):
         is_running = False
+
+    scene.update(delta)
+    scene.draw(screen)
 
     pg.display.update()
     delta = clock.tick(fps)
