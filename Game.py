@@ -25,7 +25,7 @@ class Game:
         for enemy in self.enemies:
             enemy.update(delta, self.player)
             if enemy.dead:
-                print('a')
+                print('enemy died')
 
         for block in self.blocks:
             block.update(delta)

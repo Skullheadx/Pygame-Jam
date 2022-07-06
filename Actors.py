@@ -39,11 +39,14 @@ class Actor:
         # Apply gravity
         self.velocity.y += self.gravity
 
-    def is_dead(self):
+    def is_dead(self,reason=None):
         if self.health <= 0:
             self.dead = True
 
-    def modify_health(self):
+
+    def modify_health(self,amount, reason):
+        self.health += amount
+        self.is_dead(reason)
 
 
 
