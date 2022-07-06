@@ -8,6 +8,6 @@
 *.pyc
 .idea/workspace.xml
 
-
+ignore_*
 /ignore
 */__pycache__
