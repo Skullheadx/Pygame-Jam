@@ -1,10 +1,10 @@
 from Setup import *
 
 class Actor:
-    width, height = 50, 100
+    width, height = 25, 50
     colour = (76, 82, 92)
     speed = 0.2
-    jump_strength = 1
+    jump_strength = 0.5
     gravity = 0.098
     friction = 0.9
     
@@ -20,10 +20,21 @@ class Actor:
 
         self.health = 100
 
+        self.crouching = False
+        self.crouch_timer = None
+
         self.areas = dict()
 
 
     def update(self, delta):
+
+        if self.crouching and self.crouch_timer == 0:
+            self.position.y -= self.height/2
+            self.crouching = False
+        if self.crouch_timer is not None:
+            self.crouch_timer -= delta
+            self.crouch_timer = max(0, self.crouch_timer)
+
         for area in self.areas.values():
             area.update(delta,self.position)
 
@@ -33,6 +44,7 @@ class Actor:
 
         # Apply gravity
         self.velocity.y += self.gravity
+
 
 
 
@@ -50,6 +62,15 @@ class Actor:
 
         if target.y < self.position.y:
             self.jump()
+
+    def crouch(self, time=None):
+        self.crouching = True
+        self.position.y += self.height/2
+        if time is not None:
+            self.crouch_timer = time
+        else:
+            self.crouch_timer = None
+
 
     def jump(self):
         if self.on_ground:
@@ -85,6 +106,7 @@ class Actor:
                 if collision_rect.colliderect(thing.get_collision_rect()):
                     for area in self.areas.values():
                         if area.is_colliding(thing):
+                            print('b')
                             area.signal(thing)
                     if vel.y > 0:
                         pos.y = thing.position.y - self.height
@@ -98,11 +120,14 @@ class Actor:
     def get_collision_rect(self, pos=None):
         if pos is None:
             pos = self.position
-        return pg.Rect(pos, (self.width, self.height))
+        if self.crouching:
+            return pg.Rect(pos, (self.width, self.height/2))
+        else:
+            return pg.Rect(pos, (self.width, self.height))
 
     def draw(self, surf):
-        pg.draw.rect(surf, self.colour, self.get_collision_rect(), border_radius=15)
+        pg.draw.rect(surf, self.colour, self.get_collision_rect(), border_radius=8)
 
         # Uncomment for debugging area hitboxes
-        # for area in self.areas.values():
-        #     area.draw(surf)
+        for area in self.areas.values():
+            area.draw(surf)

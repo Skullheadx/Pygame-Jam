@@ -22,8 +22,11 @@ class Area:
         self.position = pos
 
     def is_colliding(self,node):
+        print("a", node)
         if isinstance(node, self.target):
+            print('c')
             if self.get_collision_rect().colliderect(node.get_collision_rect()):
+                print('d')
                 return True
         return False
 

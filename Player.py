@@ -4,17 +4,17 @@ from Setup import *
 from Actors import Actor
 
 class Player(Actor):
-    width, height = 50, 100
+    width, height = 25, 50
     colour = (52, 94, 235)
-    speed = 0.3
-    jump_strength = 1.5
+    speed = 0.2
+    jump_strength = 0.9
     gravity = 0.098
-    friction = 0.9
+    friction = 0.7
     
 
     def __init__(self, pos, collision_layer, collision_mask):
         super().__init__(pos, collision_layer, collision_mask)
-        self.areas = {"body":Area(self.position, pg.Vector2(0, self.height/2),self.width, self.height/2,Actor)}
+        # self.areas = {"body":Area(self.position, pg.Vector2(0, self.height/2),self.width, self.height/2,Actor)}
 
 
     def update(self, delta):
@@ -53,4 +53,3 @@ class Player(Actor):
         current_health = str(self.health) + "/100"
         current_health_display = font.render(current_health, True, (255, 255, 255))
         surf.blit(current_health_display, foreground_rect)
-    

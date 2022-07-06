@@ -1,7 +1,8 @@
 from Actors import Actor
 
 class Pet(Actor):
-    width,height = 75,50
+    width,height = 35,25
+    speed = 0.25
 
     def __init__(self, pos, collision_layer, collision_mask):
         super().__init__(pos, collision_layer, collision_mask)
@@ -12,4 +13,3 @@ class Pet(Actor):
         self.follow_target(target)
 
         self.position, self.velocity = self.move_and_collide(self.position, self.velocity, delta)
-

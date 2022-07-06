@@ -20,7 +20,7 @@ class Game:
 
     def update(self, delta):
         self.player.update(delta)
-        self.pet.update(delta, self.player)
+        # self.pet.update(delta, self.player)
 
         for enemy in self.enemies:
             enemy.update(delta, self.player)
@@ -37,4 +37,3 @@ class Game:
 
         self.player.draw(surf)
         self.pet.draw(surf)
-
