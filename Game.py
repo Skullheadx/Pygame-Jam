@@ -6,6 +6,7 @@ from Pet import Pet
 from Enemy import Enemy
 from Block import Block
 from PhysicsBody import PhysicsBody
+from EndScreen import EndScreen
 
 class Game:
 
@@ -19,11 +20,14 @@ class Game:
         self.blocks = [Block((0, SCREEN_HEIGHT * 3 / 4),self.collision_layer["world"]),
                        Block((SCREEN_WIDTH, SCREEN_HEIGHT * 3 / 4 - 25),self.collision_layer["world"])]
 
+        self.scene = EndScreen()
+        self.level = 1
+        self.scene.level = self.level
 
     def update(self, delta):
         Setup.camera_offset = self.player.update(delta)
         if self.player.dead:
-            print("You Died!")
+            self.level = self.scene.level
 
         for i,enemy in enumerate(self.enemies):
             enemy.update(delta, self.player)
@@ -46,4 +50,8 @@ class Game:
             block.draw(surf)
 
         self.player.draw(surf)
+
+        if self.player.dead:
+            self.scene.update()
+            self.scene.draw()
         # self.pet.draw(surf)
