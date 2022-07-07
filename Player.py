@@ -71,6 +71,9 @@ class Player(Actor):
         self.lastValueL = pressed[pg.K_a] or pressed[pg.K_LEFT]
         self.lastValueR = pressed[pg.K_d] or pressed[pg.K_RIGHT]
 
+    def attack(self, enemy, weapon):
+        self.modify_health(-10,"enemy")
+
     def draw(self, surf):
         super().draw(surf)
         # print(self.position, self.velocity, get_display_rect(self.get_collision_rect()).topleft, Setup.camera_offset)

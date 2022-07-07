@@ -2,6 +2,7 @@ from Setup import *
 from PhysicsBody import PhysicsBody
 from Block import Block
 
+
 class Actor:
     width, height = 50, 100
     colour = (76, 82, 92)
@@ -9,14 +10,13 @@ class Actor:
     jump_strength = 1
     gravity = 0.098
     friction = 0.9
-    
 
     def __init__(self, pos, collision_layer, collision_mask):
         self.position = pg.Vector2(pos)
         self.velocity = pg.Vector2(0, 0)
 
         self.on_ground = False
-        
+
         collision_layer.add(self)  # the layer the actor is on for collisions
         self.collision_layer = collision_layer
         self.collision_mask = collision_mask  # the layer the actor detects collisions against
@@ -28,28 +28,25 @@ class Actor:
 
         self.movable = False
 
-
     def update(self, delta):
         for area in self.areas.values():
-            area.update(delta,self.position)
+            area.update(delta, self.position)
 
         if self.is_dead():
             return
 
-
         # Apply friction so the enemy isn't walking on ice
         if self.on_ground:
-            self.velocity.x *= self.friction 
+            self.velocity.x *= self.friction
 
-        # Apply gravity
+            # Apply gravity
         self.velocity.y += self.gravity
 
-    def is_dead(self,reason=None):
+    def is_dead(self, reason=None):
         if self.health <= 0:
             self.dead = True
 
-
-    def modify_health(self,amount, reason):
+    def modify_health(self, amount, reason):
         self.health += amount
         self.is_dead(reason)
 
@@ -60,7 +57,7 @@ class Actor:
         target = node.position
 
         # So that actor doesn't come up and hug u lol
-        if (self.position - target).length_squared() < pow(stop_dist,2):
+        if (self.position - target).length_squared() < pow(stop_dist, 2):
             return
 
         if target.x < self.position.x:
@@ -89,7 +86,6 @@ class Actor:
                 if thing == self:
                     continue
                 if collision_rect.colliderect(thing.get_collision_rect()):
-                    print(self, vel, thing.velocity)
                     if thing.movable:
                         if vel.x > 0:
                             thing.position.x = pos.x + self.width
@@ -107,7 +103,7 @@ class Actor:
         self.on_ground = False
         pos.y += vel.y * delta
         collision_rect = self.get_collision_rect(pos)
-        for mask in self.collision_mask:        
+        for mask in self.collision_mask:
             for thing in mask:
                 if thing == self:
                     continue
