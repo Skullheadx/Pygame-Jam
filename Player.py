@@ -34,6 +34,26 @@ class Player(Actor):
             self.move_left()
         if pressed[pg.K_d] or pressed[pg.K_RIGHT]:
             self.move_right()
+<<<<<<< Updated upstream
+=======
+            if(self.lastValueR == False):
+                timeSincePressed = datetime.utcnow() - self.lastPressedRight
+                timeSinceLastDash = datetime.utcnow() - self.lastDash
+                if(timeSinceLastDash >= self.dashCooldown):     self.dashPossible = True
+                else:   self.dashPossible = False
+                if(timeSincePressed < self.timeBetweenDoublePress and self.dashPossible == True):
+                    self.lastDash = datetime.utcnow()
+                    self.dashPossible = False
+                    self.move_right(self.dashSpeed) # change this to change how the player dashes (maybe replace with a custom dash function)
+                self.lastPressedRight = datetime.utcnow()        
+        
+        self.lastValueL = pressed[pg.K_a] or pressed[pg.K_LEFT]
+        self.lastValueR = pressed[pg.K_d] or pressed[pg.K_RIGHT]
+
+    def attack(self, enemy, weapon):
+        self.modify_health(-10,"enemy")
+        self.push(enemy.velocity)
+>>>>>>> Stashed changes
 
     def draw(self, surf):
         super().draw(surf)

@@ -31,6 +31,8 @@ class Enemy(Actor):
         self.dizzy_time -= delta
         self.dizzy_time = max(0,self.dizzy_time)
 
+        self.health = 0
+
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position, self.velocity, delta)
 

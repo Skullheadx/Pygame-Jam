@@ -74,8 +74,20 @@ class Actor:
         if self.on_ground:
             self.velocity.y = -self.jump_strength
 
+<<<<<<< Updated upstream
     def move_left(self):
         self.velocity.x = -self.speed
+=======
+    def push(self, vel):
+        if vel != pg.Vector2(0,0):
+            v = vel.normalize()
+        else:
+            v = vel
+        self.velocity += (math.copysign(2,v.x), v.y-1)
+
+    def move_left(self, customSpeed = speed):
+        self.velocity.x = -customSpeed
+>>>>>>> Stashed changes
 
     def move_right(self):
         self.velocity.x = self.speed
@@ -89,6 +101,7 @@ class Actor:
                     continue
                 if collision_rect.colliderect(thing.get_collision_rect()):
                     if thing.movable:
+<<<<<<< Updated upstream
                         thing.velocity.x = vel.x
                     if vel.x > 0:
                         pos.x = thing.position.x - self.width
@@ -96,6 +109,24 @@ class Actor:
                     elif vel.x < 0:
                         pos.x = thing.position.x + thing.width
                         vel.x = max(vel.x, 0)
+=======
+                        if vel.x > 0:
+                            thing.position.x = pos.x + self.width
+                            pos.x = thing.position.x - self.width
+                            vel.x = min(vel.x, 0)
+                        elif vel.x < 0:
+                            thing.position.x = pos.x - thing.width
+                            pos.x = thing.position.x + thing.width
+                            vel.x = max(vel.x, 0)
+                    else:
+                        if vel.x > 0:
+                            pos.x = thing.position.x - self.width
+                            vel.x = min(vel.x, 0)
+                        elif vel.x < 0:
+                            pos.x = thing.position.x + thing.width
+                            vel.x = max(vel.x, 0)
+                    print(thing, thing.movable, vel)
+>>>>>>> Stashed changes
                     collision_rect = self.get_collision_rect(pos)
 
         self.on_ground = False

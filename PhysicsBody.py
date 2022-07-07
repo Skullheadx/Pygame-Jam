@@ -41,8 +41,9 @@ class PhysicsBody:
                 if thing == self:
                     continue
                 if collision_rect.colliderect(thing.get_collision_rect()):
-                    if thing.movable:
-                        thing.velocity.x = vel.x
+                    print(thing, "x")
+                    # if thing.movable:
+                    #     thing.velocity.x = vel.x
                     if vel.x > 0:
                         pos.x = thing.position.x - self.width
                         vel.x = min(vel.x, 0)
@@ -58,8 +59,9 @@ class PhysicsBody:
                 if thing == self:
                     continue
                 if collision_rect.colliderect(thing.get_collision_rect()):
-                    if thing.movable:
-                        thing.velocity.y = vel.y
+                    print(thing, "y")
+                    # if thing.movable:
+                    #     thing.velocity.y = vel.y
 
                     if vel.y > 0:
                         pos.y = thing.position.y - self.height
