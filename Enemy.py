@@ -26,8 +26,9 @@ class Enemy(Actor):
         super().update(delta)
         if target is not None and self.dizzy_time == 0:
             self.follow_target(target,stop_dist=self.weapon.width * 0.8 + self.width + target.width)
-            if self.weapon.get_collision_rect().colliderect(target.get_collision_rect()):
+            if not self.weapon.attacking and self.weapon.get_collision_rect().colliderect(target.get_collision_rect()):
                 self.weapon.swing()
+                target.attack(self, self.weapon)
         self.dizzy_time -= delta
         self.dizzy_time = max(0,self.dizzy_time)
 
