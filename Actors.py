@@ -75,11 +75,11 @@ class Actor:
         if self.on_ground:
             self.velocity.y = -self.jump_strength
 
-    def move_left(self):
-        self.velocity.x = -self.speed
+    def move_left(self, customSpeed = speed):
+        self.velocity.x = -customSpeed
 
-    def move_right(self):
-        self.velocity.x = self.speed
+    def move_right(self, customSpeed = speed):
+        self.velocity.x = customSpeed
 
     def move_and_collide(self, pos, vel, delta):
         pos.x += vel.x * delta

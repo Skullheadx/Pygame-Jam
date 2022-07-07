@@ -3,7 +3,7 @@ import pygame.key
 import Setup
 from Setup import *
 from Actors import Actor
-
+from datetime import datetime, timedelta
 
 class Player(Actor):
     width, height = 25, 50
@@ -16,6 +16,15 @@ class Player(Actor):
     def __init__(self, pos, collision_layer, collision_mask):
         super().__init__(pos, collision_layer, collision_mask)
         self.initial_position = pg.Vector2(pos)
+        self.dashCooldown = timedelta(seconds=2, microseconds=500000)
+        self.dashSpeed = 5
+
+        self.dashPossible = True
+        self.lastDash = datetime.utcnow()
+        self.lastPressedLeft = datetime.utcnow()
+        self.lastValueL = False
+        self.lastPressedRight = datetime.utcnow()
+        self.lastValueR = False
         # self.areas = {"body":Area(self.position, pg.Vector2(0, self.height/2),self.width, self.height/2,Actor)}
 
     def update(self, delta):
@@ -34,8 +43,33 @@ class Player(Actor):
             self.jump()
         if pressed[pg.K_a] or pressed[pg.K_LEFT]:
             self.move_left()
+            if(self.lastValueL == False):
+                timeSincePressed = datetime.utcnow() - self.lastPressedLeft
+                timeSinceLastDash = datetime.utcnow() - self.lastDash
+
+                if(timeSincePressed < timedelta(seconds=0, microseconds=500000) and self.dashPossible == True):
+                    self.move_left(self.dashSpeed) # change this to change how the player dashes (maybe replace with a custom dash function)
+                    self.dashPossible = False
+                    self.lastDash = datetime.utcnow()
+                if(timeSinceLastDash >= self.dashCooldown):
+                    self.dashPossible = True
+                self.lastPressedLeft = datetime.utcnow()            
+            
         if pressed[pg.K_d] or pressed[pg.K_RIGHT]:
             self.move_right()
+            if(self.lastValueR == False):
+                timeSincePressed = datetime.utcnow() - self.lastPressedRight
+                timeSinceLastDash = datetime.utcnow() - self.lastDash
+                if(timeSincePressed.seconds == 0 and timeSincePressed.microseconds < 500000 and self.dashPossible == True):
+                    self.move_right(self.dashSpeed) # change this to change how the player dashes (maybe replace with a custom dash function)
+                    self.dashPossible = False
+                    self.lastDash = datetime.utcnow()
+                if(timeSinceLastDash >= self.dashCooldown):
+                    self.dashPossible = True
+                self.lastPressedRight = datetime.utcnow()        
+        
+        self.lastValueL = pressed[pg.K_a] or pressed[pg.K_LEFT]
+        self.lastValueR = pressed[pg.K_d] or pressed[pg.K_RIGHT]
 
     def draw(self, surf):
         super().draw(surf)
