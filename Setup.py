@@ -1,5 +1,8 @@
 import pygame as pg
 import math
+
+import pygame.transform
+
 from Area import Area
 
 pg.init()
@@ -16,3 +19,7 @@ clock = pg.time.Clock()
 fps = 60
 
 screen = pg.display.set_mode(dimensions, pg.SCALED)
+
+def rotate(img ,angle, pivot):
+    center = img.get_rect().center
+    rot_image = pygame.transform.rotate(img, angle)

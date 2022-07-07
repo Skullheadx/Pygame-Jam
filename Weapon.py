@@ -1,3 +1,5 @@
+import random
+
 from Setup import *
 
 
@@ -20,9 +22,11 @@ class Melee:
         self.direction = direction
 
         if self.direction == -1:
-            self.display = pg.transform.rotate(self.img, 360 * math.sin(math.radians(self.swing_timer/10)))
+            angle = 145 * (math.sin(math.radians((self.swing_timer))))
+            print(self.swing_timer,angle)
+            self.display = pg.transform.rotate(self.img, angle)
         elif self.direction == 0:
-            self.display = pg.transform.rotate(self.flipped_img, -360 * math.sin(math.radians(self.swing_timer/10)))
+            self.display = pg.transform.rotate(self.flipped_img, 360 * math.sin(math.radians(self.swing_timer/10)))
 
         self.swing_timer -= delta
         self.swing_timer = max(self.swing_timer, 0)
@@ -34,8 +38,9 @@ class Melee:
             return pg.Rect(self.position + pg.Vector2(self.holder_width,0),(self.width, self.height))
 
     def swing(self):
-        if self.swing_timer == 0:
-            self.swing_timer = 1800
+        if True:
+            if self.swing_timer == 0:
+                self.swing_timer = 180
 
     def draw(self, surf):
         surf.blit(self.display, self.get_collision_rect().topleft)
