@@ -6,11 +6,11 @@ from MainMenu import Menu
 delta = 1000//fps
 is_running = True
 
-level = 1
-old_level = level
-# scene = Menu()
+scene = Menu()
+old_level = 0
 
-scene = Game()
+
+level = 0
 
 while is_running:
     if pg.event.peek(pg.QUIT):
