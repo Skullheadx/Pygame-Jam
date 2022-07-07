@@ -1,4 +1,6 @@
+import Setup
 from Setup import *
+from Setup import camera_offset
 from Player import Player
 from Pet import Pet
 from Enemy import Enemy
@@ -11,16 +13,14 @@ class Game:
         self.collision_layer = {"world":set(),"player": set(), "enemy":set(), "pet":set()}
 
         self.player = Player(center, self.collision_layer["player"], [self.collision_layer["enemy"], self.collision_layer["world"]])
-        self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
+        # self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
 
         self.enemies = [Enemy((SCREEN_WIDTH * 3 /4, 0),self.collision_layer["enemy"], [self.collision_layer["player"], self.collision_layer["world"]])]
-        self.blocks = [Block((0, SCREEN_HEIGHT * 3 / 4),self.collision_layer["world"])]
-                    #    Block((SCREEN_WIDTH/2 - 50, SCREEN_HEIGHT * 3 / 4),self.collision_layer[0]),
-                    #    Block((SCREEN_WIDTH/2 + 50, SCREEN_HEIGHT * 3 / 4),self.collision_layer[0]),
+        self.blocks = [Block((0, SCREEN_HEIGHT * 3 / 4),self.collision_layer["world"]),
+                       Block((SCREEN_WIDTH, SCREEN_HEIGHT * 3 / 4 - 25),self.collision_layer["world"])]
 
 
     def update(self, delta):
-
 
         for i,enemy in enumerate(self.enemies):
             enemy.update(delta, self.player)
@@ -32,8 +32,9 @@ class Game:
         for block in self.blocks:
             block.update(delta)
 
-        self.player.update(delta)
-        self.pet.update(delta, self.player)
+        Setup.camera_offset += self.player.update(delta)
+
+        # self.pet.update(delta, self.player, self.camera_pos)
 
     def draw(self, surf):
         screen.fill((255, 255, 255))

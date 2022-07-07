@@ -17,6 +17,5 @@ class Block:
 
     def get_collision_rect(self):
         return pg.Rect(self.position, (self.width, self.height))
-
     def draw(self, surf):
-        pg.draw.rect(surf, self.colour, self.get_collision_rect(), border_radius=5)
+        pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=5)

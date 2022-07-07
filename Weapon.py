@@ -48,6 +48,6 @@ class Melee:
                 self.swing_timer = 360
 
     def draw(self, surf):
-        surf.blit(self.display, self.get_collision_rect().topleft)
+        surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft)
         # pygame.draw.circle(surf,(255,0,255),self.pivot,3)
         # pygame.draw.circle(surf,(0,255,0),self.position,3)
