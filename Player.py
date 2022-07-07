@@ -37,6 +37,9 @@ class Player(Actor):
         if pressed[pg.K_d] or pressed[pg.K_RIGHT]:
             self.move_right()
 
+    def attack(self, enemy, weapon):
+        self.modify_health(-10,"enemy")
+
     def draw(self, surf):
         super().draw(surf)
         # print(self.position, self.velocity, get_display_rect(self.get_collision_rect()).topleft, Setup.camera_offset)

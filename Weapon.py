@@ -19,6 +19,7 @@ class Melee:
         self.display = self.img
         self.display_rect = self.display.get_rect()
         self.swing_timer = 0
+        self.attacking = False
 
 
     def update(self, delta, pos, direction):
@@ -35,6 +36,10 @@ class Melee:
 
         self.swing_timer -= delta
         self.swing_timer = max(self.swing_timer, 0)
+        if self.swing_timer == 0:
+            self.attacking = False
+        else:
+            self.attacking = True
 
     def get_collision_rect(self):
         if self.direction == -1:

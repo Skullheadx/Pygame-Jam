@@ -22,6 +22,8 @@ class Game:
 
     def update(self, delta):
         Setup.camera_offset = self.player.update(delta)
+        if self.player.dead:
+            print("You Died!")
 
         for i,enemy in enumerate(self.enemies):
             enemy.update(delta, self.player)

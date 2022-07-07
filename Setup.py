@@ -29,6 +29,7 @@ def rotate(pos, img, angle, pivot):
 
 camera_offset = pg.Vector2(0,0)
 
+
 def get_display_rect(collision_rect):
     pos = collision_rect.topleft
     width, height = collision_rect.w, collision_rect.h
