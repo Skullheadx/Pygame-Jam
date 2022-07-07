@@ -15,6 +15,7 @@ class Player(Actor):
 
     def __init__(self, pos, collision_layer, collision_mask):
         super().__init__(pos, collision_layer, collision_mask)
+        self.initial_position = pg.Vector2(pos)
         # self.areas = {"body":Area(self.position, pg.Vector2(0, self.height/2),self.width, self.height/2,Actor)}
 
     def update(self, delta):
@@ -25,7 +26,7 @@ class Player(Actor):
 
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
-        return self.velocity * delta
+        return self.position - self.initial_position
 
     def handle_input(self):
         pressed = pygame.key.get_pressed()

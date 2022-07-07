@@ -21,7 +21,7 @@ class Game:
 
 
     def update(self, delta):
-        Setup.camera_offset += self.player.update(delta)
+        Setup.camera_offset = self.player.update(delta)
 
         for i,enemy in enumerate(self.enemies):
             enemy.update(delta, self.player)

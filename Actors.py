@@ -117,11 +117,11 @@ class Actor:
                 if collision_rect.colliderect(thing.get_collision_rect()):
                     if vel.y > 0:
                         pos.y = thing.position.y - self.height
-                        vel.y = min(vel.y + thing.velocity.y, 0)
+                        vel.y = min(vel.y, 0)
                         self.on_ground = True
                     elif vel.y < 0:
                         pos.y = thing.position.y + thing.height
-                        vel.y = max(vel.y + thing.velocity.y, 0)
+                        vel.y = max(vel.y, 0)
                     collision_rect = self.get_collision_rect(pos)
 
         return pos, vel
