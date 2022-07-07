@@ -1,0 +1,11 @@
+Gameplay:
+- Gameover / Death screen
+- Make levels
+- Add save game functionality
+
+Movement:
+- Custom Dash movement function for dashing
+- Dash bar that refills when the player can dash again
+
+Art:
+- Finish assets
