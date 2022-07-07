@@ -17,6 +17,7 @@ class Player(Actor):
         super().__init__(pos, collision_layer, collision_mask)
         self.initial_position = pg.Vector2(pos)
         self.dashCooldown = timedelta(seconds=2, microseconds=500000)
+        self.timeBetweenDoublePress = timedelta(seconds=0, microseconds=500000)
         self.dashSpeed = 5
 
         self.dashPossible = True
@@ -47,7 +48,7 @@ class Player(Actor):
                 timeSincePressed = datetime.utcnow() - self.lastPressedLeft
                 timeSinceLastDash = datetime.utcnow() - self.lastDash
 
-                if(timeSincePressed < timedelta(seconds=0, microseconds=500000) and self.dashPossible == True):
+                if(timeSincePressed < self.timeBetweenDoublePress and self.dashPossible == True):
                     self.move_left(self.dashSpeed) # change this to change how the player dashes (maybe replace with a custom dash function)
                     self.dashPossible = False
                     self.lastDash = datetime.utcnow()
@@ -60,7 +61,7 @@ class Player(Actor):
             if(self.lastValueR == False):
                 timeSincePressed = datetime.utcnow() - self.lastPressedRight
                 timeSinceLastDash = datetime.utcnow() - self.lastDash
-                if(timeSincePressed.seconds == 0 and timeSincePressed.microseconds < 500000 and self.dashPossible == True):
+                if(timeSincePressed < self.timeBetweenDoublePress and self.dashPossible == True):
                     self.move_right(self.dashSpeed) # change this to change how the player dashes (maybe replace with a custom dash function)
                     self.dashPossible = False
                     self.lastDash = datetime.utcnow()
