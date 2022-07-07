@@ -1,5 +1,6 @@
 import pygame.key
 
+import Setup
 from Setup import *
 from Actors import Actor
 
@@ -23,7 +24,7 @@ class Player(Actor):
         self.handle_input()
 
         # Deals with collision and applying velocity
-        self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity, delta)
+        self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
         return self.velocity * delta
 
     def handle_input(self):
@@ -37,6 +38,9 @@ class Player(Actor):
 
     def draw(self, surf):
         super().draw(surf)
+        # print(self.position, self.velocity, get_display_rect(self.get_collision_rect()).topleft, Setup.camera_offset)
+        # pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=8)
+
         # pg.draw.rect(surf,self.colour,pg.Rect(center, (self.width, self.height)),border_radius=8)
 
         # Healthbar Stuff

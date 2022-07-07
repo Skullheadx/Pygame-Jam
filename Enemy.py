@@ -32,7 +32,7 @@ class Enemy(Actor):
         self.dizzy_time = max(0,self.dizzy_time)
 
         # Deals with collision and applying velocity
-        self.position, self.velocity = self.move_and_collide(self.position, self.velocity, delta)
+        self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
 
         self.weapon.update(delta,self.position, math.copysign(1,self.velocity.x))
 

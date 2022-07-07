@@ -10,7 +10,7 @@ scene = Menu()
 old_level = 0
 
 
-level = 0
+level = 1
 
 while is_running:
     if pg.event.peek(pg.QUIT):

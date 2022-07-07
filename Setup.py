@@ -33,3 +33,4 @@ def get_display_rect(collision_rect):
     pos = collision_rect.topleft
     width, height = collision_rect.w, collision_rect.h
     return pg.Rect(pos - camera_offset, (width, height))
+    # return pg.Rect(pos, (width, height))
