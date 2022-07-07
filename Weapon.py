@@ -4,7 +4,7 @@ from Setup import *
 
 
 class Melee:
-    img = pg.transform.scale(pg.image.load("SWORD.png"), (40,40))
+    img = pg.transform.scale(pg.image.load("Assets/SWORD.png"), (40,40))
     flipped_img = pg.transform.flip(img,True,False)
     width,height = img.get_size()
 
