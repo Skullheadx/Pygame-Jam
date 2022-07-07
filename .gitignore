@@ -11,3 +11,4 @@
 ignore_*
 /ignore
 */__pycache__
+.idea/Pygame-Jam-main.iml

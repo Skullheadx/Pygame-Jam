@@ -92,10 +92,10 @@ class Actor:
                         thing.velocity.x = vel.x
                     if vel.x > 0:
                         pos.x = thing.position.x - self.width
-                        vel.x = min(vel.x + thing.velocity.x, 0)
+                        vel.x = min(vel.x, 0)
                     elif vel.x < 0:
                         pos.x = thing.position.x + thing.width
-                        vel.x = max(vel.x + thing.velocity.x, 0)
+                        vel.x = max(vel.x, 0)
                     collision_rect = self.get_collision_rect(pos)
 
         self.on_ground = False
@@ -110,15 +110,15 @@ class Actor:
                         area.signal(thing)
                 if collision_rect.colliderect(thing.get_collision_rect()):
                     if thing.movable:
-                        thing.velocity.y += vel.y
+                        thing.velocity.y = vel.y
 
                     if vel.y > 0:
                         pos.y = thing.position.y - self.height
-                        vel.y = min(vel.y + thing.velocity.y, 0)
+                        vel.y = min(vel.y, 0)
                         self.on_ground = True
                     elif vel.y < 0:
                         pos.y = thing.position.y + thing.height
-                        vel.y = max(vel.y + thing.velocity.y, 0)
+                        vel.y = max(vel.y, 0)
                     collision_rect = self.get_collision_rect(pos)
 
         return pos, vel
@@ -129,7 +129,7 @@ class Actor:
         return pg.Rect(pos, (self.width, self.height))
 
     def draw(self, surf):
-        pg.draw.rect(surf, self.colour, self.get_collision_rect(), border_radius=8)
+        pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=8)
         # pg.draw.rect(surf, (0,0,0), self.get_collision_rect(), border_radius=8, width=2)
 
         # Uncomment for debugging area hitboxes

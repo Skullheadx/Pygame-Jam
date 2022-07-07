@@ -37,4 +37,4 @@ class Area:
         return pg.Rect(self.position + self.offset, (self.width, self.height))
 
     def draw(self, surf):
-        pg.draw.rect(surf, (255,0,0),self.get_collision_rect())
+        pg.draw.rect(surf, (255,0,0),get_display_rect(self.get_collision_rect()))

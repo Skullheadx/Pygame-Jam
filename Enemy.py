@@ -38,7 +38,7 @@ class Enemy(Actor):
 
     def knockout(self, node):
         self.dizzy_time = 2500
-        self.health -= 10
+        self.modify_health(-50, None)
         node.on_ground = True
         node.jump()
         # self.crouch(1000)
