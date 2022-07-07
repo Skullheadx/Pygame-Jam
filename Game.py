@@ -43,4 +43,4 @@ class Game:
             block.draw(surf)
 
         self.player.draw(surf)
-        self.pet.draw(surf)
+        # self.pet.draw(surf)
