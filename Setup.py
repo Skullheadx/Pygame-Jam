@@ -26,3 +26,10 @@ def rotate(pos, img, angle, pivot):
     rot_img = pg.transform.rotozoom(img, angle, 1)
     rot_rect = rot_img.get_rect(center=vec)
     return rot_img, rot_rect
+
+camera_offset = pg.Vector2(0,0)
+
+def get_display_rect(collision_rect):
+    pos = collision_rect.topleft
+    width, height = collision_rect.w, collision_rect.h
+    return pg.Rect(pos - camera_offset, (width, height))

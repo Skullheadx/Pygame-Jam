@@ -8,7 +8,7 @@ class Test:
 
         self.angle = 0
         self.pivot = pg.Vector2(SCREEN_WIDTH / 2 + 50, SCREEN_HEIGHT / 2 + 50)
-        self.img = pg.transform.scale(pygame.image.load("SWORD.png"), (100, 100))
+        self.img = pg.transform.scale(pygame.image.load("Assets/SWORD.png"), (100, 100))
         self.display = self.img.copy()
         self.img_rect = self.display.get_rect()
 
