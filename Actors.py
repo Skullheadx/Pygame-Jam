@@ -130,6 +130,7 @@ class Actor:
 
     def draw(self, surf):
         pg.draw.rect(surf, self.colour, self.get_collision_rect(), border_radius=8)
+        # pg.draw.rect(surf, (0,0,0), self.get_collision_rect(), border_radius=8, width=2)
 
         # Uncomment for debugging area hitboxes
         # for area in self.areas.values():

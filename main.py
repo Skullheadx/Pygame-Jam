@@ -1,5 +1,6 @@
 from Setup import *
 from Game import Game
+from Test import Test
 from MainMenu import Menu
 
 delta = 1000//fps

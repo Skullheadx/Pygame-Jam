@@ -20,12 +20,12 @@ class Enemy(Actor):
         self.movable = True
         self.dizzy_time = 0
 
-        self.weapon = Melee(self.position, (-35,self.height/2 - 20),self.width,-1)
+        self.weapon = Melee(self.position, (-Melee.width/2, Melee.height/2), (0, Melee.height), self.width,-1)
 
     def update(self, delta, target=None):
         super().update(delta)
         if target is not None and self.dizzy_time == 0:
-            self.follow_target(target,stop_dist=self.weapon.width + self.width + target.width)
+            self.follow_target(target,stop_dist=self.weapon.width * 0.8 + self.width + target.width)
             if self.weapon.get_collision_rect().colliderect(target.get_collision_rect()):
                 self.weapon.swing()
         self.dizzy_time -= delta
@@ -37,7 +37,7 @@ class Enemy(Actor):
         self.weapon.update(delta,self.position, math.copysign(1,self.velocity.x))
 
     def knockout(self, node):
-        self.dizzy_time = 5000
+        self.dizzy_time = 2500
         self.health -= 10
         node.on_ground = True
         node.jump()

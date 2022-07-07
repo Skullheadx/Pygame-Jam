@@ -20,6 +20,9 @@ fps = 60
 
 screen = pg.display.set_mode(dimensions, pg.SCALED)
 
-def rotate(img ,angle, pivot):
-    center = img.get_rect().center
-    rot_image = pygame.transform.rotate(img, angle)
+
+def rotate(pos, img, angle, pivot):
+    vec = (pos - pivot).rotate(-angle) + pivot
+    rot_img = pg.transform.rotozoom(img, angle, 1)
+    rot_rect = rot_img.get_rect(center=vec)
+    return rot_img, rot_rect
