@@ -1,9 +1,12 @@
 import pygame.key
 
 import Setup
+import time
+import threading
 from Setup import *
 from Actors import Actor
 from datetime import datetime, timedelta
+from Potion import Potion
 
 class Player(Actor):
     width, height = 25, 50
@@ -28,15 +31,29 @@ class Player(Actor):
         self.lastValueR = False
         # self.areas = {"body":Area(self.position, pg.Vector2(0, self.height/2),self.width, self.height/2,Actor)}
 
+        self.potion_cooldown = 0
+        self.starting_potions = 999
+        self.potion_bag = [Potion(self)]
+        for i in range(self.starting_potions):
+            self.potion_bag.append(Potion(self))
+
     def update(self, delta):
         super().update(delta)
 
         # Get and handle input
         self.handle_input()
 
+        #if self.potion_cooldown > 0:
+            #threading.Thread(Potion.cooldown)
+
+        if len(self.potion_bag) > 0:
+            self.potion_bag[0].get_input(self)
+
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
         return self.position - self.initial_position
+
+        
 
     def handle_input(self):
         pressed = pygame.key.get_pressed()
