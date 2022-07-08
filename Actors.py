@@ -94,10 +94,10 @@ class Actor:
         # if enemy.velocity.x != pg.Vector2(0,0):
         #     v = enemy.velocity.normalize().x
 
-        self.velocity += pg.Vector2(0.5 * v, -1)
+        self.velocity += pg.Vector2(0.75 * v, -1)
 
     def push2(self, direction):
-        self.velocity += pg.Vector2(0.5 * direction, -1)
+        self.velocity += pg.Vector2(0.75 * direction, -1)
 
 
     def move_and_collide(self, pos, vel, delta):

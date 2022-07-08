@@ -27,8 +27,8 @@ class Enemy(Actor):
     def update(self, delta, target=None):
         super().update(delta)
         if target is not None and self.dizzy_time == 0:
-            self.follow_target(target,stop_dist=self.weapon.width * 0.8 + self.width + target.width)
-            if random.random() < 3/fps and not self.weapon.attacking and self.weapon.get_collision_rect().colliderect(target.get_collision_rect()):
+            self.follow_target(target,stop_dist=self.weapon.width * 0.99)
+            if random.random() < 4.5/fps and not self.weapon.attacking and self.weapon.get_collision_rect().colliderect(target.get_collision_rect()):
                 self.weapon.swing()
                 target.attack(self, self.weapon)
         self.dizzy_time -= delta
