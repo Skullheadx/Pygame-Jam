@@ -29,7 +29,6 @@ while is_running:
             case 1:
                 scene = Game()
         old_level = level
-        
 
     scene.update(delta)
     scene.draw(screen)

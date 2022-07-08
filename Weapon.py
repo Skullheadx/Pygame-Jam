@@ -4,11 +4,11 @@ from Setup import *
 
 
 class Melee:
-    img = pg.transform.scale(pg.image.load("Assets/SWORD.png"), (40,40))
+    img = pg.transform.scale(pg.image.load("Assets/SWORD.png"), (40, 40))
     flipped_img = pg.transform.flip(img,True,False)
     width,height = img.get_size()
 
-    def __init__(self, pos, offset, pivot, width,direction):
+    def __init__(self, pos, offset, pivot, width,direction, damage):
         self.position = pg.Vector2(pos)
         self.offset = pg.Vector2(offset)
         self.pivot = self.position + pg.Vector2(pivot)
@@ -21,6 +21,7 @@ class Melee:
         self.swing_timer = 0
         self.attacking = False
 
+        self.damage = damage
 
     def update(self, delta, pos, direction):
         self.position = pg.Vector2(pos)
