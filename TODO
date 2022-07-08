@@ -6,7 +6,30 @@ Gameplay:
 Movement:
 - Custom Dash movement function for dashing
 - Dash bar that refills when the player can dash again
-- fix collision bug. push enemy off left side
+
+Combat:
+- Health potion items to collect
+- bow
+- gun
+- sword
+- buffs?
+
+- Level Creator
+    - to facilitate level creation
+- Dialogue display
+    - characters appear one at a time so more readable
+
+- Story elements
+
+- dimension travel effect
+    - I'm thinking like we go on the ship and
+    the ship travels into a portal that opens
+    in front and inside that portal is some
+    purple space with ??? particles flying
+    around. After a few seconds, go to next
+    dimension.
+
 
 Art:
 - Finish assets
+- add assets to game
