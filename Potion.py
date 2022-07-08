@@ -7,7 +7,7 @@ class Potion:
         self.player = player
 
     def get_input(self, player):
-        pressed_key = pygame.key.get_pressed()
+        pressed_key = pg.key.get_pressed()
         if pressed_key[pg.K_1] and player.potion_cooldown == 0:
             self.consume_potion(player)
     

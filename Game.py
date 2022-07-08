@@ -15,12 +15,13 @@ class Game:
         self.collision_layer = {"world": set(), "player": set(), "enemy": set(), "pet": set()}
 
         self.player = Player(center, self.collision_layer["player"],
-                             [self.collision_layer["enemy"], self.collision_layer["world"]])
+                             [self.collision_layer["enemy"], self.collision_layer["world"]],
+                             [self.collision_layer["enemy"]])
         # self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
 
         self.enemies = [Enemy((SCREEN_WIDTH / 4, SCREEN_HEIGHT / 2), self.collision_layer["enemy"],
                               [self.collision_layer["player"], self.collision_layer["world"]])]
-        self.blocks = [Block((0, SCREEN_HEIGHT * 3 / 4), self.collision_layer["world"])]
+        self.blocks = [Block((-0, SCREEN_HEIGHT * 3 / 4), self.collision_layer["world"])]
 
         self.scene = EndScreen()
         self.level = 1

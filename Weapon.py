@@ -25,7 +25,8 @@ class Melee:
     def update(self, delta, pos, direction):
         self.position = pg.Vector2(pos)
         self.pivot = self.position + self.offset + pg.Vector2(self.width/2, self.height/2)
-        self.direction = direction
+        if direction != 0:
+            self.direction = direction
 
         if self.direction == -1:
             angle = 25 * (math.sin(math.radians(self.swing_timer)))

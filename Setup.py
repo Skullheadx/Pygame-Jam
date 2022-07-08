@@ -1,9 +1,7 @@
 import pygame as pg
 import math
+import random
 
-import pygame.transform
-
-from Area import Area
 
 pg.init()
 
@@ -34,3 +32,5 @@ def get_display_rect(collision_rect):
     width, height = collision_rect.w, collision_rect.h
     return pg.Rect(pos - camera_offset, (width, height))
     # return pg.Rect(pos, (width, height))
+
+from Area import Area

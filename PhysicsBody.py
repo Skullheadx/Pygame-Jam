@@ -1,5 +1,6 @@
 from Setup import *
 from Block import Block
+from Function.createText import createText
 
 class PhysicsBody:
     speed = 0.2
@@ -10,7 +11,7 @@ class PhysicsBody:
     def __init__(self, pos, vel, width, height, colour, collision_layer, collision_mask):
         self.position = pg.Vector2(pos)
         self.velocity = pg.Vector2(vel)
-        self.width, self.height = width, height
+        self.width, self.height = height, width
         self.colour = colour
 
         self.on_ground = False
@@ -33,7 +34,14 @@ class PhysicsBody:
 
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
         # print(self.position)
+    def attack(self, enemy, weapon):
+        self.push(enemy)
+    def push(self, enemy):
+        v = enemy.weapon.direction
+        # if enemy.velocity.x != pg.Vector2(0,0):
+        #     v = enemy.velocity.normalize().x
 
+        self.velocity += pg.Vector2(0.5 * v, -1)
     def move_and_collide(self, pos, vel, delta):
         pos.x += vel.x * delta
         collision_rect = self.get_collision_rect(pos)
@@ -80,3 +88,4 @@ class PhysicsBody:
     def draw(self, surf):
         # print(self.position, self.velocity)
         pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=8)
+

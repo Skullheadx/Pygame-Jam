@@ -7,6 +7,7 @@ from Setup import *
 from Actors import Actor
 from datetime import datetime, timedelta
 from Potion import Potion
+from Weapon import Melee
 
 class Player(Actor):
     width, height = 25, 50
@@ -16,7 +17,7 @@ class Player(Actor):
     gravity = 0.098
     friction = 0.7
 
-    def __init__(self, pos, collision_layer, collision_mask):
+    def __init__(self, pos, collision_layer, collision_mask, can_hurt):
         super().__init__(pos, collision_layer, collision_mask)
         self.initial_position = pg.Vector2(pos)
         self.dashCooldown = timedelta(seconds=2, microseconds=500000)
@@ -37,6 +38,9 @@ class Player(Actor):
         for i in range(self.starting_potions):
             self.potion_bag.append(Potion(self))
 
+        self.weapon = Melee(self.position, (-Melee.width/2, Melee.height/2), (0, Melee.height), self.width,-1)
+        self.targets = can_hurt
+
     def update(self, delta):
         super().update(delta)
 
@@ -51,6 +55,13 @@ class Player(Actor):
 
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
+
+        if self.velocity.x == 0:
+            direction = 0
+        else:
+            direction = math.copysign(1,self.velocity.x)
+        self.weapon.update(delta,self.position, direction)
+
         return self.position - self.initial_position
 
         
@@ -88,11 +99,19 @@ class Player(Actor):
         self.lastValueL = pressed[pg.K_a] or pressed[pg.K_LEFT]
         self.lastValueR = pressed[pg.K_d] or pressed[pg.K_RIGHT]
 
-    def attack(self, enemy, weapon):
-        self.modify_health(-10,"enemy")
-        self.push(enemy)
+        mouse_pressed = pg.mouse.get_pressed(3)
+        if mouse_pressed[0]: # LMB
+            if not self.weapon.attacking:
+                self.weapon.swing()
+                for mask in self.targets:
+                    for enemy in mask:
+                        if self.weapon.get_collision_rect().colliderect(enemy.get_collision_rect()):
+                            enemy.attack(self, self.weapon)
+
+
 
     def draw(self, surf):
+        self.weapon.draw(surf)
         super().draw(surf)
         # print(self.position, self.velocity, get_display_rect(self.get_collision_rect()).topleft, Setup.camera_offset)
         # pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=8)

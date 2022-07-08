@@ -55,7 +55,9 @@ class Actor:
         if amount < 0:
             self.stun_time = -amount * 50
         self.is_dead(reason)
-
+    def attack(self, enemy, weapon):
+        self.modify_health(-10,"enemy")
+        self.push(enemy)
     def follow_target(self, node, follow_range=None, stop_dist=None):
         if stop_dist is None:
             stop_dist = max(self.height, self.width) * 1.5
@@ -88,11 +90,11 @@ class Actor:
             self.velocity.x = customSpeed
 
     def push(self, enemy):
-        v = pg.Vector2(0,0)
-        if enemy.velocity.x != v:
-            v = enemy.velocity.normalize().x
+        v = enemy.weapon.direction
+        # if enemy.velocity.x != pg.Vector2(0,0):
+        #     v = enemy.velocity.normalize().x
 
-        self.velocity += pg.Vector2(v, -1)
+        self.velocity += pg.Vector2(0.5 * v, -1)
 
     def move_and_collide(self, pos, vel, delta):
         pos.x += vel.x * delta
@@ -126,7 +128,6 @@ class Actor:
                     if area.is_colliding(thing):
                         area.signal(thing)
                 if collision_rect.colliderect(thing.get_collision_rect()):
-                    # print(thing, pos, vel, thing.position, thing.velocity)
                     if vel.y > 0:
                         pos.y = thing.position.y - self.height
                         vel.y = min(vel.y, 0)

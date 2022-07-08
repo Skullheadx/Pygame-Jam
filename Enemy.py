@@ -16,9 +16,11 @@ class Enemy(Actor):
     def __init__(self, pos, collision_layer, collision_mask):
         super().__init__(pos, collision_layer, collision_mask)
 
-        self.areas = {"head":Area(self.position,pg.Vector2(self.width * 1/3 * 1/2,-5), self.width * 2/3, 25, Player, self.knockout)}
+        self.areas = {"head":Area(self.position,pg.Vector2(self.width * 1/3 * 1/2,-2), self.width * 2/3, 25, Player, self.knockout)}
         self.movable = True
         self.dizzy_time = 0
+
+        # self.health = 0
 
         self.weapon = Melee(self.position, (-Melee.width/2, Melee.height/2), (0, Melee.height), self.width,-1)
 
@@ -26,7 +28,7 @@ class Enemy(Actor):
         super().update(delta)
         if target is not None and self.dizzy_time == 0:
             self.follow_target(target,stop_dist=self.weapon.width * 0.8 + self.width + target.width)
-            if not self.weapon.attacking and self.weapon.get_collision_rect().colliderect(target.get_collision_rect()):
+            if random.random() < 2.25/fps and not self.weapon.attacking and self.weapon.get_collision_rect().colliderect(target.get_collision_rect()):
                 self.weapon.swing()
                 target.attack(self, self.weapon)
         self.dizzy_time -= delta
@@ -36,11 +38,15 @@ class Enemy(Actor):
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
 
-        self.weapon.update(delta,self.position, math.copysign(1,self.velocity.x))
+        if self.velocity.x == 0:
+            direction = 0
+        else:
+            direction = math.copysign(1,self.velocity.x)
+        self.weapon.update(delta,self.position, direction)
 
     def knockout(self, node):
-        self.dizzy_time = 2500
-        self.modify_health(-50, None)
+        self.dizzy_time = 100
+        self.modify_health(-25, None)
         node.on_ground = True
         node.jump()
         # self.crouch(1000)
