@@ -27,8 +27,12 @@ class Actor:
         self.areas = dict()
 
         self.movable = False
+        self.stun_time = 0
 
     def update(self, delta):
+        self.stun_time -= delta
+        self.stun_time = max(self.stun_time, 0)
+
         for area in self.areas.values():
             area.update(delta, self.position)
 
@@ -48,6 +52,8 @@ class Actor:
 
     def modify_health(self, amount, reason):
         self.health += amount
+        if amount < 0:
+            self.stun_time = -amount * 50
         self.is_dead(reason)
 
     def follow_target(self, node, follow_range=None, stop_dist=None):
@@ -69,14 +75,24 @@ class Actor:
             self.jump()
 
     def jump(self):
-        if self.on_ground:
-            self.velocity.y = -self.jump_strength
+        if self.stun_time == 0:
+            if self.on_ground:
+                self.velocity.y = -self.jump_strength
 
     def move_left(self, customSpeed = speed):
-        self.velocity.x = -customSpeed
+        if self.stun_time == 0:
+            self.velocity.x = -customSpeed
 
     def move_right(self, customSpeed = speed):
-        self.velocity.x = customSpeed
+        if self.stun_time == 0:
+            self.velocity.x = customSpeed
+
+    def push(self, enemy):
+        v = pg.Vector2(0,0)
+        if enemy.velocity.x != v:
+            v = enemy.velocity.normalize().x
+
+        self.velocity += pg.Vector2(v, -1)
 
     def move_and_collide(self, pos, vel, delta):
         pos.x += vel.x * delta

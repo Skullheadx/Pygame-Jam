@@ -51,7 +51,6 @@ class Player(Actor):
 
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
-        # print(self.velocity)
         return self.position - self.initial_position
 
         
@@ -91,6 +90,7 @@ class Player(Actor):
 
     def attack(self, enemy, weapon):
         self.modify_health(-10,"enemy")
+        self.push(enemy)
 
     def draw(self, surf):
         super().draw(surf)
