@@ -7,6 +7,7 @@ delta = 1000//fps
 is_running = True
 
 scene = Menu()
+# scene = Game()
 old_level = 0
 level = 1
 

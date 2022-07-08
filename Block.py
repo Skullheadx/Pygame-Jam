@@ -2,7 +2,7 @@ from Setup import *
 
 
 class Block:
-    width, height = SCREEN_WIDTH, 50
+    width, height = SCREEN_WIDTH*4/5, 50
     colour = (71, 77, 97)
 
     def __init__(self, pos, collision_layer):

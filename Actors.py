@@ -91,13 +91,12 @@ class Actor:
                             thing.position.x = pos.x + self.width
                         elif vel.x < 0:
                             thing.position.x = pos.x - thing.width
-                    else:
-                        if vel.x > 0:
-                            pos.x = thing.position.x - self.width
-                            vel.x = min(vel.x, 0)
-                        elif vel.x < 0:
-                            pos.x = thing.position.x + thing.width
-                            vel.x = max(vel.x, 0)
+                    if vel.x > 0:
+                        pos.x = thing.position.x - self.width
+                        vel.x = min(vel.x, 0)
+                    elif vel.x < 0:
+                        pos.x = thing.position.x + thing.width
+                        vel.x = max(vel.x, 0)
                     collision_rect = self.get_collision_rect(pos)
 
         self.on_ground = False
@@ -111,6 +110,7 @@ class Actor:
                     if area.is_colliding(thing):
                         area.signal(thing)
                 if collision_rect.colliderect(thing.get_collision_rect()):
+                    # print(thing, pos, vel, thing.position, thing.velocity)
                     if vel.y > 0:
                         pos.y = thing.position.y - self.height
                         vel.y = min(vel.y, 0)

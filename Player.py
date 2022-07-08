@@ -51,6 +51,7 @@ class Player(Actor):
 
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
+        # print(self.velocity)
         return self.position - self.initial_position
 
         

@@ -17,7 +17,6 @@ pg.display.set_caption("Jam")
 
 clock = pg.time.Clock()
 fps = 60
-
 screen = pg.display.set_mode(dimensions, pg.SCALED)
 
 
