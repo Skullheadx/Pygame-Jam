@@ -5,7 +5,7 @@ from Actors import Actor
 from Weapon import Melee
 
 class Enemy(Actor):
-    width, height = 25, 50
+    width, height = 50, 100
     colour = (235, 64, 52)
     speed = 0.2
     jump_strength = 0.75
@@ -22,7 +22,7 @@ class Enemy(Actor):
 
         # self.health = 0
 
-        self.weapon = Melee(self.position, (-Melee.width/2, Melee.height/2), (0, Melee.height), self.width,-1)
+        self.weapon = Melee(self.position, (-Melee.width/2 + 7, Melee.height/2 + self.height/3 - 8), (-5,Melee.height), self.width,-1)
 
     def update(self, delta, target=None):
         super().update(delta)

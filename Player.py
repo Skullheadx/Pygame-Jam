@@ -10,12 +10,18 @@ from Potion import Potion
 from Weapon import Melee
 
 class Player(Actor):
-    width, height = 25, 50
+    scale = 100
+    factor = 640/scale
+    crop = pg.Rect(179,169, 170, 401)
+    idle_frames = [pygame.transform.scale(pg.image.load(path.join("Assets/player/idle", file)).subsurface(pg.Rect(179,169, 170, 401)), (50,100)) for file in listdir("Assets/player/idle")]
+    width, height = idle_frames[0].get_size()
+
     colour = (52, 94, 235)
     speed = 0.2
     jump_strength = 0.9
     gravity = 0.098
     friction = 0.7
+
 
     def __init__(self, pos, collision_layer, collision_mask, can_hurt):
         super().__init__(pos, collision_layer, collision_mask)
@@ -38,8 +44,15 @@ class Player(Actor):
         for i in range(self.starting_potions):
             self.potion_bag.append(Potion(self))
 
-        self.weapon = Melee(self.position, (-Melee.width/2, Melee.height/2), (0, Melee.height), self.width,-1)
+        self.weapon = Melee(self.position, (-Melee.width/2 + 7, Melee.height/2 + self.height/3 - 8), (-5,Melee.height), self.width,-1)
         self.targets = can_hurt
+
+        self.direction = -1
+
+        self.state = "IDLE"
+        self.current_frame = 0
+        self.display = self.idle_frames[0]
+        self.display_offsets = {"weapon":pg.Vector2(0,0)}
 
     def update(self, delta):
         super().update(delta)
@@ -56,11 +69,33 @@ class Player(Actor):
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
 
+        prev_direction = self.direction
         if self.velocity.x == 0:
-            direction = 0
+            self.direction = 0
         else:
-            direction = math.copysign(1,self.velocity.x)
-        self.weapon.update(delta,self.position, direction)
+            self.direction = math.copysign(1,self.velocity.x)
+        self.weapon.update(delta,self.position, self.direction)
+
+        if self.state == "IDLE":
+            frame = math.floor(self.current_frame)
+            if self.direction == 1:
+                self.display = self.idle_frames[math.floor(frame)]
+            elif self.direction == -1:
+                self.display = pg.transform.flip(self.idle_frames[math.floor(frame)], True, False)
+            else:
+                if prev_direction == 1:
+                    self.display = self.idle_frames[math.floor(frame)]
+                elif prev_direction == -1:
+                    self.display = pg.transform.flip(self.idle_frames[math.floor(frame)], True, False)
+            # 1 - 10 up, 11 down by 1, 12 - 18 down by 2, 19-20 down 1 FIX THIS
+            frame += 1
+            if 1 < frame < 10:
+                self.display_offsets["weapon"] = pg.Vector2(0,2)
+            elif frame == 11 or frame == 19 or frame == 20:
+                self.display_offsets["weapon"] = pg.Vector2(0,1)
+            else:
+                self.display_offsets["weapon"] = pg.Vector2(0,0)
+            self.current_frame = (self.current_frame + 0.1) % len(self.idle_frames)
 
         return self.position - self.initial_position
 
@@ -111,8 +146,9 @@ class Player(Actor):
 
 
     def draw(self, surf):
-        self.weapon.draw(surf)
-        super().draw(surf)
+        self.weapon.draw(surf, self.display_offsets["weapon"])
+        # super().draw(surf)
+        surf.blit(self.display, get_display_rect(self.get_collision_rect()))
         # print(self.position, self.velocity, get_display_rect(self.get_collision_rect()).topleft, Setup.camera_offset)
         # pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=8)
 
