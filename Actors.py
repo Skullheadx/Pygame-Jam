@@ -96,6 +96,10 @@ class Actor:
 
         self.velocity += pg.Vector2(0.5 * v, -1)
 
+    def push2(self, direction):
+        self.velocity += pg.Vector2(0.5 * direction, -1)
+
+
     def move_and_collide(self, pos, vel, delta):
         pos.x += vel.x * delta
         collision_rect = self.get_collision_rect(pos)

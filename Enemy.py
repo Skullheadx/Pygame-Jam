@@ -28,7 +28,7 @@ class Enemy(Actor):
         super().update(delta)
         if target is not None and self.dizzy_time == 0:
             self.follow_target(target,stop_dist=self.weapon.width * 0.8 + self.width + target.width)
-            if random.random() < 2.25/fps and not self.weapon.attacking and self.weapon.get_collision_rect().colliderect(target.get_collision_rect()):
+            if random.random() < 3/fps and not self.weapon.attacking and self.weapon.get_collision_rect().colliderect(target.get_collision_rect()):
                 self.weapon.swing()
                 target.attack(self, self.weapon)
         self.dizzy_time -= delta
@@ -47,8 +47,7 @@ class Enemy(Actor):
     def knockout(self, node):
         self.dizzy_time = 100
         self.modify_health(-25, None)
-        node.on_ground = True
-        node.jump()
+        node.push2(math.copysign(1,self.velocity.x))
         # self.crouch(1000)
 
     def draw(self, surf):
