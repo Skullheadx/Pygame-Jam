@@ -28,7 +28,7 @@ class Game:
 
 
         self.scene = EndScreen()
-        self.dashMeter = DashMeter()
+        self.dashMeter = DashMeter(self.player.dashCooldown)
         self.level = 1
         self.scene.level = self.level
 
@@ -57,7 +57,7 @@ class Game:
 
 
         self.player.draw(surf)
-        self.dashMeter.update(self.player.lastDash, self.player.dashCooldown)
+        self.dashMeter.update(self.player.lastDash)
         self.dashMeter.draw(surf)
         
         if self.player.dead:
