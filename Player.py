@@ -25,7 +25,7 @@ class Player(Actor):
 
     def __init__(self, pos, collision_layer, collision_mask, can_hurt):
         super().__init__(pos, collision_layer, collision_mask)
-        self.initial_position = pg.Vector2(pos)
+        # self.initial_position = pg.Vector2(pos)
         self.dashCooldown = timedelta(seconds=2, microseconds=500000)
         self.timeBetweenDoublePress = timedelta(seconds=0, microseconds=500000)
         self.dashSpeed = 5
@@ -44,7 +44,7 @@ class Player(Actor):
         self.starting_potions = 999
         self.potion_bag = [Potion(self)]
         for i in range(self.starting_potions):
-            self.potion_bag.append(Potion(self))
+            self.potion_bag.append(Potion(self)) # use one liner
 
         self.weapon = Melee(self.position, (-Melee.width / 2 + 7, Melee.height / 2 + self.height / 3 - 8),
                             (-5, Melee.height), self.width, -1, -25)
@@ -100,7 +100,7 @@ class Player(Actor):
                 self.display_offsets["weapon"] = pg.Vector2(0, 0)
             self.current_frame = (self.current_frame + 0.1) % len(self.idle_frames)
 
-        return self.position - self.initial_position
+        return self.position - center
 
     def handle_input(self):
         pressed = pygame.key.get_pressed()

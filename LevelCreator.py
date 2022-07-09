@@ -1,10 +1,11 @@
 import os
-
 import numpy as np
-import pygame.mouse
 
 from Function.createText import createText
 from Setup import *
+
+import tkinter as tk
+from tkinter import filedialog
 
 
 class LevelCreator:
@@ -42,7 +43,9 @@ class LevelCreator:
                         Button((0, 0), "+Layer", self.increase_layer),
                         Button((0, 0), f"{self.collision_layer=}", self.toggle_collidable),
                         Button((0, 0), "Toggle Hitboxes", self.toggle_show_hitboxes),
-                        Button((0, 0), "Export", self.export)]
+                        Button((0, 0), "Import", self.import_level),
+                        Button((0, 0), "Export", self.export),
+                        ]
 
         self.level = -2
 
@@ -78,6 +81,31 @@ class LevelCreator:
             except FileExistsError:
                 counter += 1
 
+    def import_level(self):
+        root = tk.Tk()
+        root.withdraw()
+
+        filename = filedialog.askopenfilename(initialdir="./Levels", title="Select A File",
+                                              filetypes=((".txt", "*.txt"), ("all files", "*.*")))
+        if filename == '':
+            return
+        with open(filename, 'r', encoding='utf-8') as f:
+            file_contents = f.read().split("\n")
+
+        # with open(path.join("Levels", f'Level{1}.txt'), 'r') as f:
+        #     file_contents = f.read().split("\n")
+
+        for i in range(0, len(file_contents) - 1, 3):
+            layer = file_contents[i].split("|")
+            pos = file_contents[i + 1].split("|")
+            texture = file_contents[i + 2].split("|")
+
+            for l, p, t in zip(layer, pos, texture):
+                if p == "":
+                    break
+                x, y = p.split(',')
+                self.add_block(self.apply_transformations((float(x), float(y))), self.blocks[l], t, i)
+
     def toggle_collidable(self):
         if self.collision_layer == "none":
             self.collision_layer = "world"
@@ -104,10 +132,14 @@ class LevelCreator:
         button = self.buttons[2]
         button.__init__(button.position, f"{self.current_layer=}", self.upd_layer)
 
-    def fit_to_grid(self, pt):
+    def fit_to_grid(self, pt, use_floor=True):
         pos = self.reverse_transformations(pg.Vector2(pt))
-        return pg.Vector2((pos.x // EditorBlock.width) * EditorBlock.width,
-                          (pos.y // EditorBlock.height) * EditorBlock.height)
+        if use_floor:
+            return pg.Vector2((pos.x // EditorBlock.width) * EditorBlock.width,
+                              (pos.y // EditorBlock.height) * EditorBlock.height)
+        else:
+            return pg.Vector2(round(pos.x / EditorBlock.width) * EditorBlock.width,
+                              round(pos.y / EditorBlock.height) * EditorBlock.height)
 
     def apply_rect_transformations(self, rect):
         top_left = np.array([rect.left, rect.top, 1])
@@ -230,7 +262,7 @@ class LevelCreator:
         display_img = EditorBlock.textures[self.textures[self.current_texture]].copy()
         display_img.set_alpha(100)
         surf.blit(pg.transform.scale(display_img, self.apply_rect_transformations(display_img.get_rect()).size),
-                  self.apply_transformations(self.fit_to_grid(pygame.mouse.get_pos())))
+                  self.apply_transformations(self.fit_to_grid(pg.mouse.get_pos(), use_floor=True)))
         for button in self.buttons:
             button.draw(surf)
 

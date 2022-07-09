@@ -13,24 +13,27 @@ from UI.DashMeter import DashMeter
 
 class Game:
 
-    def __init__(self):
-        self.collision_layer = {"none":set(),"world": set(), "player": set(), "enemy": set(), "pet": set()}
+    def __init__(self, level):
+        self.collision_layer = {"none": set(), "world": set(), "player": set(), "enemy": set(), "pet": set()}
 
-        self.player = Player(center, self.collision_layer["player"],
-                             [self.collision_layer["enemy"], self.collision_layer["world"]],
-                             [self.collision_layer["enemy"]])
-        # self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
+        # self.load_world(level)
 
         self.world = World(self.collision_layer)
 
-        self.enemies = [Enemy((SCREEN_WIDTH *3/ 4, SCREEN_HEIGHT / 2), self.collision_layer["enemy"],
-                              [self.collision_layer["player"], self.collision_layer["world"]])]
-
-
+        enemy_positions, player_position = self.world.load_world(level)
+        self.player = Player(player_position, self.collision_layer["player"],
+                             [self.collision_layer["enemy"], self.collision_layer["world"]],
+                             [self.collision_layer["enemy"]])
+        # self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
+        self.enemies = [Enemy(pos, self.collision_layer["enemy"],
+                              [self.collision_layer["player"], self.collision_layer["world"]]) for pos in
+                        enemy_positions]
         self.scene = EndScreen()
         self.dashMeter = DashMeter(self.player.dashCooldown)
         self.level = 1
         self.scene.level = self.level
+
+    # def load_world(self, level):
 
     def update(self, delta):
         Setup.camera_offset = self.player.update(delta)
@@ -50,21 +53,18 @@ class Game:
         # self.pet.update(delta, self.player, self.camera_pos)
 
     def draw(self, surf):
-        screen.fill((255, 255, 255))
+        screen.fill((0, 191, 255))
         self.world.draw(surf)
         for enemy in self.enemies:
             enemy.draw(surf)
 
-
         self.player.draw(surf)
         self.dashMeter.update(self.player.lastDash)
         self.dashMeter.draw(surf)
-        
+
         if self.player.dead:
             self.scene.update()
             self.scene.draw()
-        
-        
 
         # Debug Lines. DO NOT CROSS THEM!
         pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(SCREEN_WIDTH, -Setup.camera_offset.y), 10)

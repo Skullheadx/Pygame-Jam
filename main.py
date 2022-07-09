@@ -32,7 +32,7 @@ while is_running:
             case 0:
                 scene = Menu()
             case 1:
-                scene = Game()
+                scene = Game(1)
         old_level = level
 
     scene.update(delta)
