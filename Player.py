@@ -20,10 +20,7 @@ class Player(Actor):
     width, height = idle_frames[0].get_size()
 
     colour = (52, 94, 235)
-    speed = 0.2
     jump_strength = 0.9
-    gravity = 0.098
-    friction = 0.7
 
     def __init__(self, pos, collision_layer, collision_mask, can_hurt):
         super().__init__(pos, collision_layer, collision_mask)

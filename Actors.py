@@ -6,10 +6,10 @@ from Block import Block
 class Actor:
     width, height = 50, 100
     colour = (76, 82, 92)
-    speed = 0.2
+    speed = 0.5
     jump_strength = 1
     gravity = 0.098
-    friction = 0.9
+    friction = 0.2
 
     def __init__(self, pos, collision_layer, collision_mask):
         self.position = pg.Vector2(pos)
