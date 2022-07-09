@@ -42,6 +42,8 @@ class LevelCreator:
                         Button((0, 0), f"{self.collision_layer=}", self.toggle_collidable),
                         Button((0, 0), "Toggle Hitboxes", self.toggle_show_hitboxes),
                         Button((0, 0), "Export", self.export)]
+        
+        self.level = -2
 
     def export(self):
         counter = 1
