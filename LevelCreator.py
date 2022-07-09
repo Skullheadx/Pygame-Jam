@@ -1,9 +1,10 @@
+import os
+
+import numpy as np
 import pygame.mouse
 
-from Setup import *
 from Function.createText import createText
-import numpy as np
-import os
+from Setup import *
 
 
 class LevelCreator:
@@ -42,20 +43,40 @@ class LevelCreator:
                         Button((0, 0), f"{self.collision_layer=}", self.toggle_collidable),
                         Button((0, 0), "Toggle Hitboxes", self.toggle_show_hitboxes),
                         Button((0, 0), "Export", self.export)]
-        
+
         self.level = -2
 
     def export(self):
+        # for layer in out:
+        #     for i,block in enumerate(layer):
+        #         layer[i] = Block(block.position,block.collision_layer,block.texture_name)
+
         counter = 1
+
+        def get_key(mask):
+            for key, value in self.blocks.items():
+                if mask == value:
+                    return key
+
         while True:
             try:
-                with open(os.path.join("Levels",f'Level{counter}.txt'), 'x') as f:
-                    f.write(str(self.get_canvas_layers()))
+                with open(os.path.join("Levels", f'Level{counter}.txt'), 'x') as f:
+                    out = ""
+                    for layer in self.get_canvas_layers():
+                        t = ""
+                        pos = ""
+                        texture = ""
+                        for block in layer:
+                            t += f"{get_key(block.collision_layer)}|"
+                            pos += f"{block.position.x},{block.position.y}|"
+                            texture += f"{block.texture_name}|"
+                        out += f"{t[:-1]}\n{pos[:-1]}\n{texture[:-1]}\n"
+                    f.write(out)
+
                 print(f"File saved as Level{counter} in folder Levels")
                 break
             except FileExistsError:
                 counter += 1
-
 
     def toggle_collidable(self):
         if self.collision_layer == "none":
@@ -199,6 +220,13 @@ class LevelCreator:
                     if self.show_hitboxes:
                         block.show_hitbox(surf, self.blocks["world"])
 
+        pg.draw.line(surf, (255, 0, 0), self.apply_transformations((self.reverse_transformations((0, 0)).x, 0)),
+                     self.apply_transformations((self.reverse_transformations((SCREEN_WIDTH, 0)).x, 0)),
+                     math.ceil(self.zoom * 5))
+        pg.draw.line(surf, (255, 0, 0), self.apply_transformations((0, self.reverse_transformations((0, 0)).y)),
+                     self.apply_transformations((0, self.reverse_transformations((0, SCREEN_HEIGHT)).y)),
+                     math.ceil(self.zoom * 5))
+
         display_img = EditorBlock.textures[self.textures[self.current_texture]].copy()
         display_img.set_alpha(100)
         surf.blit(pg.transform.scale(display_img, self.apply_rect_transformations(display_img.get_rect()).size),
@@ -273,6 +301,7 @@ class EditorBlock:
     def __init__(self, pos, collision_layer, texture="PLACEHOLDER"):
         self.position = pg.Vector2(pos)
         self.texture = self.textures[texture]
+        self.texture_name = texture
 
         self.collision_layer = collision_layer
 

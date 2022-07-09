@@ -1,56 +1,31 @@
 from Setup import *
 from Block import Block
+from os import path
+
 
 class World:
 
     def __init__(self, collision_layer):
         self.collision_layer = collision_layer
         self.blocks = []
-        self.add_world()
+        self.level = 1
+        self.add_world(self.level)
 
-    def add_world(self):
-        for i in range(25):
-            self.blocks.append(Block((i * Block.width,SCREEN_HEIGHT*3/4),self.collision_layer["world"],"GRASS"))
-            self.blocks.append(Block((i * Block.width,SCREEN_HEIGHT*3/4 + Block.height),self.collision_layer["world"],"DIRT"))
-            if random.random() < 0.5:
-                self.blocks.append(
-                    Block((i * Block.width, SCREEN_HEIGHT * 3 / 4 + Block.height * 2), self.collision_layer["world"],
-                          "STONE"))
-            else:
-                self.blocks.append(
-                    Block((i * Block.width, SCREEN_HEIGHT * 3 / 4 + Block.height * 2), self.collision_layer["world"],
-                          "DIRT"))
-            self.blocks.append(Block((i * Block.width,SCREEN_HEIGHT*3/4 + Block.height * 3),self.collision_layer["world"],"STONE"))
-            self.blocks.append(Block((i * Block.width,SCREEN_HEIGHT*3/4 + Block.height * 4),self.collision_layer["world"],"STONE"))
-
-        self.blocks.append(Block((Block.width * 10,SCREEN_HEIGHT*3/4 + Block.height * -1),self.collision_layer["none"],"TREEBARK"))
-        self.blocks.append(Block((Block.width * 10,SCREEN_HEIGHT*3/4 + Block.height * -2),self.collision_layer["none"],"TREEBARK"))
-        self.blocks.append(Block((Block.width * 10,SCREEN_HEIGHT*3/4 + Block.height * -3),self.collision_layer["none"],"TREEBARK"))
-        self.blocks.append(Block((Block.width * 10,SCREEN_HEIGHT*3/4 + Block.height * -4),self.collision_layer["none"],"TREEBARK"))
-
-        self.blocks.append(Block((Block.width * 10,SCREEN_HEIGHT*3/4 + Block.height * -3),self.collision_layer["none"],"LEAFS"))
-        self.blocks.append(Block((Block.width * 10,SCREEN_HEIGHT*3/4 + Block.height * -4),self.collision_layer["none"],"LEAFS"))
-        self.blocks.append(Block((Block.width * 10,SCREEN_HEIGHT*3/4 + Block.height * -5),self.collision_layer["none"],"LEAFS"))
-        # self.blocks.append(Block((Block.width * 10,SCREEN_HEIGHT*3/4 + Block.height * -6),self.collision_layer["none"],"LEAFS"))
-
-        self.blocks.append(Block((Block.width * 9,SCREEN_HEIGHT*3/4 + Block.height * -3),self.collision_layer["none"],"LEAFS"))
-        self.blocks.append(Block((Block.width * 9,SCREEN_HEIGHT*3/4 + Block.height * -4),self.collision_layer["none"],"LEAFS"))
-        self.blocks.append(Block((Block.width * 9,SCREEN_HEIGHT*3/4 + Block.height * -5),self.collision_layer["none"],"LEAFS"))
-        # self.blocks.append(Block((Block.width * 9,SCREEN_HEIGHT*3/4 + Block.height * -6),self.collision_layer["none"],"LEAFS"))
-
-        self.blocks.append(Block((Block.width * 11,SCREEN_HEIGHT*3/4 + Block.height * -3),self.collision_layer["none"],"LEAFS"))
-        self.blocks.append(Block((Block.width * 11,SCREEN_HEIGHT*3/4 + Block.height * -4),self.collision_layer["none"],"LEAF"))
-        self.blocks.append(Block((Block.width * 11,SCREEN_HEIGHT*3/4 + Block.height * -5),self.collision_layer["none"],"LEAFS"))
-        # self.blocks.append(Block((Block.width * 11,SCREEN_HEIGHT*3/4 + Block.height * -6),self.collision_layer["none"],"LEAFS"))
+    def add_world(self, level):
+        with open(path.join("Levels", f'Level{level}.txt'), 'r') as f:
+            file_contents = f.read().split("\n")
 
 
-        # self.blocks.append(Block((Block.width * 12,SCREEN_HEIGHT*3/4 + Block.height * -3),self.collision_layer["none"],"LEAFS"))
-        # self.blocks.append(Block((Block.width * 12,SCREEN_HEIGHT*3/4 + Block.height * -4),self.collision_layer["none"],"LEAFS"))
-        # self.blocks.append(Block((Block.width * 12,SCREEN_HEIGHT*3/4 + Block.height * -5),self.collision_layer["none"],"LEAFS"))
-        # self.blocks.append(Block((Block.width * 8,SCREEN_HEIGHT*3/4 + Block.height * -3),self.collision_layer["none"],"LEAFS"))
-        # self.blocks.append(Block((Block.width * 8,SCREEN_HEIGHT*3/4 + Block.height * -4),self.collision_layer["none"],"LEAFS"))
-        # self.blocks.append(Block((Block.width * 8,SCREEN_HEIGHT*3/4 + Block.height * -5),self.collision_layer["none"],"LEAFS"))
+        for i in range(0,len(file_contents)-1,3):
+            layer = file_contents[i].split("|")
+            pos = file_contents[i+1].split("|")
+            texture = file_contents[i+2].split("|")
 
+            for l,p,t in zip(layer,pos,texture):
+                if p == "":
+                    break
+                x,y = p.split(',')
+                self.blocks.append(Block((float(x),float(y)),self.collision_layer[l],t))
 
     def update(self, delta):
         for block in self.blocks:
