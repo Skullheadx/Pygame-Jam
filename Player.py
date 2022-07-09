@@ -8,7 +8,8 @@ from Actors import Actor
 from datetime import datetime, timedelta
 from Potion import Potion
 from Weapon import Melee
-
+from CommonImports.colours import red, white
+from Function.createText import createText
 
 class Player(Actor):
     scale = 100
@@ -169,11 +170,9 @@ class Player(Actor):
         foreground_rect.center = (
             background_rect.centerx - 1080 * 0.185 * ((1 - self.health * 0.01) / 2), background_rect.centery)
         pg.draw.rect(surf, (54, 54, 54), background_rect)
-        pg.draw.rect(surf, (255, 0, 0), foreground_rect)
+        pg.draw.rect(surf, red, foreground_rect)
 
         # text
-        font = pg.font.Font("Font/Exo2-Regular.ttf", 30)
-        current_health = str(self.health) + "/100"
-        current_health_display = font.render(current_health, True, (255, 255, 255))
+        current_health_display = createText(0, 0, 30, white, "Regular", str(self.health) + "/100")[0]
         text_rect = current_health_display.get_rect(center=background_rect.center)
         surf.blit(current_health_display, text_rect)
