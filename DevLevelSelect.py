@@ -57,8 +57,12 @@ class DevLevelSelect:
             case 3:
                 self.level = -2
             case 4:
-                self.texts[4] = createText(250, 550, 24, black, "Regular", "AutoLoad [x]")
-                self.autoload = True
+                if(self.autoload == False):
+                    self.texts[4] = createText(250, 550, 24, black, "Regular", "AutoLoad [x]")
+                    self.autoload = True
+                else:
+                    self.texts[4] = createText(250, 550, 24, black, "Regular", "AutoLoad [-]")
+                    self.autoload = False
                 return;
 
         if(self.autoload == True):
