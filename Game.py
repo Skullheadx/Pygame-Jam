@@ -8,6 +8,7 @@ from Block import Block
 from PhysicsBody import PhysicsBody
 from World import World
 from EndScreen import EndScreen
+from UI.DashMeter import DashMeter
 
 
 class Game:
@@ -27,6 +28,7 @@ class Game:
 
 
         self.scene = EndScreen()
+        self.dashMeter = DashMeter()
         self.level = 1
         self.scene.level = self.level
 
@@ -55,10 +57,14 @@ class Game:
 
 
         self.player.draw(surf)
-
+        self.dashMeter.update(self.player.lastDash, self.player.dashCooldown)
+        self.dashMeter.draw(surf)
+        
         if self.player.dead:
             self.scene.update()
             self.scene.draw()
+        
+        
 
         # Debug Lines. DO NOT CROSS THEM!
         pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(SCREEN_WIDTH, -Setup.camera_offset.y), 10)
