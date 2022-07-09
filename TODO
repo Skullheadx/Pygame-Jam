@@ -4,7 +4,6 @@ Gameplay:
 
 Movement:
 - Custom Dash movement function for dashing
-- Dash bar that refills when the player can dash again
 
 Combat:
 - Health potion items to collect
