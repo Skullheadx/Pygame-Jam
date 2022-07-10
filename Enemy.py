@@ -20,7 +20,13 @@ class Enemy(Actor):
         self.movable = True
         self.dizzy_time = 0
 
+<<<<<<< Updated upstream
         self.weapon = Melee(self.position, (-Melee.width/2, Melee.height/2), (0, Melee.height), self.width,-1)
+=======
+        # self.health = 0 # for debugging without getting killed
+
+        self.weapon = Melee(self.position, (-Melee.width/2 + 7, Melee.height/2 + self.height/3 - 8), (-5,Melee.height), self.width,-1, -10)
+>>>>>>> Stashed changes
 
     def update(self, delta, target=None):
         super().update(delta)

@@ -37,7 +37,16 @@ class Game:
         # self.pet.update(delta, self.player, self.camera_pos)
 
     def draw(self, surf):
+<<<<<<< Updated upstream
         screen.fill((255, 255, 255))
+=======
+        screen.fill((0, 191, 255))
+        # screen.fill((255,255,255))
+        # sky = pg.image.load("Assets/world/SKY.png")
+        # surf.blit(sky,(0,0))
+
+        self.world.draw(surf)
+>>>>>>> Stashed changes
         for enemy in self.enemies:
             enemy.draw(surf)
         for block in self.blocks:
