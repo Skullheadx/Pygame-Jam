@@ -21,12 +21,14 @@ class Transition:
         buttonImage = pg.image.load('./Assets/buttons/e.png')
         self.buttonImage = pg.transform.scale(buttonImage, (self.width/2, self.width/2))
 
+        self.fade = False
+
         
     def update(self):
         return;
 
     def draw(self, surf, playerPos, playerOffset=[0,0], offsetX=0, offsetY=0):
-        
+
         coords = getWorldCoords(0, 0)
 
         coords[1] += self.portalYAnim
@@ -39,7 +41,7 @@ class Transition:
             surf.blit(self.buttonImage, (a[0][0]+self.width/4, a[1][1]-(2*self.width/3)))
             pressed = pg.key.get_pressed()
             if pressed[pg.K_e] or pressed[pg.K_RETURN]:
-                pass;
+                self.fade = True;
 
         pg.draw.polygon(surf, (107, 18, 158), a)
 

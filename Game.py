@@ -1,4 +1,6 @@
 from re import T
+
+from regex import F
 import Setup
 from Setup import *
 from Setup import camera_offset
@@ -14,6 +16,7 @@ from UI.HealthBar import HealthBar
 from UI.PotionUI import PotionUI
 
 from Function.Portal import Transition
+from Function.Fade import fade
 
 class Game:
 
@@ -36,10 +39,13 @@ class Game:
         self.dashMeter = DashMeter(self.player.dashCooldown)
         self.healthBar = HealthBar()
         self.potionUI = PotionUI()
-        self.level = 1
+        self.level = level
         self.scene.level = self.level
 
         self.Transition = Transition(-2, 0,0)
+        self.fade = self.Transition.fade
+        self.fadeT = fade()
+        self.next_level = 0
 
     # def load_world(self, level):
 
@@ -57,6 +63,7 @@ class Game:
                 self.collision_layer["enemy"].add(self.enemies[i])
 
         self.world.update(delta)
+        self.fade = self.Transition.fade
 
         # self.pet.update(delta, self.player, self.camera_pos)
 
@@ -82,7 +89,20 @@ class Game:
         if self.player.dead:
             self.scene.update()
             self.scene.draw()
-        
+
+        if(self.fade == True):
+            self.fadeT.update(True)
+            self.fadeT.draw()
+        else:
+            self.fadeT.update()
+            self.fadeT.draw()
+
+        if(self.fadeT.transparency >= 255):
+            self.Transition.fade = False
+            self.next_level = self.level + 1
+            self.level = -4
+            # self.__init__(self.level)
+            
 
         # print(self.player.get_collision_rect())s
         # Debug Lines. DO NOT CROSS THEM!

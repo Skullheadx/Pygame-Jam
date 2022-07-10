@@ -19,6 +19,9 @@ class DevLevelSelect:
         self.texts.append(createText(X, 450, 24, black, "Regular", "LevelCreator"))
         self.texts.append(createText(X, 550, 24, black, "Regular", "AutoLoad [-]"))
 
+        self.texts.append(createText(X, 750, 24, black, "Regular", "Transition"))
+
+
         self.autoload = False
 
         if os.path.isfile('./Save/ignore_DevAutoload.txt'):
@@ -71,6 +74,8 @@ class DevLevelSelect:
                     self.texts[4] = createText(250, 550, 24, black, "Regular", "AutoLoad [-]")
                     self.autoload = False
                 return;
+            case 5:
+                self.level = -4
 
         if(self.autoload == True):
             try:
