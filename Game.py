@@ -11,6 +11,7 @@ from World import World
 from EndScreen import EndScreen
 from UI.DashMeter import DashMeter
 from UI.HealthBar import HealthBar
+from UI.PotionUI import PotionUI
 
 from Function.Portal import Transition
 
@@ -34,6 +35,7 @@ class Game:
         self.scene = EndScreen()
         self.dashMeter = DashMeter(self.player.dashCooldown)
         self.healthBar = HealthBar()
+        self.potionUI = PotionUI()
         self.level = 1
         self.scene.level = self.level
 
@@ -74,6 +76,7 @@ class Game:
         self.dashMeter.update(self.player.lastDash)
         self.dashMeter.draw(surf)
         self.healthBar.draw(surf, self.player.health)
+        self.potionUI.draw(surf, self.player.potion_bag, self.player.potion_cooldown)
 
         if self.player.dead:
             self.scene.update()

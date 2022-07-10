@@ -1,4 +1,5 @@
 from Setup import *
+import threading
 
 class Potion:
     
@@ -13,9 +14,14 @@ class Potion:
     
     def consume_potion(self, player):
         player.health += self.heal
+        if player.health > 100:
+            player.health = 100
+            
         del player.potion_bag[0]
-        player.potion_cooldown = 5
+        player.potion_cooldown = 30
+        threading.Thread(target = player.potion_cooldown_timer).start()
 
-    #def cooldown(self, player):
-        
+
+
+
 

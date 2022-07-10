@@ -1,6 +1,7 @@
 import pygame.key
 
 from Setup import *
+import time
 from Actors import Actor
 from datetime import datetime, timedelta
 from Potion import Potion
@@ -218,3 +219,13 @@ class Player(Actor):
         # current_health_display = createText(0, 0, 30, white, "Regular", str(self.health) + "/100")[0]
         # text_rect = current_health_display.get_rect(center=background_rect.center)
         # surf.blit(current_health_display, text_rect)
+
+
+
+    def potion_cooldown_timer(self):
+        while self.potion_cooldown > 0:
+            self.potion_cooldown -= 1
+            print(self.potion_cooldown)
+            time.sleep(1)
+
+    
