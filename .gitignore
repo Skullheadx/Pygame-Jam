@@ -11,4 +11,6 @@
 ignore_*
 /ignore
 */__pycache__
+Save/SaveData.txt
+/.idea
 .idea/Pygame-Jam-main.iml
