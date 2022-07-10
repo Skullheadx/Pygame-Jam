@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+import threading
+
 from Setup import *
 from PhysicsBody import PhysicsBody
 from Block import Block
@@ -6,10 +9,14 @@ from Block import Block
 class Actor:
     width, height = 50, 100
     colour = (76, 82, 92)
-    speed = 0.5
+    speed = 0.6
     jump_strength = 1
-    gravity = 0.098
+    gravity = 0.2
     friction = 0.2
+    coyote_time_amount = timedelta(milliseconds=100)  # seconds after walking off ground that it still counts
+    jump_buffer = []
+    variable_jump_time = timedelta(milliseconds=125)  # how long to hold jump so we go higher
+    terminal_velocity = 15
 
     def __init__(self, pos, collision_layer, collision_mask):
         self.position = pg.Vector2(pos)
@@ -27,9 +34,17 @@ class Actor:
         self.areas = dict()
 
         self.movable = False
+
+        self.jumping = False
+        self.coyote_time = datetime.utcnow()
+        self.hold_jump = datetime.utcnow()
         self.stun_time = 0
 
     def update(self, delta):
+        if self.jumping:
+            if self.on_ground:
+                self.jumping = False
+
         self.stun_time -= delta
         self.stun_time = max(self.stun_time, 0)
 
@@ -44,7 +59,12 @@ class Actor:
             self.velocity.x *= self.friction
 
             # Apply gravity
-        self.velocity.y += self.gravity
+        if self.jumping and self.velocity.y > 0:
+            self.velocity.y += self.gravity * 2
+        else:
+            self.velocity.y += self.gravity
+        self.velocity.x = max(min(self.velocity.x, self.terminal_velocity), -self.terminal_velocity)
+        self.velocity.y = max(min(self.velocity.y, self.terminal_velocity), -self.terminal_velocity)
 
     def is_dead(self, reason=None):
         if self.health <= 0:
@@ -55,9 +75,11 @@ class Actor:
         if amount < 0:
             self.stun_time = -amount * 10
         self.is_dead(reason)
+
     def attack(self, enemy, weapon):
-        self.modify_health(weapon.damage,"enemy")
+        self.modify_health(weapon.damage, "enemy")
         self.push(enemy)
+
     def follow_target(self, node, follow_range=None, stop_dist=None):
         if stop_dist is None:
             stop_dist = max(self.height, self.width) * 1.5
@@ -78,14 +100,25 @@ class Actor:
 
     def jump(self):
         if self.stun_time == 0:
-            if self.on_ground:
-                self.velocity.y = -self.jump_strength
+            pass
+        if (self.on_ground and not self.jumping) or (datetime.utcnow() - self.hold_jump <= self.variable_jump_time):
+            self.velocity.y = -self.jump_strength
+            if not self.jumping:
+                self.hold_jump = datetime.utcnow()
+            self.jumping = True
+        # elif not (datetime.utcnow() - self.hold_jump <= self.variable_jump_time):
 
-    def move_left(self, customSpeed = speed):
+    def dash_left(self):
+        pass
+
+    def dash_right(self):
+        pass
+
+    def move_left(self, customSpeed=speed):
         if self.stun_time == 0:
             self.velocity.x = -customSpeed
 
-    def move_right(self, customSpeed = speed):
+    def move_right(self, customSpeed=speed):
         if self.stun_time == 0:
             self.velocity.x = customSpeed
 
@@ -98,7 +131,6 @@ class Actor:
 
     def push2(self, direction):
         self.velocity += pg.Vector2(direction, -1)
-
 
     def move_and_collide(self, pos, vel, delta):
         pos.x += vel.x * delta
@@ -121,7 +153,8 @@ class Actor:
                         # vel.x = max(vel.x, 0)
                     collision_rect = self.get_collision_rect(pos)
 
-        self.on_ground = False
+        if datetime.utcnow() - self.coyote_time >= self.coyote_time_amount or self.jumping:
+            self.on_ground = False
         pos.y += vel.y * delta
         collision_rect = self.get_collision_rect(pos)
         for mask in self.collision_mask:
@@ -136,11 +169,11 @@ class Actor:
                         pos.y = thing.position.y - self.height
                         vel.y = min(vel.y, 0)
                         self.on_ground = True
+                        self.coyote_time = datetime.utcnow()
                     elif vel.y < 0:
                         pos.y = thing.position.y + thing.height
                         vel.y = max(vel.y, 0)
-                    collision_rect = self.get_collision_rect(pos)
-
+                    # collision_rect = self.get_collision_rect(pos)
         return pos, vel
 
     def get_collision_rect(self, pos=None):

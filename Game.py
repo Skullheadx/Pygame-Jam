@@ -63,6 +63,9 @@ class Game:
 
         self.Transition.draw(surf, 120, 625)
 
+        # screen.fill((255,255,255))
+        # sky = pg.image.load("Assets/world/SKY.png")
+        # surf.blit(sky,(0,0))
         self.world.draw(surf)
         for enemy in self.enemies:
             enemy.draw(surf)

@@ -16,7 +16,6 @@ class Player(Actor):
     width, height = idle_frames[0].get_size()
 
     colour = (52, 94, 235)
-    jump_strength = 0.9
 
     def __init__(self, pos, collision_layer, collision_mask, can_hurt):
         super().__init__(pos, collision_layer, collision_mask)
@@ -81,6 +80,7 @@ class Player(Actor):
             elif self.direction == -1:
                 self.display = pg.transform.flip(self.idle_frames[math.floor(frame)], True, False)
             else:
+                self.direction = prev_direction
                 if prev_direction == 1:
                     self.display = self.idle_frames[math.floor(frame)]
                 elif prev_direction == -1:
