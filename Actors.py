@@ -17,6 +17,7 @@ class Actor:
     jump_buffer = []
     variable_jump_time = timedelta(milliseconds=125)  # how long to hold jump so we go higher
     terminal_velocity = 15
+    invincibility_time = 150
 
     def __init__(self, pos, collision_layer, collision_mask):
         self.position = pg.Vector2(pos)
@@ -39,6 +40,8 @@ class Actor:
         self.coyote_time = datetime.utcnow()
         self.hold_jump = datetime.utcnow()
         self.stun_time = 0
+        self.attacked = False
+        self.invincibility_frames = 0
 
     def update(self, delta):
         if self.jumping:
@@ -47,6 +50,10 @@ class Actor:
 
         self.stun_time -= delta
         self.stun_time = max(self.stun_time, 0)
+        self.invincibility_frames -= delta
+        self.invincibility_frames = max(self.invincibility_frames, 0)
+        if self.invincibility_frames == 0:
+            self.attacked = False
 
         for area in self.areas.values():
             area.update(delta, self.position)
@@ -79,6 +86,8 @@ class Actor:
     def attack(self, enemy, weapon):
         self.modify_health(weapon.damage, "enemy")
         self.push(enemy)
+        self.attacked = True
+        self.invincibility_frames = self.invincibility_time
 
     def follow_target(self, node, follow_range=None, stop_dist=None):
         if stop_dist is None:

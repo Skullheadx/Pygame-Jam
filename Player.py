@@ -4,7 +4,7 @@ from Setup import *
 from Actors import Actor
 from datetime import datetime, timedelta
 from Potion import Potion
-from Weapon import Melee
+from Weapon import Sword
 
 
 class Player(Actor):
@@ -47,8 +47,7 @@ class Player(Actor):
         for i in range(self.starting_potions):
             self.potion_bag.append(Potion(self)) # use one liner
 
-        self.weapon = Melee(self.position, (-Melee.width / 2 + 7, Melee.height / 2 + self.height / 3 - 8),
-                            (-5, Melee.height), self.width, -1, -25)
+        self.weapon = Sword(self.position, (0,0), self.width, -1)
         self.targets = can_hurt
 
         self.direction = -1
@@ -86,7 +85,7 @@ class Player(Actor):
         # else:
         #     self.direction = math.copysign(1, self.velocity.x)
         self.direction = math.copysign(1, pg.mouse.get_pos()[0] - get_display_point(self.position).x)
-        self.weapon.update(delta, self.position, -self.direction)
+        self.weapon.update(delta, self.position, self.direction)
 
         if self.state == "IDLE":
             self.display_offsets["player"] = pg.Vector2(0,0)
@@ -175,14 +174,15 @@ class Player(Actor):
 
         mouse_pressed = pg.mouse.get_pressed(3)
         if mouse_pressed[0]:  # LMB
-            if not self.weapon.attacking:
-                self.weapon.swing()
+            if self.state != "ATTACK":
                 self.state = "ATTACK"
                 self.current_frame = 0
-                for mask in self.targets:
-                    for enemy in mask:
-                        if self.weapon.get_collision_rect().colliderect(enemy.get_collision_rect()):
-                            enemy.attack(self, self.weapon)
+            elif self.state == "ATTACK":
+                if math.floor(self.current_frame) > 2:
+                    for mask in self.targets:
+                        for enemy in mask:
+                            if not enemy.attacked and self.weapon.get_collision_rect().colliderect(enemy.get_collision_rect()):
+                                enemy.attack(self, self.weapon)
 
 
     def draw(self, surf):
@@ -196,7 +196,7 @@ class Player(Actor):
         # super().draw(surf)
         # print(self.position, self.velocity, get_display_rect(self.get_collision_rect()).topleft, Setup.camera_offset)
         # pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=8)
-
+        pg.draw.rect(surf, (255,0,0),get_display_rect(self.weapon.get_collision_rect()),width=3)
         # pg.draw.rect(surf,self.colour,pg.Rect(center, (self.width, self.height)),border_radius=8)
 
 

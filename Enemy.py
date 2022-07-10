@@ -6,11 +6,9 @@ from Weapon import Melee
 
 class Enemy(Actor):
     width, height = 50, 100
+    speed = Actor.speed * 0.5
+    jump_strength = Actor.jump_strength * 0.5
     colour = (235, 64, 52)
-    speed = 0.2
-    jump_strength = 0.75
-    gravity = 0.098
-    friction = 0.9
     
 
     def __init__(self, pos, collision_layer, collision_mask):
@@ -20,9 +18,10 @@ class Enemy(Actor):
         self.movable = True
         self.dizzy_time = 0
 
-        self.health = 0 # for debugging without getting killed
+        # self.health = 0 # for debugging without getting killed
 
         self.weapon = Melee(self.position, (-Melee.width/2 + 7, Melee.height/2 + self.height/3 - 8), (-5,Melee.height), self.width,-1, -10)
+
 
     def update(self, delta, target=None):
         super().update(delta)

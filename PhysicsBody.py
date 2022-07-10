@@ -7,6 +7,7 @@ class PhysicsBody:
     jump_strength = 1
     gravity = 0.098
     friction = 0.9
+    invincibility_time = 150
 
     def __init__(self, pos, vel, width, height, colour, collision_layer, collision_mask):
         self.position = pg.Vector2(pos)
@@ -19,12 +20,18 @@ class PhysicsBody:
         self.dead = False
 
         self.movable =True
+        self.attacked = False
+        self.invincibility_frames = 0
 
         collision_layer.add(self)  # the layer the actor is on for collisions
         self.collision_layer = collision_layer
         self.collision_mask = collision_mask  # the layer the actor detects collisions against
 
     def update(self, delta, test=None):
+        self.invincibility_frames -= delta
+        self.invincibility_frames = max(self.invincibility_frames, 0)
+        if self.invincibility_frames == 0:
+            self.attacked = False
         # Apply friction so the enemy isn't walking on ice
         if self.on_ground:
             self.velocity.x *= self.friction
@@ -36,6 +43,9 @@ class PhysicsBody:
         # print(self.position)
     def attack(self, enemy, weapon):
         self.push(enemy)
+        self.attacked = True
+        self.invincibility_frames = self.invincibility_time
+
     def push(self, enemy):
         v = enemy.weapon.direction
         # if enemy.velocity.x != pg.Vector2(0,0):
