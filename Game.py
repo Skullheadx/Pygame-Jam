@@ -9,6 +9,7 @@ from PhysicsBody import PhysicsBody
 from World import World
 from EndScreen import EndScreen
 from UI.DashMeter import DashMeter
+from UI.HealthBar import HealthBar
 
 
 class Game:
@@ -30,6 +31,7 @@ class Game:
                         enemy_positions]
         self.scene = EndScreen()
         self.dashMeter = DashMeter(self.player.dashCooldown)
+        self.healthBar = HealthBar()
         self.level = 1
         self.scene.level = self.level
 
@@ -61,6 +63,7 @@ class Game:
         self.player.draw(surf)
         self.dashMeter.update(self.player.lastDash)
         self.dashMeter.draw(surf)
+        self.healthBar.draw(surf, self.player.health)
 
         if self.player.dead:
             self.scene.update()
