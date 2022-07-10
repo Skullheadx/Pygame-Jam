@@ -1,3 +1,4 @@
+from re import T
 import Setup
 from Setup import *
 from Setup import camera_offset
@@ -11,6 +12,7 @@ from EndScreen import EndScreen
 from UI.DashMeter import DashMeter
 from UI.HealthBar import HealthBar
 
+from Function.Portal import Transition
 
 class Game:
 
@@ -35,6 +37,8 @@ class Game:
         self.level = 1
         self.scene.level = self.level
 
+        self.Transition = Transition(-2, 0,0)
+
     # def load_world(self, level):
 
     def update(self, delta):
@@ -56,6 +60,9 @@ class Game:
 
     def draw(self, surf):
         screen.fill((0, 191, 255))
+
+        self.Transition.draw(surf, 120, 625)
+
         self.world.draw(surf)
         for enemy in self.enemies:
             enemy.draw(surf)
@@ -68,6 +75,7 @@ class Game:
         if self.player.dead:
             self.scene.update()
             self.scene.draw()
+        
 
         # Debug Lines. DO NOT CROSS THEM!
         pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(SCREEN_WIDTH, -Setup.camera_offset.y), 10)
