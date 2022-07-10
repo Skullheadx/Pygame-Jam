@@ -4,11 +4,11 @@ from Setup import *
 
 
 class Melee:
-    img = pg.transform.scale(pg.image.load("Assets/SWORD.png"), (40, 40))
+    img = pg.transform.scale(pg.image.load("SWORD.png"), (40,40))
     flipped_img = pg.transform.flip(img,True,False)
     width,height = img.get_size()
 
-    def __init__(self, pos, offset, pivot, width,direction, damage):
+    def __init__(self, pos, offset, pivot, width,direction):
         self.position = pg.Vector2(pos)
         self.offset = pg.Vector2(offset)
         self.pivot = self.position + pg.Vector2(pivot)
@@ -19,15 +19,12 @@ class Melee:
         self.display = self.img
         self.display_rect = self.display.get_rect()
         self.swing_timer = 0
-        self.attacking = False
 
-        self.damage = damage
 
     def update(self, delta, pos, direction):
         self.position = pg.Vector2(pos)
         self.pivot = self.position + self.offset + pg.Vector2(self.width/2, self.height/2)
-        if direction != 0:
-            self.direction = direction
+        self.direction = direction
 
         if self.direction == -1:
             angle = 25 * (math.sin(math.radians(self.swing_timer)))
@@ -38,10 +35,6 @@ class Melee:
 
         self.swing_timer -= delta
         self.swing_timer = max(self.swing_timer, 0)
-        if self.swing_timer == 0:
-            self.attacking = False
-        else:
-            self.attacking = True
 
     def get_collision_rect(self):
         if self.direction == -1:
@@ -54,7 +47,7 @@ class Melee:
             if self.swing_timer == 0:
                 self.swing_timer = 360
 
-    def draw(self, surf, display_offset = pg.Vector2(0,0)):
-        surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft + display_offset)
-        # pg.draw.circle(surf,(255,0,255),get_display_point(self.pivot),3)
-        # pg.draw.circle(surf,(0,255,0),get_display_point(self.position),3)
+    def draw(self, surf):
+        surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft)
+        # pygame.draw.circle(surf,(255,0,255),self.pivot,3)
+        # pygame.draw.circle(surf,(0,255,0),self.position,3)
