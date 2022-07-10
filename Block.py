@@ -2,20 +2,27 @@ from Setup import *
 
 
 class Block:
-    width, height = SCREEN_WIDTH, 50
+    textures = {file[:file.index(".")]:pg.transform.scale(
+        pg.image.load(path.join("Assets/world/blocks", file)), (50, 50)) for
+                   file in listdir("Assets/world/blocks")}
+    width, height = textures["PLACEHOLDER"].get_size()
     colour = (71, 77, 97)
 
-    def __init__(self, pos, collision_layer):
+    def __init__(self, pos, collision_layer, texture="PLACEHOLDER"):
         self.position = pg.Vector2(pos)
         self.velocity = pg.Vector2(0,0) # So that we may have moving blocks
         collision_layer.add(self)
 
+        self.texture = self.textures[texture]
+
         self.movable = False
 
     def update(self, delta):
-        pass # when player "moves", it's actually the blocks
+        pass
 
     def get_collision_rect(self):
         return pg.Rect(self.position, (self.width, self.height))
+
     def draw(self, surf):
-        pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=5)
+        pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=3)
+        surf.blit(self.texture, get_display_rect(self.get_collision_rect()))
