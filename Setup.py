@@ -44,3 +44,15 @@ def get_display_point(vec):
     return vec - camera_offset
 
 from Area import Area
+
+from PIL import Image
+
+FORMAT = "RGBA"
+
+def pil_to_game(img):
+    data = img.tobytes("raw", FORMAT)
+    return pg.image.fromstring(data, img.size, FORMAT)
+
+def get_gif_frame(img, frame):
+    img.seek(frame)
+    return img.convert(FORMAT)

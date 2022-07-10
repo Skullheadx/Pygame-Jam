@@ -11,6 +11,7 @@ from Weapon import Melee
 from CommonImports.colours import red, white
 from Function.createText import createText
 
+
 class Player(Actor):
     scale = 100
     factor = 640 / scale
@@ -18,6 +19,12 @@ class Player(Actor):
     idle_frames = [
         pg.transform.scale(pg.image.load(path.join("Assets/player/idle", file)).subsurface(pg.Rect(179, 169, 170, 401)),
                            (50, 100)) for file in listdir("Assets/player/idle")]
+
+    attack_gif = Image.open("Assets/player/Sword_Slash.gif")
+    attack_frames = []
+    for i in range(attack_gif.n_frames):
+        attack_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(attack_gif, i)), (200,200)))
+
     width, height = idle_frames[0].get_size()
 
     colour = (52, 94, 235)
@@ -54,7 +61,14 @@ class Player(Actor):
         self.state = "IDLE"
         self.current_frame = 0
         self.display = self.idle_frames[0]
-        self.display_offsets = {"weapon": pg.Vector2(0, 0)}
+        self.display_offsets = {"weapon": pg.Vector2(0, 0), "player":pg.Vector2(0,0)}
+
+    # def attack(self, enemy, weapon):
+    #     super(Player, self).attack(enemy, weapon)
+    #     self.current_frame = 0
+    #     self.state = "ATTACK"
+    #     print('a')
+
 
     def update(self, delta):
         super().update(delta)
@@ -72,13 +86,16 @@ class Player(Actor):
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
 
         prev_direction = self.direction
-        if self.velocity.x == 0:
-            self.direction = 0
-        else:
-            self.direction = math.copysign(1, self.velocity.x)
+        # if self.velocity.x == 0:
+        #     self.direction = 0
+        # else:
+        #     self.direction = math.copysign(1, self.velocity.x)
+        self.direction = math.copysign(1, pg.mouse.get_pos()[0] - get_display_point(self.position).x)
         self.weapon.update(delta, self.position, self.direction)
 
         if self.state == "IDLE":
+            self.display_offsets["player"] = pg.Vector2(0,0)
+
             frame = math.floor(self.current_frame)
             if self.direction == 1:
                 self.display = self.idle_frames[math.floor(frame)]
@@ -99,7 +116,29 @@ class Player(Actor):
             else:
                 self.display_offsets["weapon"] = pg.Vector2(0, 0)
             self.current_frame = (self.current_frame + 0.1) % len(self.idle_frames)
+        elif self.state == "ATTACK":
+            frame = math.floor(self.current_frame)
+            if self.direction == 1:
+                self.display = self.attack_frames[math.floor(frame)]
+                self.display_offsets["player"] = pg.Vector2(-50,-50)
 
+            elif self.direction == -1:
+                self.display = pg.transform.flip(self.attack_frames[math.floor(frame)], True, False)
+                self.display_offsets["player"] = pg.Vector2(-100,-50)
+
+            else:
+                self.direction = prev_direction
+                if prev_direction == 1:
+                    self.display_offsets["player"] = pg.Vector2(-50,-50)
+
+                    self.display = self.attack_frames[math.floor(frame)]
+                elif prev_direction == -1:
+                    self.display = pg.transform.flip(self.attack_frames[math.floor(frame)], True, False)
+                    self.display_offsets["player"] = pg.Vector2(-100,-50)
+
+            self.current_frame += 0.4
+            if math.floor(self.current_frame) == self.attack_gif.n_frames:
+                self.state = "IDLE"
         return self.position - center
 
     def handle_input(self):
@@ -145,14 +184,17 @@ class Player(Actor):
         if mouse_pressed[0]:  # LMB
             if not self.weapon.attacking:
                 self.weapon.swing()
+                self.state = "ATTACK"
+                self.current_frame = 0
                 for mask in self.targets:
                     for enemy in mask:
                         if self.weapon.get_collision_rect().colliderect(enemy.get_collision_rect()):
                             enemy.attack(self, self.weapon)
 
+
     def draw(self, surf):
-        self.weapon.draw(surf, self.display_offsets["weapon"])
-        surf.blit(self.display, get_display_rect(self.get_collision_rect()))
+        # self.weapon.draw(surf, self.display_offsets["weapon"])
+        surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft + self.display_offsets["player"])
         # super().draw(surf)
         # print(self.position, self.velocity, get_display_rect(self.get_collision_rect()).topleft, Setup.camera_offset)
         # pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=8)
