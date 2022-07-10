@@ -20,8 +20,14 @@ class DevLevelSelect:
 
         self.autoload = False
 
-        f = open("./Save/ignore_DevAutoload.txt", "r")
-        lines = f.readlines()
+        try:
+            f = open("./Save/ignore_DevAutoload.txt", "x")
+        except:
+            f = open("./Save/ignore_DevAutoload.txt", "w")
+            try:
+                lines = f.readlines()
+            except:
+                pass;
         f.close()
         try:
             self.level = int(lines[0])
