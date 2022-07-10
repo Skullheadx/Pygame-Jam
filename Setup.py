@@ -27,25 +27,9 @@ def rotate(pos, img, angle, pivot):
     rot_rect = rot_img.get_rect(center=vec)
     return rot_img, rot_rect
 
-camera_offset = center.copy()
-
-MAP_WIDTH, MAP_HEIGHT = 10000,10000
+camera_offset = pg.Vector2(0,0)
 
 def get_display_rect(collision_rect):
-    camera_offset.x = max(0, min(camera_offset.x, MAP_WIDTH - SCREEN_WIDTH))
-    camera_offset.y = max(0, min(camera_offset.y, MAP_HEIGHT - SCREEN_HEIGHT))
-
     pos = collision_rect.topleft
     width, height = collision_rect.w, collision_rect.h
     return pg.Rect(pos - camera_offset, (width, height))
-<<<<<<< Updated upstream
-=======
-    # return pg.Rect(pos, (width, height))
-
-def get_display_point(vec):
-    camera_offset.x = max(0, min(camera_offset.x, MAP_WIDTH - SCREEN_WIDTH))
-    camera_offset.y = max(0, min(camera_offset.y, MAP_HEIGHT - SCREEN_HEIGHT))
-    return vec - camera_offset
-
-from Area import Area
->>>>>>> Stashed changes

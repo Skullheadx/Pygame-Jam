@@ -1,29 +1,14 @@
-from datetime import datetime,timedelta
-import threading
-
 from Setup import *
 from PhysicsBody import PhysicsBody
 
 class Actor:
     width, height = 50, 100
     colour = (76, 82, 92)
-<<<<<<< Updated upstream
     speed = 0.2
     jump_strength = 1
     gravity = 0.098
     friction = 0.9
     
-=======
-    speed = 0.6
-    jump_strength = 1
-    gravity = 0.2
-    friction = 0.2
-    coyote_time_amount = timedelta(milliseconds=100) # seconds after walking off ground that it still counts
-    jump_buffer = []
-    variable_jump_time = timedelta(milliseconds=125) # how long to hold jump so we go higher
-    terminal_velocity = 15
-
->>>>>>> Stashed changes
 
     def __init__(self, pos, collision_layer, collision_mask):
         self.position = pg.Vector2(pos)
@@ -42,22 +27,6 @@ class Actor:
 
         self.movable = False
 
-<<<<<<< Updated upstream
-=======
-        self.jumping = False
-        self.coyote_time = datetime.utcnow()
-        self.hold_jump = datetime.utcnow()
-
-    def update(self, delta):
-        if self.jumping:
-            if self.on_ground:
-                self.jumping = False
-
-
-
-        self.stun_time -= delta
-        self.stun_time = max(self.stun_time, 0)
->>>>>>> Stashed changes
 
     def update(self, delta):
         for area in self.areas.values():
@@ -72,16 +41,7 @@ class Actor:
             self.velocity.x *= self.friction 
 
         # Apply gravity
-<<<<<<< Updated upstream
         self.velocity.y += self.gravity
-=======
-        if self.jumping and self.velocity.y > 0:
-            self.velocity.y += self.gravity * 2
-        else:
-            self.velocity.y += self.gravity
-        self.velocity.x = max(min(self.velocity.x, self.terminal_velocity),-self.terminal_velocity)
-        self.velocity.y = max(min(self.velocity.y, self.terminal_velocity),-self.terminal_velocity)
->>>>>>> Stashed changes
 
     def is_dead(self,reason=None):
         if self.health <= 0:
@@ -111,7 +71,6 @@ class Actor:
             self.jump()
 
     def jump(self):
-<<<<<<< Updated upstream
         if self.on_ground:
             self.velocity.y = -self.jump_strength
 
@@ -125,22 +84,6 @@ class Actor:
         else:
             v = vel
         self.velocity += (math.copysign(2,v.x), v.y-1)
-=======
-        if self.stun_time == 0:
-            pass
-        if (self.on_ground and not self.jumping) or (datetime.utcnow() - self.hold_jump <= self.variable_jump_time):
-            self.velocity.y = -self.jump_strength
-            if not self.jumping:
-                self.hold_jump = datetime.utcnow()
-            self.jumping = True
-        # elif not (datetime.utcnow() - self.hold_jump <= self.variable_jump_time):
-
-    def dash_left(self):
-        pass
-
-    def dash_right(self):
-        pass
->>>>>>> Stashed changes
 
     def move_left(self, customSpeed = speed):
         self.velocity.x = -customSpeed
@@ -150,10 +93,8 @@ class Actor:
         self.velocity.x = self.speed
 
     def move_and_collide(self, pos, vel, delta):
-        initial_pos = pos
         pos.x += vel.x * delta
         collision_rect = self.get_collision_rect(pos)
-
         for mask in self.collision_mask:
             for thing in mask:
                 if thing == self:
@@ -167,7 +108,6 @@ class Actor:
                         vel.x = min(vel.x, 0)
                     elif vel.x < 0:
                         pos.x = thing.position.x + thing.width
-<<<<<<< Updated upstream
                         vel.x = max(vel.x, 0)
 =======
                         if vel.x > 0:
@@ -188,23 +128,11 @@ class Actor:
                     print(thing, thing.movable, vel)
 >>>>>>> Stashed changes
                     collision_rect = self.get_collision_rect(pos)
-=======
-                        # vel.x = max(vel.x, 0)
-                    # collision_rect = self.get_collision_rect(pos)
 
-
-        if datetime.utcnow() - self.coyote_time >= self.coyote_time_amount or self.jumping:
-            self.on_ground = False
->>>>>>> Stashed changes
-
+        self.on_ground = False
         pos.y += vel.y * delta
-<<<<<<< Updated upstream
         collision_rect = self.get_collision_rect(pos)
         for mask in self.collision_mask:        
-=======
-        collision_rect = self.get_collision_rect((initial_pos[0], pos.y))
-        for mask in self.collision_mask:
->>>>>>> Stashed changes
             for thing in mask:
                 if thing == self:
                     continue
@@ -219,13 +147,10 @@ class Actor:
                         pos.y = thing.position.y - self.height
                         vel.y = min(vel.y, 0)
                         self.on_ground = True
-                        self.coyote_time = datetime.utcnow()
                     elif vel.y < 0:
                         pos.y = thing.position.y + thing.height
                         vel.y = max(vel.y, 0)
-                    # collision_rect = self.get_collision_rect(pos)
-
-
+                    collision_rect = self.get_collision_rect(pos)
 
         return pos, vel
 
