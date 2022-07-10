@@ -86,7 +86,7 @@ class Player(Actor):
         # else:
         #     self.direction = math.copysign(1, self.velocity.x)
         self.direction = math.copysign(1, pg.mouse.get_pos()[0] - get_display_point(self.position).x)
-        self.weapon.update(delta, self.position, self.direction)
+        self.weapon.update(delta, self.position, -self.direction)
 
         if self.state == "IDLE":
             self.display_offsets["player"] = pg.Vector2(0,0)
@@ -104,12 +104,10 @@ class Player(Actor):
                     self.display = pg.transform.flip(self.idle_frames[math.floor(frame)], True, False)
             # 1 - 10 up, 11 down by 1, 12 - 18 down by 2, 19-20 down 1 FIX THIS
             frame += 1
-            if 1 < frame < 10:
-                self.display_offsets["weapon"] = pg.Vector2(0, 2)
-            elif frame == 11 or frame == 19 or frame == 20:
-                self.display_offsets["weapon"] = pg.Vector2(0, 1)
+            if 3 < frame < 12:
+                self.display_offsets["weapon"] = pg.Vector2( 3, -2)
             else:
-                self.display_offsets["weapon"] = pg.Vector2(0, 0)
+                self.display_offsets["weapon"] = pg.Vector2( 3, -5)
             self.current_frame = (self.current_frame + 0.1) % len(self.idle_frames)
         elif self.state == "ATTACK":
             frame = math.floor(self.current_frame)
@@ -188,7 +186,12 @@ class Player(Actor):
 
 
     def draw(self, surf):
-        # self.weapon.draw(surf, self.display_offsets["weapon"])
+        if self.state == "IDLE":
+            # self.weapon.draw(surf, self.display_offsets["weapon"])
+            if self.direction == 1:
+                surf.blit(pg.transform.flip(self.weapon.img, True, True), get_display_rect(self.get_collision_rect()).topleft+pg.Vector2(-25,55) + self.display_offsets["weapon"])
+            elif self.direction == -1:
+                surf.blit(pg.transform.flip(self.weapon.img, False, True), get_display_rect(self.get_collision_rect()).topleft+pg.Vector2(0,55) + self.display_offsets["weapon"])
         surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft + self.display_offsets["player"])
         # super().draw(surf)
         # print(self.position, self.velocity, get_display_rect(self.get_collision_rect()).topleft, Setup.camera_offset)

@@ -12,6 +12,8 @@ class LevelCreator:
     canvas_layers = 5
     textures = [file[:file.index(".")] for file in listdir("Assets/world/blocks")]
     textures.append("NONE")
+    for file in listdir("Assets/world/decor"):
+        textures.append(file[:file.index(".")])
 
     def __init__(self):
         self.blocks = {"none": [[] for _ in range(self.canvas_layers)],
@@ -328,6 +330,9 @@ class EditorBlock:
     textures = {file[:file.index(".")]: pg.transform.scale(
         pg.image.load(path.join("Assets/world/blocks", file)), (50, 50)) for
         file in listdir("Assets/world/blocks")}
+    for file in listdir("Assets/world/decor"):
+        textures[file[:file.index(".")]] = pg.transform.scale(
+        pg.image.load(path.join("Assets/world/decor", file)), (50, 50))
     width, height = textures["PLACEHOLDER"].get_size()
 
     def __init__(self, pos, collision_layer, texture="PLACEHOLDER"):

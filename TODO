@@ -1,3 +1,10 @@
+IMPORTANT:
+- fix swing animation where u can start swing before animation ends
+- camera
+- weapon hitbox
+- physics for ragdolls
+
+
 Gameplay:
 - Make levels
 - Add save game functionality
