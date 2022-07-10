@@ -12,8 +12,6 @@ Combat:
 - sword
 - buffs?
 
-- Level Creator
-    - to facilitate level creation
 - Dialogue display
     - characters appear one at a time so more readable
 
@@ -31,3 +29,7 @@ Combat:
 Art:
 - Finish assets
 - add assets to game
+
+Completed:
+- Level Creator
+    - to facilitate level creation
