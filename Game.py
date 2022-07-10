@@ -61,7 +61,7 @@ class Game:
     def draw(self, surf):
         screen.fill((0, 191, 255))
 
-        self.Transition.draw(surf, 120, 625)
+        self.Transition.draw(surf, self.player.position, [40, -250], 120, 625)
 
         # screen.fill((255,255,255))
         # sky = pg.image.load("Assets/world/SKY.png")
@@ -69,6 +69,7 @@ class Game:
         self.world.draw(surf)
         for enemy in self.enemies:
             enemy.draw(surf)
+
 
         self.player.draw(surf)
         self.dashMeter.update(self.player.lastDash)
@@ -80,6 +81,7 @@ class Game:
             self.scene.draw()
         
 
+        # print(self.player.get_collision_rect())s
         # Debug Lines. DO NOT CROSS THEM!
         pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(SCREEN_WIDTH, -Setup.camera_offset.y), 10)
         pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(-Setup.camera_offset.x, SCREEN_HEIGHT), 10)

@@ -17,16 +17,29 @@ class Transition:
         self.portalYAnim = 1
         self.down = False
 
+        self.buttonStage = 0
+        buttonImage = pg.image.load('./Assets/buttons/e.png')
+        self.buttonImage = pg.transform.scale(buttonImage, (self.width/2, self.width/2))
+
         
     def update(self):
         return;
 
-    def draw(self, surf, offsetX=0, offsetY=0):
+    def draw(self, surf, playerPos, playerOffset=[0,0], offsetX=0, offsetY=0):
         
         coords = getWorldCoords(0, 0)
 
         coords[1] += self.portalYAnim
         a = (((offsetX-self.width/2) + coords[0], offsetY + coords[1]), (offsetX+coords[0], offsetY-self.height/2+coords[1]), (offsetX+self.width/2 + coords[0], offsetY+coords[1]), (offsetX + coords[0], offsetY+self.height/2 + coords[1]))
+        # print(a[0][0], a[1][1], a[2][0], a[3][1])
+        # print(playerPos[0]+40, playerPos[1]-250)
+        
+        if(a[0][0] < playerPos[0]+playerOffset[0] < a[2][0] and a[1][1] < playerPos[1]+playerOffset[1] < a[3][1]):
+            # self.buttonStage += 0.1
+            surf.blit(self.buttonImage, (a[0][0]+self.width/4, a[1][1]-(2*self.width/3)))
+            pressed = pg.key.get_pressed()
+            if pressed[pg.K_e] or pressed[pg.K_RETURN]:
+                pass;
 
         pg.draw.polygon(surf, (107, 18, 158), a)
 
@@ -36,6 +49,6 @@ class Transition:
             self.down = False
         
         if(self.down == True):
-            self.portalYAnim += 1
+            self.portalYAnim += 0.5
         else:
-            self.portalYAnim -= 1
+            self.portalYAnim -= 0.5
