@@ -1,6 +1,6 @@
 from Setup import *
 from Block import Block
-from os import path
+from os import path, listdir
 
 
 class World:
@@ -29,6 +29,8 @@ class World:
                     out[1] = (x, y)
                 elif t == "ENEMY":
                     out[0].append((x, y))
+                elif f"{t}.png" in listdir("Assets/world/decor"):
+                    self.blocks.append(Decor((x,y),self.collision_layer["none"],t))
                 else:
                     self.blocks.append(Block((x, y), self.collision_layer[l], t))
         return out
@@ -40,3 +42,20 @@ class World:
     def draw(self, surf):
         for block in self.blocks:
             block.draw(surf)
+
+
+class Decor:
+    textures = dict()
+    for file in listdir("Assets/world/decor"):
+        textures[file[:file.index(".")]] = pg.transform.scale(
+        pg.image.load(path.join("Assets/world/decor", file)), (50, 50))
+    def __init__(self, pos, collision_layer, img):
+        self.position = pg.Vector2(pos)
+        self.img = img
+        collision_layer.add(self)
+
+    def update(self, delta):
+        pass
+
+    def draw(self, surf):
+        surf.blit(self.textures[self.img],get_display_point(self.position))

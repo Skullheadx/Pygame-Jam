@@ -24,5 +24,5 @@ class Block:
         return pg.Rect(self.position, (self.width, self.height))
 
     def draw(self, surf):
-        pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=3)
+        # pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=3)
         surf.blit(self.texture, get_display_rect(self.get_collision_rect()))
