@@ -6,6 +6,7 @@ from Game import Game
 from Test import Test
 from LevelCreator import LevelCreator
 from MainMenu import Menu
+import os.path
 
 class DevLevelSelect:
 
@@ -20,15 +21,15 @@ class DevLevelSelect:
 
         self.autoload = False
 
-        try:
+        if os.path.isfile('./Save/ignore_DevAutoload.txt'):
+            global lines
+            f = open("./Save/ignore_DevAutoload.txt", "r")
+            lines = f.readlines()
+            f.close()
+        else:
             f = open("./Save/ignore_DevAutoload.txt", "x")
-        except:
-            f = open("./Save/ignore_DevAutoload.txt", "w")
-            try:
-                lines = f.readlines()
-            except:
-                pass;
-        f.close()
+            f.close()
+
         try:
             self.level = int(lines[0])
         except:
