@@ -1,15 +1,10 @@
 import pygame.key
 
-import Setup
-import time
-import threading
 from Setup import *
 from Actors import Actor
 from datetime import datetime, timedelta
 from Potion import Potion
 from Weapon import Melee
-from CommonImports.colours import red, white
-from Function.createText import createText
 
 class Player(Actor):
     scale = 100

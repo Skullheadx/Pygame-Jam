@@ -1,7 +1,6 @@
 from Setup import *
 from CommonImports.colours import white, red
 from Function.createText import createText
-from datetime import datetime
 
 class HealthBar:
 
