@@ -56,6 +56,9 @@ class Game:
 
     def draw(self, surf):
         screen.fill((0, 191, 255))
+        # screen.fill((255,255,255))
+        # sky = pg.image.load("Assets/world/SKY.png")
+        # surf.blit(sky,(0,0))
         self.world.draw(surf)
         for enemy in self.enemies:
             enemy.draw(surf)
