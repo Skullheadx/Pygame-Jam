@@ -17,11 +17,11 @@ class DialogueUI:
     def update(self):
         return;
 
-    def draw(self, surf, agent):
+    def draw(self, surf, agent, text):
         
         X = get_display_point(agent.position)[0] + agent.width / 2
         Y = get_display_point(agent.position)[1]
-
+        self.text = text
         self.createDialogue()
 
         for i in range(len(self.drawText)):

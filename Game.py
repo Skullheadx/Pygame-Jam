@@ -80,10 +80,8 @@ class Game:
         surf.blit(sky,(0,0))
 
         if (self.level == 1):
-            self.dialogue.text = "enemy dialogue"
-            self.dialogue.draw(surf, self.enemies[0])
-            self.dialogue.text = "player dialogue"
-            self.dialogue.draw(surf, self.player)
+            self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
+            self.dialogue.draw(surf, self.player, "player dialogue")
 
         try:
             self.Transition.draw(surf, self.player.position, self.portal_position)
