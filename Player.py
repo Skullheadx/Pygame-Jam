@@ -26,9 +26,11 @@ class Player(Actor):
     for i in range(run_gif.n_frames):
         run_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(run_gif, i)), (155, 155)))
 
-    #player sfx
+    #Player SFX
     running_sound = pg.mixer.Sound("Assets/SFX/Running_Sound_Effect.wav")
     running_sound_channel = pg.mixer.Channel(1)
+    sword_swing_sound = pg.mixer.Sound("Assets/SFX/Sword_Swing.wav")
+    sword_swing_channel = pg.mixer.Channel(2)
 
     width, height = idle_frames[0].get_size()
 
@@ -215,6 +217,7 @@ class Player(Actor):
             if self.state != "ATTACK":
                 self.state = "ATTACK"
                 self.current_frame = 0
+                self.sword_swing_channel.play(self.sword_swing_sound)
         if self.state == "ATTACK":
             if 12 > math.floor(self.current_frame) > 6:
                 for mask in self.targets:
