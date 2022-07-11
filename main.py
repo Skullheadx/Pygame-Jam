@@ -14,7 +14,7 @@ is_running = True
 # scene = TransitionScene()
 scene = DevLevelSelect()
 old_level = 0
-level = 1
+level =1
 next_level = 0
 
 while is_running:
@@ -44,6 +44,8 @@ while is_running:
                 scene = Game(1)
             case 2:
                 scene = Game(2)
+            case 3:
+                scene = Game(3)
         old_level = level
 
     scene.update(delta)

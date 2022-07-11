@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import threading
 
 from Setup import *
-from PhysicsBody import PhysicsBody
+# from PhysicsBody import PhysicsBody
 from Block import Block
 
 
@@ -52,7 +52,7 @@ class Actor:
         self.stun_time = max(self.stun_time, 0)
         self.invincibility_frames -= delta
         self.invincibility_frames = max(self.invincibility_frames, 0)
-        if self.invincibility_frames == 0:
+        if self.invincibility_frames == 0 and self.on_ground:
             self.attacked = False
 
         for area in self.areas.values():
@@ -83,28 +83,34 @@ class Actor:
             self.stun_time = -amount * 10
         self.is_dead(reason)
 
-    def attack(self, enemy, weapon):
-        self.modify_health(weapon.damage, "enemy")
-        self.push(enemy)
-        self.attacked = True
-        self.invincibility_frames = self.invincibility_time
+    def attack(self, enemy, weapon, direction):
+        if not self.attacked:
+            self.push(direction, 2, -1)
+            self.modify_health(weapon.damage, "enemy")
+            self.attacked = True
+            self.invincibility_frames = self.invincibility_time
 
-    def follow_target(self, node, follow_range=None, stop_dist=None):
-        if stop_dist is None:
-            stop_dist = max(self.height, self.width) * 1.5
+    def follow_target(self, node, follow_range=100000, stop_dist=115):
+        # if stop_dist is None:
+        #     stop_dist = max(self.height, self.width) * 1.5
 
         target = node.position
 
         # So that actor doesn't come up and hug u lol
-        if (self.position - target).length_squared() < pow(stop_dist, 2):
+        distance_between = ((self.position+pg.Vector2(self.width,self.height)/2) - (target+pg.Vector2(node.width,node.height)/2)).length_squared()
+
+        if abs(self.position.x - target.x) < stop_dist:
+            self.velocity.x = 0
+            return
+        if distance_between > follow_range ** 2:
             return
 
-        if target.x < self.position.x:
+        if target.x + node.width < self.position.x:
             self.move_left()
         elif target.x > self.position.x:
             self.move_right()
 
-        if target.y < self.position.y:
+        if not (target.y - node.height/2< self.position.y < target.y + node.height/2):
             self.jump()
 
     def jump(self):
@@ -123,23 +129,20 @@ class Actor:
     def dash_right(self):
         pass
 
-    def move_left(self, customSpeed=speed):
+    def move_left(self, customSpeed=None):
+        if customSpeed is None:
+            customSpeed = self.speed
         if self.stun_time == 0:
             self.velocity.x = -customSpeed
 
-    def move_right(self, customSpeed=speed):
+    def move_right(self, customSpeed=None):
+        if customSpeed is None:
+            customSpeed = self.speed
         if self.stun_time == 0:
             self.velocity.x = customSpeed
 
-    def push(self, enemy):
-        v = enemy.weapon.direction
-        # if enemy.velocity.x != pg.Vector2(0,0):
-        #     v = enemy.velocity.normalize().x
-
-        self.velocity += pg.Vector2(v, -1)
-
-    def push2(self, direction):
-        self.velocity += pg.Vector2(direction, -1)
+    def push(self, direction, strength=1, y=-1):
+        self.velocity += pg.Vector2(direction * strength, y)
 
     def move_and_collide(self, pos, vel, delta):
         pos.x += vel.x * delta
@@ -149,11 +152,11 @@ class Actor:
                 if thing == self:
                     continue
                 if collision_rect.colliderect(thing.get_collision_rect()):
-                    if thing.movable:
-                        if vel.x > 0:
-                            thing.position.x = pos.x + self.width
-                        elif vel.x < 0:
-                            thing.position.x = pos.x - thing.width
+                    # if thing.movable:
+                    #     if vel.x > 0:
+                    #         thing.position.x = pos.x + self.width
+                    #     elif vel.x < 0:
+                    #         thing.position.x = pos.x - thing.width
                     if vel.x > 0:
                         pos.x = thing.position.x - self.width
                         # vel.x = min(vel.x, 0)
@@ -181,7 +184,7 @@ class Actor:
                         self.coyote_time = datetime.utcnow()
                     elif vel.y < 0:
                         pos.y = thing.position.y + thing.height
-                        vel.y = max(vel.y, 0)
+                        # vel.y = max(vel.y, 0)
                     # collision_rect = self.get_collision_rect(pos)
         return pos, vel
 

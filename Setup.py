@@ -6,7 +6,10 @@ from os import listdir, path
 
 pg.init()
 
+display_info = pg.display.Info()
+
 SCREEN_WIDTH, SCREEN_HEIGHT = 1080, 640
+# SCREEN_WIDTH, SCREEN_HEIGHT = display_info.current_w, display_info.current_h-10
 dimensions = (SCREEN_WIDTH, SCREEN_HEIGHT)
 center = pg.Vector2(dimensions) / 2
 
