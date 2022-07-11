@@ -139,23 +139,25 @@ class Player(Actor):
                 self.state = "IDLE"
         elif self.state == "RUN":
             frame = math.floor(self.current_frame)
-            if self.direction == 1:
+            # if self.direction == 1:
+            if self.velocity.x > 0:
                 self.display = self.run_frames[math.floor(frame)]
                 self.display_offsets["player"] = pg.Vector2(-40, -35)
 
-            elif self.direction == -1:
+            # elif self.direction == -1:
+            elif self.velocity.x < 0:
                 self.display = pg.transform.flip(self.run_frames[math.floor(frame)], True, False)
                 self.display_offsets["player"] = pg.Vector2(-65, -35)
 
-            else:
-                self.direction = prev_direction
-                if prev_direction == 1:
-                    self.display_offsets["player"] = pg.Vector2(-40, -35)
-
-                    self.display = self.run_frames[math.floor(frame)]
-                elif prev_direction == -1:
-                    self.display = pg.transform.flip(self.run_frames[math.floor(frame)], True, False)
-                    self.display_offsets["player"] = pg.Vector2(-65, -35)
+            # else:
+            #     self.direction = prev_direction
+            #     if prev_direction == 1:
+            #         self.display_offsets["player"] = pg.Vector2(-40, -35)
+            #
+            #         self.display = self.run_frames[math.floor(frame)]
+            #     elif prev_direction == -1:
+            #         self.display = pg.transform.flip(self.run_frames[math.floor(frame)], True, False)
+            #         self.display_offsets["player"] = pg.Vector2(-65, -35)
 
             self.current_frame = (self.current_frame + 1) % self.run_gif.n_frames
 
