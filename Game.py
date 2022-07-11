@@ -23,16 +23,17 @@ from World import World
 class Game:
 
     def __init__(self, level):
-        self.collision_layer = {"none": set(), "world": set(), "player": set(), "enemy": set(), "pet": set()}
+        self.collision_layer = {"none": set(), "world": set(), "player": set(), "enemy": set(), "pet": set(), "body":set()}
 
         # self.load_world(level)
 
         self.world = World(self.collision_layer)
 
         enemy_positions, player_position, self.portal_position = self.world.load_world(level)
+
         self.player = Player(player_position, self.collision_layer["player"],
                              [self.collision_layer["enemy"], self.collision_layer["world"]],
-                             [self.collision_layer["enemy"]])
+                             [self.collision_layer["enemy"], self.collision_layer["body"]])
         # self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
         self.enemies = [Enemy(pos, self.collision_layer["enemy"],
                               [self.collision_layer["player"], self.collision_layer["world"]]) for pos in
@@ -62,9 +63,9 @@ class Game:
             enemy.update(delta, self.player)
             if enemy.dead:
                 self.enemies[i] = PhysicsBody(enemy.position, enemy.velocity, enemy.width, enemy.height, enemy.colour,
-                                              enemy.collision_layer, enemy.collision_mask)
+                                              self.collision_layer["body"], [self.collision_layer["world"], self.collision_layer["body"]])
                 self.collision_layer["enemy"].remove(enemy)
-                self.collision_layer["enemy"].add(self.enemies[i])
+                self.collision_layer["body"].add(self.enemies[i])
 
         self.world.update(delta)
         self.fade = self.Transition.fade
@@ -72,7 +73,7 @@ class Game:
         # self.pet.update(delta, self.player, self.camera_pos)
 
     def draw(self, surf):
-        screen.fill((0, 191, 255))
+        # screen.fill((0, 191, 255))
 
         # screen.fill((0, 191, 255))
         # screen.fill((255,255,255))

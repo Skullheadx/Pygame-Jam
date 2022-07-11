@@ -26,9 +26,11 @@ class Player(Actor):
     for i in range(run_gif.n_frames):
         run_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(run_gif, i)), (155, 155)))
 
-    #player sfx
+    #Player SFX
     running_sound = pg.mixer.Sound("Assets/SFX/Running_Sound_Effect.wav")
     running_sound_channel = pg.mixer.Channel(1)
+    sword_swing_sound = pg.mixer.Sound("Assets/SFX/Sword_Swing.wav")
+    sword_swing_channel = pg.mixer.Channel(2)
 
     width, height = idle_frames[0].get_size()
 
@@ -63,6 +65,8 @@ class Player(Actor):
         self.direction = -1
 
         self.state = "IDLE"
+        self.previous_state = "IDLE"
+        self.previous_ground_state = self.on_ground
         self.current_frame = 0
         self.display = self.idle_frames[0]
         self.display_offsets = {"weapon": pg.Vector2(0, 0), "player": pg.Vector2(0, 0)}
@@ -80,11 +84,10 @@ class Player(Actor):
         # Get and handle input
         self.handle_input()
 
-        # if self.potion_cooldown > 0:
-        # threading.Thread(Potion.cooldown)
-
         if len(self.potion_bag) > 0:
             self.potion_bag[0].get_input(self)
+
+        print(self.state, self.previous_state)
 
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
@@ -152,6 +155,15 @@ class Player(Actor):
 
             self.current_frame = (self.current_frame + 0.5) % self.run_gif.n_frames
 
+        if self.state == "RUN":
+            if self.previous_state != "RUN":
+                self.running_sound_channel.play(self.running_sound, -1)
+
+            if self.on_ground == True and self.previous_ground_state == False:
+                self.running_sound_channel.play(self.running_sound, -1)
+                
+        self.previous_state = self.state
+        self.previous_ground_state = self.on_ground
         return self.position - center
 
     def handle_input(self):
@@ -164,7 +176,7 @@ class Player(Actor):
             if self.state != "ATTACK":
                 if self.state != "RUN":
                     self.current_frame = 0
-                    self.running_sound_channel.play(self.running_sound, 999)
+                    
                 self.state = "RUN"
             self.move_left()
             # if (self.lastValueL == False):
@@ -185,7 +197,7 @@ class Player(Actor):
             if self.state != "ATTACK":
                 if self.state != "RUN":
                     self.current_frame = 0
-                    self.running_sound_channel.play(self.running_sound, 999)
+                    
                 self.state = "RUN"
 
             self.move_right()
@@ -215,6 +227,7 @@ class Player(Actor):
             if self.state != "ATTACK":
                 self.state = "ATTACK"
                 self.current_frame = 0
+                self.sword_swing_channel.play(self.sword_swing_sound)
         if self.state == "ATTACK":
             if 12 > math.floor(self.current_frame) > 6:
                 for mask in self.targets:
@@ -238,6 +251,7 @@ class Player(Actor):
                           get_display_rect(self.get_collision_rect()).topleft + pg.Vector2(0, 55) +
                           self.display_offsets["weapon"])
         surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft + self.display_offsets["player"])
+        # print(self, self.position)
         # super().draw(surf)
         # print(self.position, self.velocity, get_display_rect(self.get_collision_rect()).topleft, Setup.camera_offset)
         # pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=8)
