@@ -5,11 +5,7 @@ from Function.WorldCoords import *
 
 class Transition:
 
-    def __init__(self, nextLevel, X, Y):
-        self.level = nextLevel
-        self.x = X
-        self.y = Y
-
+    def __init__(self):
         self.height = 150
         self.width = 80
 
