@@ -38,7 +38,7 @@ class Game:
                               [self.collision_layer["player"], self.collision_layer["world"]]) for pos in
                         enemy_positions]
         self.scene = EndScreen()
-        self.dashMeter = DashMeter(self.player.dashCooldown)
+        # self.dashMeter = DashMeter(self.player.dashCooldown)
         self.healthBar = HealthBar()
         self.potionUI = PotionUI()
         self.level = level
@@ -80,23 +80,25 @@ class Game:
         surf.blit(sky,(0,0))
         self.Transition.draw(surf, self.player.position, [40, -250], 120, 625)
 
-        if(self.level == 1):
-            self.Transition.draw(surf, self.player.position, [40, -250], 120, 625)
-            self.dialogue.text = "enemy dialogue"
-            self.dialogue.draw(surf, get_display_point(self.enemies[0].position)[0] + self.enemies[0].width/2, get_display_point(self.enemies[0].position)[1])
-            self.dialogue.text = "player dialogue"
-            self.dialogue.draw(surf, get_display_point(self.player.position)[0] + self.player.width/2, get_display_point(self.player.position)[1])
-        
         self.world.draw(surf)
         for enemy in self.enemies:
             enemy.draw(surf)
 
 
         self.player.draw(surf)
-        self.dashMeter.update(self.player.lastDash)
-        self.dashMeter.draw(surf)
+        # self.dashMeter.update(self.player.lastDash)
+        # self.dashMeter.draw(surf)
         self.healthBar.draw(surf, self.player.health)
         self.potionUI.draw(surf, self.player.potion_bag, self.player.potion_cooldown)
+
+        if (self.level == 1):
+            self.Transition.draw(surf, self.player.position, [40, -250], 120, 625)
+            self.dialogue.text = "enemy dialogue"
+            self.dialogue.draw(surf, get_display_point(self.enemies[0].position)[0] + self.enemies[0].width / 2,
+                               get_display_point(self.enemies[0].position)[1])
+            self.dialogue.text = "player dialogue"
+            self.dialogue.draw(surf, get_display_point(self.player.position)[0] + self.player.width / 2,
+                               get_display_point(self.player.position)[1])
 
         # print(self.player.get_collision_rect())s
         # Debug Lines. DO NOT CROSS THEM!

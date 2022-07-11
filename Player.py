@@ -21,6 +21,10 @@ class Player(Actor):
     attack_frames = []
     for i in range(attack_gif.n_frames):
         attack_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(attack_gif, i)), (200, 200)))
+    run_gif = Image.open("Assets/player/Running_animation.gif")
+    run_frames = []
+    for i in range(run_gif.n_frames):
+        run_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(run_gif, i)), (155, 155)))
 
     width, height = idle_frames[0].get_size()
 
@@ -33,12 +37,12 @@ class Player(Actor):
         self.timeBetweenDoublePress = timedelta(seconds=0, microseconds=500000)
         self.dashSpeed = 5
 
-        self.dashPossible = True
-        self.lastDash = datetime.utcnow()
-        self.lastPressedLeft = datetime.utcnow()
-        self.lastValueL = False
-        self.lastPressedRight = datetime.utcnow()
-        self.lastValueR = False
+        # self.dashPossible = False
+        # self.lastDash = datetime.utcnow()
+        # self.lastPressedLeft = datetime.utcnow()
+        # self.lastValueL = False
+        # self.lastPressedRight = datetime.utcnow()
+        # self.lastValueR = False
         self.areas = {"body": Area(self.position, pg.Vector2(0, self.height / 2), self.width, self.height / 2, Actor),
                       "head": Area(self.position, pg.Vector2(self.width * 1 / 3 * 1 / 2, -2), self.width * 2 / 3, 25,
                                    Actor)}
@@ -133,46 +137,81 @@ class Player(Actor):
             self.current_frame += 0.4
             if math.floor(self.current_frame) == self.attack_gif.n_frames:
                 self.state = "IDLE"
+        elif self.state == "RUN":
+            frame = math.floor(self.current_frame)
+            if self.direction == 1:
+                self.display = self.run_frames[math.floor(frame)]
+                self.display_offsets["player"] = pg.Vector2(-40, -35)
+
+            elif self.direction == -1:
+                self.display = pg.transform.flip(self.run_frames[math.floor(frame)], True, False)
+                self.display_offsets["player"] = pg.Vector2(-65, -35)
+
+            else:
+                self.direction = prev_direction
+                if prev_direction == 1:
+                    self.display_offsets["player"] = pg.Vector2(-40, -35)
+
+                    self.display = self.run_frames[math.floor(frame)]
+                elif prev_direction == -1:
+                    self.display = pg.transform.flip(self.run_frames[math.floor(frame)], True, False)
+                    self.display_offsets["player"] = pg.Vector2(-65, -35)
+
+            self.current_frame = (self.current_frame + 1) % self.run_gif.n_frames
+
         return self.position - center
 
     def handle_input(self):
+
         pressed = pygame.key.get_pressed()
         if pressed[pg.K_w] or pressed[pg.K_UP] or pressed[pg.K_SPACE]:
             self.jump()
         if pressed[pg.K_a] or pressed[pg.K_LEFT]:
+            if self.state != "ATTACK":
+                if self.state != "RUN":
+                    self.current_frame = 0
+                self.state = "RUN"
             self.move_left()
-            if (self.lastValueL == False):
-                timeSincePressed = datetime.utcnow() - self.lastPressedLeft
-                timeSinceLastDash = datetime.utcnow() - self.lastDash
-                if (timeSinceLastDash >= self.dashCooldown):
-                    self.dashPossible = True
-                else:
-                    self.dashPossible = False
-                if (timeSincePressed < self.timeBetweenDoublePress and self.dashPossible == True):
-                    self.move_left(
-                        self.dashSpeed)  # change this to change how the player dashes (maybe replace with a custom dash function)
-                    self.dashPossible = False
-                    self.lastDash = datetime.utcnow()
-                self.lastPressedLeft = datetime.utcnow()
+            # if (self.lastValueL == False):
+            #     timeSincePressed = datetime.utcnow() - self.lastPressedLeft
+            #     timeSinceLastDash = datetime.utcnow() - self.lastDash
+            #     if (timeSinceLastDash >= self.dashCooldown):
+            #         self.dashPossible = False # True to enable dash
+            #     else:
+            #         self.dashPossible = False
+            #     if (timeSincePressed < self.timeBetweenDoublePress and self.dashPossible == True):
+            #         self.move_left(
+            #             self.dashSpeed)  # change this to change how the player dashes (maybe replace with a custom dash function)
+            #         self.dashPossible = False
+            #         self.lastDash = datetime.utcnow()
+            #     self.lastPressedLeft = datetime.utcnow()
 
-        if pressed[pg.K_d] or pressed[pg.K_RIGHT]:
+        elif pressed[pg.K_d] or pressed[pg.K_RIGHT]:
+            if self.state != "ATTACK":
+                if self.state != "RUN":
+                    self.current_frame = 0
+                self.state = "RUN"
+
             self.move_right()
-            if (self.lastValueR == False):
-                timeSincePressed = datetime.utcnow() - self.lastPressedRight
-                timeSinceLastDash = datetime.utcnow() - self.lastDash
-                if (timeSinceLastDash >= self.dashCooldown):
-                    self.dashPossible = True
-                else:
-                    self.dashPossible = False
-                if (timeSincePressed < self.timeBetweenDoublePress and self.dashPossible == True):
-                    self.lastDash = datetime.utcnow()
-                    self.dashPossible = False
-                    self.move_right(
-                        self.dashSpeed)  # change this to change how the player dashes (maybe replace with a custom dash function)
-                self.lastPressedRight = datetime.utcnow()
+            # if (self.lastValueR == False):
+            #     timeSincePressed = datetime.utcnow() - self.lastPressedRight
+            #     timeSinceLastDash = datetime.utcnow() - self.lastDash
+            #     if (timeSinceLastDash >= self.dashCooldown):
+            #         self.dashPossible = False # True to enable dash
+            #     else:
+            #         self.dashPossible = False
+            #     if (timeSincePressed < self.timeBetweenDoublePress and self.dashPossible == True):
+            #         self.lastDash = datetime.utcnow()
+            #         self.dashPossible = False
+            #         self.move_right(
+            #             self.dashSpeed)  # change this to change how the player dashes (maybe replace with a custom dash function)
+            #     self.lastPressedRight = datetime.utcnow()
+        else:
+            if self.state == "RUN":
+                self.state = "IDLE"
 
-        self.lastValueL = pressed[pg.K_a] or pressed[pg.K_LEFT]
-        self.lastValueR = pressed[pg.K_d] or pressed[pg.K_RIGHT]
+        # self.lastValueL = pressed[pg.K_a] or pressed[pg.K_LEFT]
+        # self.lastValueR = pressed[pg.K_d] or pressed[pg.K_RIGHT]
 
         mouse_pressed = pg.mouse.get_pressed(3)
         if mouse_pressed[0]:  # LMB
@@ -205,9 +244,9 @@ class Player(Actor):
         # super().draw(surf)
         # print(self.position, self.velocity, get_display_rect(self.get_collision_rect()).topleft, Setup.camera_offset)
         # pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=8)
-        pg.draw.rect(surf, (255, 0, 0), get_display_rect(self.weapon.get_collision_rect()), width=3)
+        # pg.draw.rect(surf, (255, 0, 0), get_display_rect(self.weapon.get_collision_rect()), width=3)
 
-        pg.draw.rect(surf, (0, 255, 0), get_display_rect(self.get_collision_rect()), 2)
+        # pg.draw.rect(surf, (0, 255, 0), get_display_rect(self.get_collision_rect()), 2)
 
         # pg.draw.rect(surf,self.colour,pg.Rect(center, (self.width, self.height)),border_radius=8)
 

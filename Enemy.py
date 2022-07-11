@@ -59,4 +59,4 @@ class Enemy(Actor):
     def draw(self, surf):
         self.weapon.draw(surf)
         super(Enemy, self).draw(surf)
-        pg.draw.rect(surf, (0, 255, 0), get_display_rect(self.get_collision_rect()), 2)
+        # pg.draw.rect(surf, (0, 255, 0), get_display_rect(self.get_collision_rect()), 2)
