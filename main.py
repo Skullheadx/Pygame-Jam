@@ -14,7 +14,7 @@ is_running = True
 # scene = TransitionScene()
 scene = DevLevelSelect()
 old_level = 0
-level = 0
+level = 9
 next_level = 0
 
 while is_running:
@@ -35,18 +35,9 @@ while is_running:
                 scene = LevelCreator()
             case 0:
                 scene = Menu()
-            case 1:
-                scene = Game(1)
-            case 2:
-                scene = Game(2)
-            case 3:
-                scene = Game(3)
-            case 4:
-                scene = Game(4)
-            case 5:
-                scene = Game(5)
-            case 6:
-                scene = Game(6)
+                break;
+            case _:
+                scene = Game(level)
         old_level = level
 
     level = scene.level
