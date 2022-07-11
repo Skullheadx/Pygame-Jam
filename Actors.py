@@ -39,7 +39,7 @@ class Actor:
         self.jumping = False
         self.coyote_time = datetime.utcnow()
         self.hold_jump = datetime.utcnow()
-        self.stun_time = 0
+        self.stun_time = 750
         self.attacked = False
         self.invincibility_frames = 0
 
@@ -50,6 +50,7 @@ class Actor:
 
         self.stun_time -= delta
         self.stun_time = max(self.stun_time, 0)
+
         self.invincibility_frames -= delta
         self.invincibility_frames = max(self.invincibility_frames, 0)
         if self.invincibility_frames == 0 and self.on_ground:
@@ -91,7 +92,6 @@ class Actor:
             self.invincibility_frames = self.invincibility_time
 
     def follow_target(self, node, follow_range=100000, stop_dist=115):
-        return
         # if stop_dist is None:
         #     stop_dist = max(self.height, self.width) * 1.5
 
@@ -110,13 +110,13 @@ class Actor:
             self.move_left()
         elif target.x > self.position.x:
             self.move_right()
-
         if not (target.y - node.height/2< self.position.y < target.y + node.height/2):
             self.jump()
 
     def jump(self):
-        if self.stun_time == 0:
-            pass
+        # print(self)
+        if self.stun_time > 0:
+            return
         if (self.on_ground and not self.jumping) or (datetime.utcnow() - self.hold_jump <= self.variable_jump_time):
             self.velocity.y = -self.jump_strength
             if not self.jumping:
@@ -130,17 +130,13 @@ class Actor:
     def dash_right(self):
         pass
 
-    def move_left(self, customSpeed=None):
-        if customSpeed is None:
-            customSpeed = self.speed
+    def move_left(self):
         if self.stun_time == 0:
-            self.velocity.x = -customSpeed
+            self.velocity.x = -self.speed
 
-    def move_right(self, customSpeed=None):
-        if customSpeed is None:
-            customSpeed = self.speed
+    def move_right(self):
         if self.stun_time == 0:
-            self.velocity.x = customSpeed
+            self.velocity.x = self.speed
 
     def push(self, direction, strength=1, y=-1):
         self.velocity += pg.Vector2(direction * strength, y)
@@ -153,6 +149,7 @@ class Actor:
                 if thing == self:
                     continue
                 if collision_rect.colliderect(thing.get_collision_rect()):
+                    # print(self, self.position.x, self.velocity.x)
                     # if thing.movable:
                     #     if vel.x > 0:
                     #         thing.position.x = pos.x + self.width
@@ -160,10 +157,11 @@ class Actor:
                     #         thing.position.x = pos.x - thing.width
                     if vel.x > 0:
                         pos.x = thing.position.x - self.width
-                        # vel.x = min(vel.x, 0)
+                        vel.x = min(vel.x, 0)
                     elif vel.x < 0:
                         pos.x = thing.position.x + thing.width
-                        # vel.x = max(vel.x, 0)
+                        vel.x = max(vel.x, 0)
+                        # print(pos.x, vel.x)
                     collision_rect = self.get_collision_rect(pos)
 
         if datetime.utcnow() - self.coyote_time >= self.coyote_time_amount or self.jumping:

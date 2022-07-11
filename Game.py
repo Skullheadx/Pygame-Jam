@@ -77,7 +77,7 @@ class Game:
 
         # screen.fill((0, 191, 255))
         # screen.fill((255,255,255))
-        sky = pg.image.load("Assets/world/SKY.png")
+        sky = pg.image.load("Assets/world/VOID.png")
         surf.blit(sky,(0,0))
 
         if (self.level == 1):

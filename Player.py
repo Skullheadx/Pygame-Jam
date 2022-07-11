@@ -71,6 +71,8 @@ class Player(Actor):
         self.display = self.idle_frames[0]
         self.display_offsets = {"weapon": pg.Vector2(0, 0), "player": pg.Vector2(0, 0)}
 
+        self.buffer = []
+
 
     # def attack(self, enemy, weapon):
     #     super(Player, self).attack(enemy, weapon)
@@ -87,7 +89,7 @@ class Player(Actor):
         if len(self.potion_bag) > 0:
             self.potion_bag[0].get_input(self)
 
-        print(self.state, self.previous_state)
+        # print(self.state, self.previous_state)
 
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
@@ -167,6 +169,9 @@ class Player(Actor):
         return self.position - center
 
     def handle_input(self):
+        if self.stun_time > 0:
+            return
+
 
         pressed = pygame.key.get_pressed()
         if pressed[pg.K_w] or pressed[pg.K_UP] or pressed[pg.K_SPACE]:
@@ -251,6 +256,11 @@ class Player(Actor):
                           get_display_rect(self.get_collision_rect()).topleft + pg.Vector2(0, 55) +
                           self.display_offsets["weapon"])
         surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft + self.display_offsets["player"])
+        #
+        # for b in self.buffer:
+        #     pg.draw.rect(surf,(0,0,255),get_display_rect(b),3)
+        # self.buffer.append(self.get_collision_rect())
+
         # print(self, self.position)
         # super().draw(surf)
         # print(self.position, self.velocity, get_display_rect(self.get_collision_rect()).topleft, Setup.camera_offset)
