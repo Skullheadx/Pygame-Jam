@@ -31,6 +31,7 @@ class Transition:
 
         coords[1] += self.portalYAnim
         a = (((offsetX-self.width/2) + coords[0], offsetY + coords[1]), (offsetX+coords[0], offsetY-self.height/2+coords[1]), (offsetX+self.width/2 + coords[0], offsetY+coords[1]), (offsetX + coords[0], offsetY+self.height/2 + coords[1]))
+        portal_rect = (a[0][0], a[1][1], a[2][0], a[3][1])
         # print(a[0][0], a[1][1], a[2][0], a[3][1])
         # print(playerPos[0], playerPos[1])
         
