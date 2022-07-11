@@ -4,6 +4,10 @@ from Function.createText import createText
 from Function.WorldCoords import *
 
 class Transition:
+    portal_gif = Image.open("Assets/world/decor/PORTAL.gif")
+    portal_frames = []
+    for i in range(portal_gif.n_frames):
+        portal_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(portal_gif, i)), (155, 155)))
 
     def __init__(self):
         self.height = 150
@@ -19,8 +23,11 @@ class Transition:
 
         self.fade = False
 
+        self.current_frame = 0
+
         
     def update(self):
+        self.current_frame = (self.current_frame + 1) % self.portal_gif.n_frames
         return;
 
     def draw(self, surf, playerPos, offset=(0,0)):
@@ -31,7 +38,7 @@ class Transition:
 
         coords[1] += self.portalYAnim
         a = (((offsetX-self.width/2) + coords[0], offsetY + coords[1]), (offsetX+coords[0], offsetY-self.height/2+coords[1]), (offsetX+self.width/2 + coords[0], offsetY+coords[1]), (offsetX + coords[0], offsetY+self.height/2 + coords[1]))
-        portal_rect = (a[0][0], a[1][1], a[2][0], a[3][1])
+        portal_rect = pg.Rect(a[0][0], a[1][1], a[2][0], a[3][1])
         # print(a[0][0], a[1][1], a[2][0], a[3][1])
         # print(playerPos[0], playerPos[1])
         
@@ -42,7 +49,9 @@ class Transition:
             if pressed[pg.K_e] or pressed[pg.K_RETURN]:
                 self.fade = True;
 
-        pg.draw.polygon(surf, (107, 18, 158), a)
+        # pg.draw.polygon(surf, (107, 18, 158), a)
+
+        surf.blit(self.portal_frames[math.floor(self.current_frame)], pg.Vector2(portal_rect.topleft)+pg.Vector2(-37,5))
 
         if(self.portalYAnim <= -25 and self.down == False):
             self.down = True

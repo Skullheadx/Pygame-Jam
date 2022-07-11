@@ -67,7 +67,7 @@ class Sword:
     img,_ = rotate(pg.Vector2(img.get_rect().topright),img, -30,pg.Vector2(img.get_rect().bottomleft))
     flipped_img = pg.transform.flip(img,True,False)
     width,height = (75,200)
-    damage = 25
+    damage = -25
 
     def __init__(self, pos, offset, width,direction):
         self.position = pg.Vector2(pos)
