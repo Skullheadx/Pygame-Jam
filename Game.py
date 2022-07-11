@@ -80,16 +80,15 @@ class Game:
         surf.blit(sky,(0,0))
 
         if (self.level == 1):
-            self.Transition.draw(surf, self.player.position, self.portal_position)
             self.dialogue.text = "enemy dialogue"
-            self.dialogue.draw(surf, get_display_point(self.enemies[0].position)[0] + self.enemies[0].width / 2,
-                               get_display_point(self.enemies[0].position)[1])
+            self.dialogue.draw(surf, self.enemies[0])
             self.dialogue.text = "player dialogue"
-            self.dialogue.draw(surf, get_display_point(self.player.position)[0] + self.player.width / 2,
-                               get_display_point(self.player.position)[1])
+            self.dialogue.draw(surf, self.player)
 
-        if(self.level == 4):
+        try:
             self.Transition.draw(surf, self.player.position, self.portal_position)
+        except:
+            pass;
 
         self.world.draw(surf)
         for enemy in self.enemies:
