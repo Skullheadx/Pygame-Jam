@@ -39,12 +39,8 @@ class Transition:
         coords[1] += self.portalYAnim
         a = (((offsetX-self.width/2) + coords[0], offsetY + coords[1]), (offsetX+coords[0], offsetY-self.height/2+coords[1]), (offsetX+self.width/2 + coords[0], offsetY+coords[1]), (offsetX + coords[0], offsetY+self.height/2 + coords[1]))
         portal_rect = pg.Rect(a[0][0], a[1][1], a[2][0], a[3][1])
-        # print(a[0][0], a[1][1], a[2][0], a[3][1])
-        # print(playerPos[0], playerPos[1])
 
-        print(portal_rect, coords, playerPos)
-        
-        if(a[0][0] < playerPos[0]+self.width/2 < a[2][0] and a[1][1] < playerPos[1] < a[3][1]):
+        if(offsetX-self.width/2 < playerPos[0]+self.width/2 < offsetX+self.width/2 and offsetY-self.width/2 < playerPos[1] < offsetY+self.width/2):
             # self.buttonStage += 0.1
             surf.blit(self.buttonImage, (a[0][0]+self.width/4, a[1][1]-(2*self.width/3)))
             pressed = pg.key.get_pressed()
