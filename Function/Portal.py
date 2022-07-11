@@ -26,14 +26,16 @@ class Transition:
     def draw(self, surf, playerPos, offset=(0,0)):
         offsetX = offset[0]
         offsetY = offset[1] - 25
-
+        
         coords = getWorldCoords(0, 0)
 
         coords[1] += self.portalYAnim
         a = (((offsetX-self.width/2) + coords[0], offsetY + coords[1]), (offsetX+coords[0], offsetY-self.height/2+coords[1]), (offsetX+self.width/2 + coords[0], offsetY+coords[1]), (offsetX + coords[0], offsetY+self.height/2 + coords[1]))
         portal_rect = (a[0][0], a[1][1], a[2][0], a[3][1])
-        # print(a[0][0], a[1][1], a[2][0], a[3][1])
+        # print(portal_rect)
         # print(playerPos[0], playerPos[1])
+
+        print(portal_rect, coords, playerPos)
         
         if(a[0][0] < playerPos[0]+self.width/2 < a[2][0] and a[1][1] < playerPos[1] < a[3][1]):
             # self.buttonStage += 0.1
