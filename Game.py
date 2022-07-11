@@ -1,24 +1,24 @@
 from re import T
 
 from regex import F
+
 import Setup
+from Block import Block
+from EndScreen import EndScreen
+from Enemy import Enemy
+from Function.Fade import fade
+from Function.Portal import Transition
+from Pet import Pet
+from PhysicsBody import PhysicsBody
+from Player import Player
 from Setup import *
 from Setup import camera_offset
-from Player import Player
-from Pet import Pet
-from Enemy import Enemy
-from Block import Block
-from PhysicsBody import PhysicsBody
-from World import World
-from EndScreen import EndScreen
 from UI.DashMeter import DashMeter
+from UI.Dialogue import DialogueUI
 from UI.HealthBar import HealthBar
 from UI.PotionUI import PotionUI
+from World import World
 
-from Function.Portal import Transition
-from Function.Fade import fade
-
-from UI.Dialogue import DialogueUI
 
 class Game:
 
@@ -29,7 +29,7 @@ class Game:
 
         self.world = World(self.collision_layer)
 
-        enemy_positions, player_position = self.world.load_world(level)
+        enemy_positions, player_position, self.portal_position = self.world.load_world(level)
         self.player = Player(player_position, self.collision_layer["player"],
                              [self.collision_layer["enemy"], self.collision_layer["world"]],
                              [self.collision_layer["enemy"]])
@@ -78,7 +78,18 @@ class Game:
         # screen.fill((255,255,255))
         sky = pg.image.load("Assets/world/SKY.png")
         surf.blit(sky,(0,0))
-        self.Transition.draw(surf, self.player.position, [40, -250], 120, 625)
+
+        if (self.level == 1):
+            self.Transition.draw(surf, self.player.position, self.portal_position)
+            self.dialogue.text = "enemy dialogue"
+            self.dialogue.draw(surf, get_display_point(self.enemies[0].position)[0] + self.enemies[0].width / 2,
+                               get_display_point(self.enemies[0].position)[1])
+            self.dialogue.text = "player dialogue"
+            self.dialogue.draw(surf, get_display_point(self.player.position)[0] + self.player.width / 2,
+                               get_display_point(self.player.position)[1])
+
+        if(self.level == 4):
+            self.Transition.draw(surf, self.player.position, self.portal_position)
 
         self.world.draw(surf)
         for enemy in self.enemies:
@@ -89,16 +100,7 @@ class Game:
         # self.dashMeter.update(self.player.lastDash)
         # self.dashMeter.draw(surf)
         self.healthBar.draw(surf, self.player.health)
-        self.potionUI.draw(surf, self.player.potion_bag, self.player.potion_cooldown)
-
-        if (self.level == 1):
-            self.Transition.draw(surf, self.player.position, [40, -250], 120, 625)
-            self.dialogue.text = "enemy dialogue"
-            self.dialogue.draw(surf, get_display_point(self.enemies[0].position)[0] + self.enemies[0].width / 2,
-                               get_display_point(self.enemies[0].position)[1])
-            self.dialogue.text = "player dialogue"
-            self.dialogue.draw(surf, get_display_point(self.player.position)[0] + self.player.width / 2,
-                               get_display_point(self.player.position)[1])
+        self.potionUI.draw(surf, self.player.potion_bag, self.player.potion_cooldown)            
 
         # print(self.player.get_collision_rect())s
         # Debug Lines. DO NOT CROSS THEM!

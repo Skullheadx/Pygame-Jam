@@ -14,19 +14,12 @@ is_running = True
 # scene = TransitionScene()
 scene = DevLevelSelect()
 old_level = 0
-level =1
+level = 4
 next_level = 0
 
 while is_running:
     if pg.event.peek(pg.QUIT):
         is_running = False
-
-    if level <= 1:
-        level = scene.level
-        try:
-            next_level = scene.next_level
-        except:
-            next_level = 0
 
     if level == -1:
         level = old_level
@@ -36,6 +29,8 @@ while is_running:
         match level:
             case -4:
                 scene = TransitionScene(next_level)
+            case -3:
+                scene = DevLevelSelect()
             case -2:
                 scene = LevelCreator()
             case 0:
@@ -46,7 +41,16 @@ while is_running:
                 scene = Game(2)
             case 3:
                 scene = Game(3)
+            case 4:
+                scene = Game(4)
         old_level = level
+
+    if level <= 1:
+        level = scene.level
+        try:
+            next_level = scene.next_level
+        except:
+            next_level = 0
 
     scene.update(delta)
     scene.draw(screen)

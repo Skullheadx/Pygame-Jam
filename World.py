@@ -13,7 +13,7 @@ class World:
         with open(path.join("Levels", f'Level{level}.txt'), 'r') as f:
             file_contents = f.read().split("\n")
 
-        out = [[], center]
+        out = [[], center, "a"]
         for i in range(0, len(file_contents) - 1, 3):
             layer = file_contents[i].split("|")
             pos = file_contents[i + 1].split("|")
@@ -29,6 +29,8 @@ class World:
                     out[1] = (x, y)
                 elif t == "ENEMY":
                     out[0].append((x, y))
+                elif t == "PORTAL":
+                    out[2] = (x, y)
                 elif f"{t}.png" in listdir("Assets/world/decor"):
                     self.blocks.append(Decor((x,y),self.collision_layer["none"],t))
                 else:

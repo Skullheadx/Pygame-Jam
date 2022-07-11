@@ -23,16 +23,18 @@ class Transition:
     def update(self):
         return;
 
-    def draw(self, surf, playerPos, playerOffset=[0,0], offsetX=0, offsetY=0):
+    def draw(self, surf, playerPos, offset=(0,0)):
+        offsetX = offset[0]
+        offsetY = offset[1] - 25
 
         coords = getWorldCoords(0, 0)
 
         coords[1] += self.portalYAnim
         a = (((offsetX-self.width/2) + coords[0], offsetY + coords[1]), (offsetX+coords[0], offsetY-self.height/2+coords[1]), (offsetX+self.width/2 + coords[0], offsetY+coords[1]), (offsetX + coords[0], offsetY+self.height/2 + coords[1]))
         # print(a[0][0], a[1][1], a[2][0], a[3][1])
-        # print(playerPos[0]+40, playerPos[1]-250)
+        # print(playerPos[0], playerPos[1])
         
-        if(a[0][0] < playerPos[0]+playerOffset[0] < a[2][0] and a[1][1] < playerPos[1]+playerOffset[1] < a[3][1]):
+        if(a[0][0] < playerPos[0]+self.width/2 < a[2][0] and a[1][1] < playerPos[1] < a[3][1]):
             # self.buttonStage += 0.1
             surf.blit(self.buttonImage, (a[0][0]+self.width/4, a[1][1]-(2*self.width/3)))
             pressed = pg.key.get_pressed()
