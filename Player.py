@@ -65,6 +65,8 @@ class Player(Actor):
         self.direction = -1
 
         self.state = "IDLE"
+        self.previous_state = "IDLE"
+        self.previous_ground_state = self.on_ground
         self.current_frame = 0
         self.display = self.idle_frames[0]
         self.display_offsets = {"weapon": pg.Vector2(0, 0), "player": pg.Vector2(0, 0)}
@@ -82,11 +84,10 @@ class Player(Actor):
         # Get and handle input
         self.handle_input()
 
-        # if self.potion_cooldown > 0:
-        # threading.Thread(Potion.cooldown)
-
         if len(self.potion_bag) > 0:
             self.potion_bag[0].get_input(self)
+
+        print(self.state, self.previous_state)
 
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
@@ -154,6 +155,15 @@ class Player(Actor):
 
             self.current_frame = (self.current_frame + 0.5) % self.run_gif.n_frames
 
+        if self.state == "RUN":
+            if self.previous_state != "RUN":
+                self.running_sound_channel.play(self.running_sound, -1)
+
+            if self.on_ground == True and self.previous_ground_state == False:
+                self.running_sound_channel.play(self.running_sound, -1)
+                
+        self.previous_state = self.state
+        self.previous_ground_state = self.on_ground
         return self.position - center
 
     def handle_input(self):
@@ -166,7 +176,7 @@ class Player(Actor):
             if self.state != "ATTACK":
                 if self.state != "RUN":
                     self.current_frame = 0
-                    self.running_sound_channel.play(self.running_sound, 999)
+                    
                 self.state = "RUN"
             self.move_left()
             # if (self.lastValueL == False):
@@ -187,7 +197,7 @@ class Player(Actor):
             if self.state != "ATTACK":
                 if self.state != "RUN":
                     self.current_frame = 0
-                    self.running_sound_channel.play(self.running_sound, 999)
+                    
                 self.state = "RUN"
 
             self.move_right()
