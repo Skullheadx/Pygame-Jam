@@ -1,5 +1,6 @@
 import pygame.key
 
+import Setup
 from Setup import *
 import time
 from Actors import Actor
@@ -19,7 +20,7 @@ class Player(Actor):
     attack_gif = Image.open("Assets/player/Sword_Slash.gif")
     attack_frames = []
     for i in range(attack_gif.n_frames):
-        attack_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(attack_gif, i)), (200,200)))
+        attack_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(attack_gif, i)), (200, 200)))
 
     width, height = idle_frames[0].get_size()
 
@@ -46,9 +47,9 @@ class Player(Actor):
         self.starting_potions = 999
         self.potion_bag = [Potion(self)]
         for i in range(self.starting_potions):
-            self.potion_bag.append(Potion(self)) # use one liner
+            self.potion_bag.append(Potion(self))  # use one liner
 
-        self.weapon = Sword(self.position, (0,0), self.width, -1)
+        self.weapon = Sword(self.position, (0, 0), self.width, -1)
         self.targets = can_hurt
 
         self.direction = -1
@@ -56,14 +57,14 @@ class Player(Actor):
         self.state = "IDLE"
         self.current_frame = 0
         self.display = self.idle_frames[0]
-        self.display_offsets = {"weapon": pg.Vector2(0, 0), "player":pg.Vector2(0,0)}
+        self.display_offsets = {"weapon": pg.Vector2(0, 0), "player": pg.Vector2(0, 0)}
+
 
     # def attack(self, enemy, weapon):
     #     super(Player, self).attack(enemy, weapon)
     #     self.current_frame = 0
     #     self.state = "ATTACK"
     #     print('a')
-
 
     def update(self, delta):
         super().update(delta)
@@ -89,7 +90,7 @@ class Player(Actor):
         self.weapon.update(delta, self.position, self.direction)
 
         if self.state == "IDLE":
-            self.display_offsets["player"] = pg.Vector2(0,0)
+            self.display_offsets["player"] = pg.Vector2(0, 0)
 
             frame = math.floor(self.current_frame)
             if self.direction == 1:
@@ -105,29 +106,29 @@ class Player(Actor):
             # 1 - 10 up, 11 down by 1, 12 - 18 down by 2, 19-20 down 1 FIX THIS
             frame += 1
             if 3 < frame < 12:
-                self.display_offsets["weapon"] = pg.Vector2( 3, -2)
+                self.display_offsets["weapon"] = pg.Vector2(3, -2)
             else:
-                self.display_offsets["weapon"] = pg.Vector2( 3, -5)
+                self.display_offsets["weapon"] = pg.Vector2(3, -5)
             self.current_frame = (self.current_frame + 0.1) % len(self.idle_frames)
         elif self.state == "ATTACK":
             frame = math.floor(self.current_frame)
             if self.direction == 1:
                 self.display = self.attack_frames[math.floor(frame)]
-                self.display_offsets["player"] = pg.Vector2(-50,-50)
+                self.display_offsets["player"] = pg.Vector2(-50, -50)
 
             elif self.direction == -1:
                 self.display = pg.transform.flip(self.attack_frames[math.floor(frame)], True, False)
-                self.display_offsets["player"] = pg.Vector2(-100,-50)
+                self.display_offsets["player"] = pg.Vector2(-100, -50)
 
             else:
                 self.direction = prev_direction
                 if prev_direction == 1:
-                    self.display_offsets["player"] = pg.Vector2(-50,-50)
+                    self.display_offsets["player"] = pg.Vector2(-50, -50)
 
                     self.display = self.attack_frames[math.floor(frame)]
                 elif prev_direction == -1:
                     self.display = pg.transform.flip(self.attack_frames[math.floor(frame)], True, False)
-                    self.display_offsets["player"] = pg.Vector2(-100,-50)
+                    self.display_offsets["player"] = pg.Vector2(-100, -50)
 
             self.current_frame += 0.4
             if math.floor(self.current_frame) == self.attack_gif.n_frames:
@@ -178,29 +179,37 @@ class Player(Actor):
             if self.state != "ATTACK":
                 self.state = "ATTACK"
                 self.current_frame = 0
-            elif self.state == "ATTACK":
-                if math.floor(self.current_frame) > 2:
-                    for mask in self.targets:
-                        for enemy in mask:
-                            if not enemy.attacked and self.weapon.get_collision_rect().colliderect(enemy.get_collision_rect()):
-                                enemy.attack(self, self.weapon)
+        if self.state == "ATTACK":
+            if 12 > math.floor(self.current_frame) > 6:
+                for mask in self.targets:
+                    for enemy in mask:
+                        # if not enemy.attacked and self.weapon.get_collision_rect().colliderect(
+                        #         enemy.get_collision_rect()):
 
+                        if not enemy.attacked and get_display_rect(self.weapon.get_collision_rect()).colliderect(
+                                get_display_rect(enemy.get_collision_rect())):
+                            enemy.attack(self, self.weapon, self.direction)
 
     def draw(self, surf):
         if self.state == "IDLE":
             # self.weapon.draw(surf, self.display_offsets["weapon"])
             if self.direction == 1:
-                surf.blit(pg.transform.flip(self.weapon.img, True, True), get_display_rect(self.get_collision_rect()).topleft+pg.Vector2(-25,55) + self.display_offsets["weapon"])
+                surf.blit(pg.transform.flip(self.weapon.img, True, True),
+                          get_display_rect(self.get_collision_rect()).topleft + pg.Vector2(-25, 55) +
+                          self.display_offsets["weapon"])
             elif self.direction == -1:
-                surf.blit(pg.transform.flip(self.weapon.img, False, True), get_display_rect(self.get_collision_rect()).topleft+pg.Vector2(0,55) + self.display_offsets["weapon"])
+                surf.blit(pg.transform.flip(self.weapon.img, False, True),
+                          get_display_rect(self.get_collision_rect()).topleft + pg.Vector2(0, 55) +
+                          self.display_offsets["weapon"])
         surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft + self.display_offsets["player"])
         # super().draw(surf)
         # print(self.position, self.velocity, get_display_rect(self.get_collision_rect()).topleft, Setup.camera_offset)
         # pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=8)
-        pg.draw.rect(surf, (255,0,0),get_display_rect(self.weapon.get_collision_rect()),width=3)
+        pg.draw.rect(surf, (255, 0, 0), get_display_rect(self.weapon.get_collision_rect()), width=3)
+
+        pg.draw.rect(surf, (0, 255, 0), get_display_rect(self.get_collision_rect()), 2)
+
         # pg.draw.rect(surf,self.colour,pg.Rect(center, (self.width, self.height)),border_radius=8)
-
-
 
         # # Healthbar Stuff
         # # bar is made of 2 rectanges, background which is just a simple rectange and foreground which goes on top and has a bit of math involved
@@ -220,12 +229,8 @@ class Player(Actor):
         # text_rect = current_health_display.get_rect(center=background_rect.center)
         # surf.blit(current_health_display, text_rect)
 
-
-
     def potion_cooldown_timer(self):
         while self.potion_cooldown > 0:
             self.potion_cooldown -= 1
-            print(self.potion_cooldown)
+            # print(self.potion_cooldown)
             time.sleep(1)
-
-    

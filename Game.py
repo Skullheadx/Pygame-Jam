@@ -80,10 +80,13 @@ class Game:
             self.dialogue.draw(surf, get_display_point(self.enemies[0].position)[0] + self.enemies[0].width/2, get_display_point(self.enemies[0].position)[1])
             self.dialogue.text = "player dialogue"
             self.dialogue.draw(surf, get_display_point(self.player.position)[0] + self.player.width/2, get_display_point(self.player.position)[1])
-
+        # screen.fill((0, 191, 255))
         # screen.fill((255,255,255))
-        # sky = pg.image.load("Assets/world/SKY.png")
-        # surf.blit(sky,(0,0))
+        sky = pg.image.load("Assets/world/SKY.png")
+        surf.blit(sky,(0,0))
+        self.Transition.draw(surf, self.player.position, [40, -250], 120, 625)
+
+
         self.world.draw(surf)
         for enemy in self.enemies:
             enemy.draw(surf)
