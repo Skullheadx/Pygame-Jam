@@ -18,6 +18,8 @@ from UI.PotionUI import PotionUI
 from Function.Portal import Transition
 from Function.Fade import fade
 
+from UI.Dialogue import DialogueUI
+
 class Game:
 
     def __init__(self, level):
@@ -42,10 +44,12 @@ class Game:
         self.level = level
         self.scene.level = self.level
 
-        self.Transition = Transition(-2, 0,0)
+        self.Transition = Transition()
         self.fade = self.Transition.fade
         self.fadeT = fade()
         self.next_level = 0
+
+        self.dialogue = DialogueUI()
 
     # def load_world(self, level):
 
@@ -70,7 +74,12 @@ class Game:
     def draw(self, surf):
         screen.fill((0, 191, 255))
 
-        self.Transition.draw(surf, self.player.position, [40, -250], 120, 625)
+        if(self.level == 1):
+            self.Transition.draw(surf, self.player.position, [40, -250], 120, 625)
+            self.dialogue.text = "enemy dialogue"
+            self.dialogue.draw(surf, get_display_point(self.enemies[0].position)[0] + self.enemies[0].width/2, get_display_point(self.enemies[0].position)[1])
+            self.dialogue.text = "player dialogue"
+            self.dialogue.draw(surf, get_display_point(self.player.position)[0] + self.player.width/2, get_display_point(self.player.position)[1])
 
         # screen.fill((255,255,255))
         # sky = pg.image.load("Assets/world/SKY.png")
@@ -86,9 +95,11 @@ class Game:
         self.healthBar.draw(surf, self.player.health)
         self.potionUI.draw(surf, self.player.potion_bag, self.player.potion_cooldown)
 
-        if self.player.dead:
-            self.scene.update()
-            self.scene.draw()
+        # print(self.player.get_collision_rect())s
+        # Debug Lines. DO NOT CROSS THEM!
+        pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(SCREEN_WIDTH, -Setup.camera_offset.y), 10)
+        pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(-Setup.camera_offset.x, SCREEN_HEIGHT), 10)
+        # self.pet.draw(surf)
 
         if(self.fade == True):
             self.fadeT.update(True)
@@ -101,11 +112,7 @@ class Game:
             self.Transition.fade = False
             self.next_level = self.level + 1
             self.level = -4
-            # self.__init__(self.level)
-            
 
-        # print(self.player.get_collision_rect())s
-        # Debug Lines. DO NOT CROSS THEM!
-        pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(SCREEN_WIDTH, -Setup.camera_offset.y), 10)
-        pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(-Setup.camera_offset.x, SCREEN_HEIGHT), 10)
-        # self.pet.draw(surf)
+        if self.player.dead:
+            self.scene.update()
+            self.scene.draw()
