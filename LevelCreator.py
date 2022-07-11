@@ -262,7 +262,7 @@ class LevelCreator:
                      math.ceil(self.zoom * 5))
 
         display_img = EditorBlock.textures[self.textures[self.current_texture]].copy()
-        display_img.set_alpha(100)
+        display_img.set_alpha(200)
         surf.blit(pg.transform.scale(display_img, self.apply_rect_transformations(display_img.get_rect()).size),
                   self.apply_transformations(self.fit_to_grid(pg.mouse.get_pos(), use_floor=True)))
         for button in self.buttons:
