@@ -6,7 +6,6 @@ from Weapon import Melee
 
 
 class Enemy(Actor):
-    width, height = 50, 100
     speed = Actor.speed * 0.5
     # jump_strength = Actor.jump_strength * 0.5
     colour = (235, 64, 52)
@@ -27,6 +26,8 @@ class Enemy(Actor):
 
         self.weapon = Melee(self.position, (-Melee.width / 2 + 7, Melee.height / 2 + self.height / 3 - 8),
                             (-5, Melee.height), self.width, -1, -10)
+
+        self.buffer = []
 
     def update(self, delta, target=None):
         super().update(delta)
@@ -59,4 +60,8 @@ class Enemy(Actor):
     def draw(self, surf):
         self.weapon.draw(surf)
         super(Enemy, self).draw(surf)
+
+        # for b in self.buffer:
+        #     pg.draw.rect(surf,(0,0,255),b,3)
+        # self.buffer.append(get_display_rect(self.get_collision_rect()))
         # pg.draw.rect(surf, (0, 255, 0), get_display_rect(self.get_collision_rect()), 2)

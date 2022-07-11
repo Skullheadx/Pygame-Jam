@@ -91,6 +91,7 @@ class Actor:
             self.invincibility_frames = self.invincibility_time
 
     def follow_target(self, node, follow_range=100000, stop_dist=115):
+        return
         # if stop_dist is None:
         #     stop_dist = max(self.height, self.width) * 1.5
 
@@ -177,15 +178,15 @@ class Actor:
                     if area.is_colliding(thing):
                         area.signal(thing)
                 if collision_rect.colliderect(thing.get_collision_rect()):
-                    if vel.y > 0:
+                    if vel.y >= 0:
                         pos.y = thing.position.y - self.height
                         vel.y = min(vel.y, 0)
                         self.on_ground = True
                         self.coyote_time = datetime.utcnow()
                     elif vel.y < 0:
                         pos.y = thing.position.y + thing.height
-                        # vel.y = max(vel.y, 0)
-                    # collision_rect = self.get_collision_rect(pos)
+                        vel.y = max(vel.y, 0)
+                    collision_rect = self.get_collision_rect(pos)
         return pos, vel
 
     def get_collision_rect(self, pos=None):

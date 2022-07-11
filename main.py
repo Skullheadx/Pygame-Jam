@@ -44,7 +44,7 @@ while is_running:
             case 4:
                 scene = Game(4)
             case 5:
-                scene = Game(7)
+                scene = Game(5)
         old_level = level
 
     if level <= 1:

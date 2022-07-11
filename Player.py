@@ -241,6 +241,7 @@ class Player(Actor):
                           get_display_rect(self.get_collision_rect()).topleft + pg.Vector2(0, 55) +
                           self.display_offsets["weapon"])
         surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft + self.display_offsets["player"])
+        # print(self, self.position)
         # super().draw(surf)
         # print(self.position, self.velocity, get_display_rect(self.get_collision_rect()).topleft, Setup.camera_offset)
         # pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=8)
