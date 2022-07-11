@@ -24,7 +24,7 @@ while is_running:
     if level == -1:
         level = old_level
         old_level = 0
-    
+
     if old_level != level:
         match level:
             case -4:
@@ -35,24 +35,16 @@ while is_running:
                 scene = LevelCreator()
             case 0:
                 scene = Menu()
-            case 1:
-                scene = Game(1)
-            case 2:
-                scene = Game(2)
-            case 3:
-                scene = Game(3)
-            case 4:
-                scene = Game(4)
-            case 5:
-                scene = Game(5)
+                break;
+            case _:
+                scene = Game(level)
         old_level = level
 
-    if level <= 1:
-        level = scene.level
-        try:
-            next_level = scene.next_level
-        except:
-            next_level = 0
+    level = scene.level
+    try:
+        next_level = scene.next_level
+    except:
+        next_level = 0
 
     scene.update(delta)
     scene.draw(screen)
