@@ -26,6 +26,10 @@ class Player(Actor):
     for i in range(run_gif.n_frames):
         run_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(run_gif, i)), (155, 155)))
 
+    #player sfx
+    running_sound = pg.mixer.Sound("Assets/SFX/Running_Sound_Effect.wav")
+    running_sound_channel = pg.mixer.Channel(1)
+
     width, height = idle_frames[0].get_size()
 
     colour = (52, 94, 235)
@@ -168,10 +172,12 @@ class Player(Actor):
         pressed = pygame.key.get_pressed()
         if pressed[pg.K_w] or pressed[pg.K_UP] or pressed[pg.K_SPACE]:
             self.jump()
+            self.running_sound_channel.stop()
         if pressed[pg.K_a] or pressed[pg.K_LEFT]:
             if self.state != "ATTACK":
                 if self.state != "RUN":
                     self.current_frame = 0
+                    self.running_sound_channel.play(self.running_sound, 999)
                 self.state = "RUN"
             self.move_left()
             # if (self.lastValueL == False):
@@ -192,6 +198,7 @@ class Player(Actor):
             if self.state != "ATTACK":
                 if self.state != "RUN":
                     self.current_frame = 0
+                    self.running_sound_channel.play(self.running_sound, 999)
                 self.state = "RUN"
 
             self.move_right()
@@ -211,6 +218,7 @@ class Player(Actor):
         else:
             if self.state == "RUN":
                 self.state = "IDLE"
+                self.running_sound_channel.stop()
 
         # self.lastValueL = pressed[pg.K_a] or pressed[pg.K_LEFT]
         # self.lastValueR = pressed[pg.K_d] or pressed[pg.K_RIGHT]
