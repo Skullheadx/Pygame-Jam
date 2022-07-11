@@ -14,7 +14,7 @@ is_running = True
 # scene = TransitionScene()
 scene = DevLevelSelect()
 old_level = 0
-level = 0
+level = 5
 next_level = 0
 
 while is_running:
@@ -43,6 +43,8 @@ while is_running:
                 scene = Game(3)
             case 4:
                 scene = Game(4)
+            case 5:
+                scene = Game(7)
         old_level = level
 
     if level <= 1:
