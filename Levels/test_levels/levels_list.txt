@@ -1,0 +1,6 @@
+level 1 = overworld
+level 2 = cave
+level 3 & 4 = sky
+level 5 = boss
+
+level 6+ = testing
