@@ -19,12 +19,12 @@ from UI.HealthBar import HealthBar
 from UI.PotionUI import PotionUI
 from World import World
 from Item import PotionItem
-
+from Spike import Spike
 
 class Game:
 
     def __init__(self, level):
-        self.collision_layer = {"none": set(), "world": set(), "player": set(), "enemy": set(), "pet": set(), "body":set(), "potion":set()}
+        self.collision_layer = {"none": set(), "world": set(), "player": set(), "enemy": set(), "pet": set(), "body":set(), "potion":set(), "spike":set()}
 
         # self.load_world(level)
 
@@ -35,15 +35,18 @@ class Game:
 
         self.world = World(self.collision_layer)
 
-        enemy_positions, player_position, self.portal_position, heal_positions = self.world.load_world(level)
+        enemy_positions, player_position, self.portal_position, heal_positions, spike_positions = self.world.load_world(level)
 
         for i in heal_positions:
             PotionItem(i, self.collision_layer["potion"])
+        for i in spike_positions:
+            Spike(i, self.collision_layer["spike"])
 
         self.player = Player(player_position, self.collision_layer["player"],
                              [self.collision_layer["enemy"], self.collision_layer["world"]],
                              [self.collision_layer["enemy"], self.collision_layer["body"]],
-                             self.collision_layer["potion"])
+                             self.collision_layer["potion"],
+                             self.collision_layer["spike"])
         # self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
         self.enemies = [Enemy(pos, self.collision_layer["enemy"],
                               [self.collision_layer["player"], self.collision_layer["world"]]) for pos in
@@ -130,6 +133,8 @@ class Game:
 
         for potion in self.collision_layer["potion"]:
             potion.draw(surf)
+        for spike in self.collision_layer["spike"]:
+            spike.draw(surf)
 
         for particle in particles:
             particle.draw(surf)

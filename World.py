@@ -14,7 +14,7 @@ class World:
         with open(path.join("Levels", f'Level{level}.txt'), 'r') as f:
             file_contents = f.read().split("\n")
 
-        out = [[], center, "a", []]
+        out = [[], center, "a", [], []]
         for i in range(0, len(file_contents) - 1, 3):
             layer = file_contents[i].split("|")
             pos = file_contents[i + 1].split("|")
@@ -34,6 +34,8 @@ class World:
                     out[2] = (x, y)
                 elif t == "HEALTHPOTION":
                     out[3].append((x,y))
+                elif t == "SPIKE":
+                    out[4].append((x,y))
                 elif f"{t}.png" in listdir("Assets/world/decor"):
                     self.blocks.append(Decor((x,y),self.collision_layer["none"],t))
                 else:

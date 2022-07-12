@@ -7,6 +7,7 @@ from Actors import Actor
 from datetime import datetime, timedelta
 from Potion import Potion
 from Item import PotionItem
+from Spike import Spike
 from Weapon import Sword
 from Particle import Dust
 
@@ -29,7 +30,7 @@ class Player(Actor):
     for i in range(run_gif.n_frames):
         run_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(run_gif, i)), (155, 155)))
 
-    #Player SFX
+    # Player SFX
     running_sound = pg.mixer.Sound("Assets/SFX/Running_Sound_Effect.wav")
     running_sound_channel = pg.mixer.Channel(1)
     sword_swing_sound = pg.mixer.Sound("Assets/SFX/Sword_Swing.wav")
@@ -41,7 +42,7 @@ class Player(Actor):
 
     colour = (52, 94, 235)
 
-    def __init__(self, pos, collision_layer, collision_mask, can_hurt, heals):
+    def __init__(self, pos, collision_layer, collision_mask, can_hurt, heals, spikes):
         super().__init__(pos, collision_layer, collision_mask)
         # self.initial_position = pg.Vector2(pos)
         # self.dashCooldown = timedelta(seconds=2, microseconds=500000)
@@ -55,7 +56,10 @@ class Player(Actor):
         # self.lastPressedRight = datetime.utcnow()
         # self.lastValueR = False
         self.areas = {"head": Area(self.position, pg.Vector2(0, self.height / 2), self.width, self.height / 2, Actor),
-                      "body": Area(self.position,(0,0),self.width,self.height,PotionItem, self.add_potion)}
+                      "body": Area(self.position, (0, 0), self.width, self.height, PotionItem, self.add_potion),
+                      "body2": Area(self.position, (0, 0), self.width, self.height, Spike, self.die)}
+
+        self.spike_layer = spikes
 
         self.heal_layer = heals
         self.potion_cooldown = 0
@@ -78,6 +82,8 @@ class Player(Actor):
 
         self.buffer = []
 
+    def die(self):
+        self.dead = True
 
     def add_potion(self):
         if len(self.potion_bag) < 3:
@@ -92,7 +98,7 @@ class Player(Actor):
     def attack(self, enemy, weapon, direction):
         self.friction = 0.9
 
-        super().attack(enemy,weapon,direction)
+        super().attack(enemy, weapon, direction)
 
     def update(self, delta):
 
@@ -106,11 +112,15 @@ class Player(Actor):
         # Get and handle input
         self.handle_input()
 
-        for i,heal in enumerate(self.heal_layer):
+        for i, heal in enumerate(self.heal_layer):
             if len(self.potion_bag) < 3 and self.areas["body"].is_colliding(heal):
                 self.add_potion()
                 self.heal_layer.remove(heal)
                 break
+
+        for i in self.spike_layer:
+            if self.areas["body2"].is_colliding(i):
+                self.die()
 
         if len(self.potion_bag) > 0:
             self.potion_bag[0].get_input(self)
@@ -131,7 +141,7 @@ class Player(Actor):
 
         if self.on_ground == True and self.previous_ground_state == False:
             self.landing_sound_channel.play(self.landing_sound)
-            
+
         if self.state == "IDLE":
             self.display_offsets["player"] = pg.Vector2(0, 0)
 
@@ -186,7 +196,8 @@ class Player(Actor):
                 self.display_offsets["player"] = pg.Vector2(-65, -35)
 
             if frame % 2 == 0 and self.on_ground:
-                Dust(pg.Vector2(self.get_collision_rect().midbottom) + pg.Vector2(math.copysign(1, self.velocity.x) * -self.width/2,-15), 16, self.direction)
+                Dust(pg.Vector2(self.get_collision_rect().midbottom) + pg.Vector2(
+                    math.copysign(1, self.velocity.x) * -self.width / 2, -15), 16, self.direction)
 
             self.current_frame = (self.current_frame + 0.5) % self.run_gif.n_frames
 
@@ -196,7 +207,7 @@ class Player(Actor):
 
             if self.on_ground == True and self.previous_ground_state == False:
                 self.running_sound_channel.play(self.running_sound, -1)
-                
+
         self.previous_state = self.state
         self.previous_ground_state = self.on_ground
         return self.position - center
@@ -204,7 +215,6 @@ class Player(Actor):
     def handle_input(self):
         if self.stun_time > 0:
             return
-
 
         pressed = pygame.key.get_pressed()
         if pressed[pg.K_w] or pressed[pg.K_UP] or pressed[pg.K_SPACE]:
@@ -214,7 +224,7 @@ class Player(Actor):
             if self.state != "ATTACK":
                 if self.state != "RUN":
                     self.current_frame = 0
-                    
+
                 self.state = "RUN"
             self.move_left()
             # if (self.lastValueL == False):
@@ -235,7 +245,7 @@ class Player(Actor):
             if self.state != "ATTACK":
                 if self.state != "RUN":
                     self.current_frame = 0
-                    
+
                 self.state = "RUN"
 
             self.move_right()
@@ -303,7 +313,7 @@ class Player(Actor):
 
         a = get_display_rect(self.get_collision_rect())
         b = a.topleft + self.display_offsets["player"]
-        if pg.Rect(b,a.size).colliderect(screen_rect):
+        if pg.Rect(b, a.size).colliderect(screen_rect):
             surf.blit(self.display, b)
         #
         # for b in self.buffer:
