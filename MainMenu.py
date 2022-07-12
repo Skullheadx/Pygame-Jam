@@ -18,6 +18,9 @@ class Menu:
 
         self.level = 0
 
+        pg.mixer.music.load('Assets/Music/Main_Menu_Music.ogg')
+        pg.mixer.music.play(-1)
+
         
     def update(self, delta):
         for ev in pg.event.get(pg.MOUSEBUTTONDOWN):

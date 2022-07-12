@@ -37,6 +37,9 @@ class DevLevelSelect:
             self.level = int(lines[0])
         except:
             self.level = -3
+        
+        pg.mixer.music.load('Assets/Music/Main_Menu_Music.ogg')
+        pg.mixer.music.play(-1)
 
         
     def update(self, delta):
