@@ -1,5 +1,6 @@
 from Setup import *
 from Block import Block
+from Item import PotionItem
 from os import path, listdir
 
 
@@ -13,7 +14,7 @@ class World:
         with open(path.join("Levels", f'Level{level}.txt'), 'r') as f:
             file_contents = f.read().split("\n")
 
-        out = [[], center, "a"]
+        out = [[], center, "a", []]
         for i in range(0, len(file_contents) - 1, 3):
             layer = file_contents[i].split("|")
             pos = file_contents[i + 1].split("|")
@@ -31,6 +32,8 @@ class World:
                     out[0].append((x, y))
                 elif t == "PORTAL":
                     out[2] = (x, y)
+                elif t == "HEALTHPOTION":
+                    out[3].append((x,y))
                 elif f"{t}.png" in listdir("Assets/world/decor"):
                     self.blocks.append(Decor((x,y),self.collision_layer["none"],t))
                 else:
@@ -48,9 +51,13 @@ class World:
 
 class Decor:
     textures = dict()
+    # for file in listdir("Assets/world/decor"):
+    #     textures[file[:file.index(".")]] = pg.transform.scale(
+    #     pg.image.load(path.join("Assets/world/decor", file)), (50, 50))
     for file in listdir("Assets/world/decor"):
-        textures[file[:file.index(".")]] = pg.transform.scale(
-        pg.image.load(path.join("Assets/world/decor", file)), (50, 50))
+        img = pg.image.load(path.join("Assets/world/decor", file))
+
+        textures[file[:file.index(".")]] = pg.transform.scale(pg.image.load(path.join("Assets/world/decor", file)),(img.get_width() * 50/16, img.get_height() * 50/16))
     def __init__(self, pos, collision_layer, img):
         self.position = pg.Vector2(pos)
         self.img = img

@@ -5,6 +5,8 @@ class Block:
     textures = {file[:file.index(".")]:pg.transform.scale(
         pg.image.load(path.join("Assets/world/blocks", file)), (50, 50)) for
                    file in listdir("Assets/world/blocks")}
+    textures = {name: surf.convert() for name, surf in textures.items()}
+
     width, height = textures["PLACEHOLDER"].get_size()
     colour = (71, 77, 97)
 

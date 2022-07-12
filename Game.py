@@ -18,12 +18,13 @@ from UI.Dialogue import DialogueUI
 from UI.HealthBar import HealthBar
 from UI.PotionUI import PotionUI
 from World import World
+from Item import PotionItem
 
 
 class Game:
 
     def __init__(self, level):
-        self.collision_layer = {"none": set(), "world": set(), "player": set(), "enemy": set(), "pet": set(), "body":set()}
+        self.collision_layer = {"none": set(), "world": set(), "player": set(), "enemy": set(), "pet": set(), "body":set(), "potion":set()}
 
         # self.load_world(level)
 
@@ -32,11 +33,15 @@ class Game:
 
         self.world = World(self.collision_layer)
 
-        enemy_positions, player_position, self.portal_position = self.world.load_world(level)
+        enemy_positions, player_position, self.portal_position, heal_positions = self.world.load_world(level)
+
+        for i in heal_positions:
+            PotionItem(i, self.collision_layer["potion"])
 
         self.player = Player(player_position, self.collision_layer["player"],
                              [self.collision_layer["enemy"], self.collision_layer["world"]],
-                             [self.collision_layer["enemy"], self.collision_layer["body"]])
+                             [self.collision_layer["enemy"], self.collision_layer["body"]],
+                             self.collision_layer["potion"])
         # self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
         self.enemies = [Enemy(pos, self.collision_layer["enemy"],
                               [self.collision_layer["player"], self.collision_layer["world"]]) for pos in
@@ -59,6 +64,8 @@ class Game:
 
     def update(self, delta):
         Setup.camera_offset = self.player.update(delta)
+        Setup.camera_offset.x = max(0, min(Setup.camera_offset.x, MAP_WIDTH - SCREEN_WIDTH))
+        Setup.camera_offset.y = max(0, min(Setup.camera_offset.y, MAP_HEIGHT - SCREEN_HEIGHT))
         if self.player.dead:
             self.level = self.scene.level
 
@@ -95,6 +102,9 @@ class Game:
             pass;
 
         self.world.draw(surf)
+
+        for potion in self.collision_layer["potion"]:
+            potion.draw(surf)
 
         for particle in particles:
             particle.draw(surf)

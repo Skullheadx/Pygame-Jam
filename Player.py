@@ -6,6 +6,7 @@ import time
 from Actors import Actor
 from datetime import datetime, timedelta
 from Potion import Potion
+from Item import PotionItem
 from Weapon import Sword
 from Particle import Dust
 
@@ -33,17 +34,19 @@ class Player(Actor):
     running_sound_channel = pg.mixer.Channel(1)
     sword_swing_sound = pg.mixer.Sound("Assets/SFX/Sword_Swing.wav")
     sword_swing_channel = pg.mixer.Channel(2)
+    landing_sound = pg.mixer.Sound("Assets/SFX/Jump_Landing.wav")
+    landing_sound_channel = pg.mixer.Channel(3)
 
     width, height = idle_frames[0].get_size()
 
     colour = (52, 94, 235)
 
-    def __init__(self, pos, collision_layer, collision_mask, can_hurt):
+    def __init__(self, pos, collision_layer, collision_mask, can_hurt, heals):
         super().__init__(pos, collision_layer, collision_mask)
         # self.initial_position = pg.Vector2(pos)
-        self.dashCooldown = timedelta(seconds=2, microseconds=500000)
-        self.timeBetweenDoublePress = timedelta(seconds=0, microseconds=500000)
-        self.dashSpeed = 5
+        # self.dashCooldown = timedelta(seconds=2, microseconds=500000)
+        # self.timeBetweenDoublePress = timedelta(seconds=0, microseconds=500000)
+        # self.dashSpeed = 5
 
         # self.dashPossible = False
         # self.lastDash = datetime.utcnow()
@@ -51,14 +54,14 @@ class Player(Actor):
         # self.lastValueL = False
         # self.lastPressedRight = datetime.utcnow()
         # self.lastValueR = False
-        self.areas = {"body": Area(self.position, pg.Vector2(0, self.height / 2), self.width, self.height / 2, Actor),
-                      "head": Area(self.position, pg.Vector2(self.width * 1 / 3 * 1 / 2, -2), self.width * 2 / 3, 25,
-                                   Actor)}
+        self.areas = {"head": Area(self.position, pg.Vector2(0, self.height / 2), self.width, self.height / 2, Actor),
+                      "body": Area(self.position,(0,0),self.width,self.height,PotionItem, self.add_potion)}
 
+        self.heal_layer = heals
         self.potion_cooldown = 0
-        self.starting_potions = 999
+        self.starting_potions = 3
         self.potion_bag = [Potion(self)]
-        for i in range(self.starting_potions):
+        for i in range(self.starting_potions - 1):
             self.potion_bag.append(Potion(self))  # use one liner
 
         self.weapon = Sword(self.position, (0, 0), self.width, -1)
@@ -76,11 +79,20 @@ class Player(Actor):
         self.buffer = []
 
 
+    def add_potion(self):
+        if len(self.potion_bag) < 3:
+            self.potion_bag.append(Potion(self))
+
     # def attack(self, enemy, weapon):
     #     super(Player, self).attack(enemy, weapon)
     #     self.current_frame = 0
     #     self.state = "ATTACK"
     #     print('a')
+
+    def attack(self, enemy, weapon, direction):
+        self.friction = 0.9
+
+        super().attack(enemy,weapon,direction)
 
     def update(self, delta):
 
@@ -94,10 +106,14 @@ class Player(Actor):
         # Get and handle input
         self.handle_input()
 
+        for i,heal in enumerate(self.heal_layer):
+            if len(self.potion_bag) < 3 and self.areas["body"].is_colliding(heal):
+                self.add_potion()
+                self.heal_layer.remove(heal)
+                break
+
         if len(self.potion_bag) > 0:
             self.potion_bag[0].get_input(self)
-
-        # print(self.state, self.previous_state)
 
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
@@ -113,7 +129,9 @@ class Player(Actor):
         if self.velocity.x == 0 and self.state == "RUN":
             self.state = "IDLE"
 
-
+        if self.on_ground == True and self.previous_ground_state == False:
+            self.landing_sound_channel.play(self.landing_sound)
+            
         if self.state == "IDLE":
             self.display_offsets["player"] = pg.Vector2(0, 0)
 
@@ -260,6 +278,7 @@ class Player(Actor):
                             enemy.attack(self, self.weapon, self.direction)
 
     def draw(self, surf):
+        # super().draw(surf)
         if self.state == "IDLE":
             # self.weapon.draw(surf, self.display_offsets["weapon"])
             if self.direction == 1:
