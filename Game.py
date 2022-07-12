@@ -8,6 +8,7 @@ from EndScreen import EndScreen
 from Enemy import Enemy
 from Function.Fade import fade
 from Function.Portal import Transition
+from PauseMenu import PauseMenu
 from Pet import Pet
 from PhysicsBody import PhysicsBody
 from Player import Player
@@ -68,6 +69,9 @@ class Game:
 
         self.dialogue = DialogueUI()
 
+        self.paused = False
+        self.PauseMenu = PauseMenu()
+
         if self.level in [1,3,4]:
             # Density = total clouds / area
             # Total_clouds = area * density
@@ -99,26 +103,34 @@ class Game:
     # def load_world(self, level):
 
     def update(self, delta):
-        Setup.camera_offset = self.player.update(delta)
-        Setup.camera_offset.x = max(0, min(Setup.camera_offset.x, MAP_WIDTH - SCREEN_WIDTH))
-        Setup.camera_offset.y = max(0, min(Setup.camera_offset.y, MAP_HEIGHT - SCREEN_HEIGHT))
-        if self.player.dead:
-            self.level = self.scene.level
+        if self.paused == True:
+            pass
+        else:
+            Setup.camera_offset = self.player.update(delta)
+            Setup.camera_offset.x = max(0, min(Setup.camera_offset.x, MAP_WIDTH - SCREEN_WIDTH))
+            Setup.camera_offset.y = max(0, min(Setup.camera_offset.y, MAP_HEIGHT - SCREEN_HEIGHT))
+            if self.player.dead:
+                self.level = self.scene.level
 
-        for i, enemy in enumerate(self.enemies):
-            enemy.update(delta, self.player)
-            if enemy.dead:
-                self.enemies[i] = PhysicsBody(enemy.position, enemy.velocity, enemy.width, enemy.height, enemy.colour,
-                                              self.collision_layer["body"],
-                                              [self.collision_layer["world"], self.collision_layer["body"]])
-                self.collision_layer["enemy"].remove(enemy)
-                self.collision_layer["body"].add(self.enemies[i])
+            for i, enemy in enumerate(self.enemies):
+                enemy.update(delta, self.player)
+                if enemy.dead:
+                    self.enemies[i] = PhysicsBody(enemy.position, enemy.velocity, enemy.width, enemy.height, enemy.colour,
+                                                self.collision_layer["body"],
+                                                [self.collision_layer["world"], self.collision_layer["body"]])
+                    self.collision_layer["enemy"].remove(enemy)
+                    self.collision_layer["body"].add(self.enemies[i])
 
-        for particle in particles:
-            particle.update(delta)
+            for particle in particles:
+                particle.update(delta)
 
-        self.world.update(delta)
-        self.fade = self.Transition.fade
+            for event in pg.event.get():
+                if event.type == pg.KEYUP:
+                    if event.key == pg.K_ESCAPE:
+                        self.paused = True
+
+            self.world.update(delta)
+            self.fade = self.Transition.fade
 
         # self.pet.update(delta, self.player, self.camera_pos)
 
@@ -183,3 +195,7 @@ class Game:
         if self.player.dead:
             self.scene.update()
             self.scene.draw()
+
+        if self.paused == True:
+            self.PauseMenu.update(self)
+            self.PauseMenu.draw()
