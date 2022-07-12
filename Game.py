@@ -181,6 +181,11 @@ class Game:
 
         if (self.level == 1):
             # self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
+            self.dialogue.draw(surf, self.player, "text1", 4, 1, 100, 200)
+            self.dialogue.draw(surf, self.player, "text2", 3, 2)
+            self.dialogue.draw(surf, self.player, "text3", 2, 3)
+            self.dialogue.draw(surf, self.player, "text4", 1, 4)
+            self.dialogue.draw(surf, self.player, "text5", 0.5, 5)
             # for o,text in self.hints:
             #     o.position -= Setup.camera_offset
             #     self.dialogue.draw(surf,o, text)
@@ -196,8 +201,8 @@ class Game:
             # self.dialogue.draw(surf, self.player, "text4", 1, 4)
             # self.dialogue.draw(surf, self.player, "text5", 0.5, 5)
 
-        if (self.level == 13):
-            self.dialogue.draw(surf, self.player, "text1", 4, 1)
+        if(self.level == 13):
+            self.dialogue.draw(surf, self.player, "text1", 4, 1, 325, 320)
             self.dialogue.draw(surf, self.player, "text2", 3, 2)
             self.dialogue.draw(surf, self.player, "text3", 2, 3)
             self.dialogue.draw(surf, self.player, "text4", 1, 4)

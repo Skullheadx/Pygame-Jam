@@ -24,23 +24,32 @@ class DialogueUI:
     def update(self):
         return;
 
-    def draw(self, surf, agent, text, sec, ID):
-        
+    def draw(self, surf, agent, text, sec, ID, Xt=-10000, Yt=-10000):
+
         if(not ID in self.IDS):
             temp = []
+            c = []
             self.PSA += sec
             temp.append(text)
             temp.append(self.PSA)
+            c.append(Xt)
+            c.append(Yt)
+            temp.append(c)
             self.IDS.append(ID)
             self.dialogue_list.append(temp)
 
         try:
+            X, Y = 0, 0
+            if(self.dialogue_list[self.char][2][0] == -10000 or self.dialogue_list[self.char][2][1] == -10000):
+                X = get_display_point(agent.position)[0] + agent.width / 2
+                Y = get_display_point(agent.position)[1]
+            else:
+                X, Y = get_display_point((Xt, Yt))
+
+            print(get_display_point(agent.position)[0] + agent.width / 2, get_display_point(agent.position)[1])
+
             self.text = self.dialogue_list[self.char][0]
             self.checkTime()
-
-            X = get_display_point(agent.position)[0] + agent.width / 2
-            Y = get_display_point(agent.position)[1]
-
             self.createDialogue()
 
             for i in range(len(self.drawText)):
