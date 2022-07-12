@@ -113,7 +113,7 @@ class Actor:
             self.move_left()
         elif target.x > self.position.x:
             self.move_right()
-        if not (target.y - node.height/2< self.position.y < target.y + node.height/2):
+        if (not (target.y - node.height/2< self.position.y < target.y + node.height/2)) and target.y < self.position.y + self.height/2:
             self.jump()
 
     def jump(self):

@@ -61,8 +61,8 @@ class LevelCreator:
         x=0
         y=0
         for i, img in enumerate(self.textures):
-            if i * 50 >= SCREEN_WIDTH-50:
-                x -= i * 50
+            if x + i * 50 >= SCREEN_WIDTH-50:
+                x = - i * 50
                 y += 50
             self.boxes.append(Icon((x + i * 50, y), img))
 

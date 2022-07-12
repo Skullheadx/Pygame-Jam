@@ -32,7 +32,7 @@ class Game:
 
         # self.load_world(level)
 
-        self.levels = [[], [], [8, 9]]
+        self.levels = [[], [], [3,4]]
 
 
         self.world = World(self.collision_layer)
@@ -52,7 +52,7 @@ class Game:
                              self.collision_layer["spike"])
         # self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
         self.enemies = [Enemy(pos, self.collision_layer["enemy"],
-                              [self.collision_layer["player"], self.collision_layer["world"]]) for pos in
+                              [self.collision_layer["player"], self.collision_layer["world"], self.collision_layer["enemy"]]) for pos in
                         enemy_positions]
         self.scene = EndScreen()
         # self.dashMeter = DashMeter(self.player.dashCooldown)
@@ -73,7 +73,10 @@ class Game:
             # Total_clouds = area * density
             for i in range(round(MAP_WIDTH * SCREEN_HEIGHT * 2 / 3 * self.cloud_density)):
                 Cloud((random.random() * MAP_WIDTH, random.random() * SCREEN_HEIGHT * 2 / 3), random.randint(100,125))
-
+        else:
+            for particle in Setup.particles:
+                if isinstance(particle, Cloud):
+                    del Setup.particles[Setup.particles.index(particle)]
         self.sky = pg.image.load("Assets/world/sky_level_background.png").convert()
 
         try:
@@ -132,8 +135,8 @@ class Game:
         if (self.player.position[1] > 10000):
             self.player.dead = True
 
-        if (self.level in self.levels[2]):
-            self.sky = pg.image.load("Assets/world/sky_level_background.png").convert()
+        # if (self.level in self.levels[2]):
+        #     self.sky = pg.image.load("Assets/world/sky_level_background.png").convert()
 
         for particle in particles:
             particle.draw(surf)
@@ -144,9 +147,7 @@ class Game:
         for spike in self.collision_layer["spike"]:
             spike.draw(surf)
 
-        if (self.level == 1):
-            # self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
-            self.dialogue.draw(surf, self.player, "player dialogue")
+
 
         try:
             self.Transition.draw(surf, self.player.position, self.portal_position)
@@ -157,6 +158,11 @@ class Game:
             enemy.draw(surf)
 
         self.player.draw(surf)
+
+        if (self.level == 1):
+
+            # self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
+            self.dialogue.draw(surf, self.player, "")
         # self.dashMeter.update(self.player.lastDash)
         # self.dashMeter.draw(surf)
         self.healthBar.draw(surf, self.player.health)
@@ -164,8 +170,8 @@ class Game:
 
         # print(self.player.get_collision_rect())s
         # Debug Lines. DO NOT CROSS THEM!
-        pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(SCREEN_WIDTH, -Setup.camera_offset.y), 10)
-        pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(-Setup.camera_offset.x, SCREEN_HEIGHT), 10)
+        # pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(SCREEN_WIDTH, -Setup.camera_offset.y), 10)
+        # pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(-Setup.camera_offset.x, SCREEN_HEIGHT), 10)
         # self.pet.draw(surf)
 
         if (self.fade == True):
