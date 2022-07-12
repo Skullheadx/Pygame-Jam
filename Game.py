@@ -111,6 +111,9 @@ class Game:
         # screen.fill((255,255,255))
         surf.blit(self.sky,(0,0))
 
+        if(self.player.position[1] > 10000):
+                self.player.dead = True
+
         if(self.level in self.levels[2]):
             self.sky = pg.image.load("Assets/world/sky_level_background.png").convert()
 
