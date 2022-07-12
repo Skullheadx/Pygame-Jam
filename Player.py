@@ -33,6 +33,8 @@ class Player(Actor):
     running_sound_channel = pg.mixer.Channel(1)
     sword_swing_sound = pg.mixer.Sound("Assets/SFX/Sword_Swing.wav")
     sword_swing_channel = pg.mixer.Channel(2)
+    landing_sound = pg.mixer.Sound("Assets/SFX/Jump_Landing.wav")
+    landing_sound_channel = pg.mixer.Channel(3)
 
     width, height = idle_frames[0].get_size()
 
@@ -97,8 +99,6 @@ class Player(Actor):
         if len(self.potion_bag) > 0:
             self.potion_bag[0].get_input(self)
 
-        # print(self.state, self.previous_state)
-
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
 
@@ -113,7 +113,9 @@ class Player(Actor):
         if self.velocity.x == 0 and self.state == "RUN":
             self.state = "IDLE"
 
-
+        if self.on_ground == True and self.previous_ground_state == False:
+            self.landing_sound_channel.play(self.landing_sound)
+            
         if self.state == "IDLE":
             self.display_offsets["player"] = pg.Vector2(0, 0)
 
