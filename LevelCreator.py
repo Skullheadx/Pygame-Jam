@@ -51,6 +51,17 @@ class LevelCreator:
 
         self.level = -2
 
+        self.select = False
+
+        self.boxes = []
+        x=0
+        y=0
+        for i, img in enumerate(self.textures):
+            if i * 50 >= SCREEN_WIDTH-50:
+                x -= i * 50
+                y += 50
+            self.boxes.append(Icon((x + i * 50, y), img))
+
     def export(self):
         # for layer in out:
         #     for i,block in enumerate(layer):
@@ -188,6 +199,19 @@ class LevelCreator:
         return pg.Vector2(tuple((self.translation_back_matrix @ self.inv_world_transform @ point)[0:2]))
 
     def update(self, delta):
+        if self.select:
+            for ev in pg.event.get(pg.KEYUP):
+                if ev.key == pg.K_f:
+                    self.select = False
+
+
+            for i in self.boxes:
+                temp = i.update(delta)
+                if temp is not None:
+                    self.current_texture = self.textures.index(temp)
+                    self.select = False
+            return
+
         current_frame_zoom = 1
         for event in pg.event.get((pg.MOUSEBUTTONDOWN, pg.MOUSEWHEEL, pg.KEYUP)):
             if event.type == pg.MOUSEBUTTONDOWN:
@@ -205,6 +229,8 @@ class LevelCreator:
                     self.current_texture = (self.current_texture - 1) % len(self.textures)
                 elif event.key in [pg.K_d, pg.K_w, pg.K_RIGHT, pg.K_UP]:
                     self.current_texture = (self.current_texture + 1) % len(self.textures)
+                elif event.key == pg.K_f:
+                    self.select = True
 
         mouse_pressed = pg.mouse.get_pressed(3)
         if mouse_pressed[0]:
@@ -244,6 +270,11 @@ class LevelCreator:
 
     def draw(self, surf):
         surf.fill((0, 0, 0))
+        if self.select:
+            for i in self.boxes:
+                i.draw(surf)
+            return
+
         if self.show_grid:
             self.grid.draw(surf)
 
@@ -332,7 +363,7 @@ class EditorBlock:
         file in listdir("Assets/world/blocks")}
     for file in listdir("Assets/world/decor"):
         textures[file[:file.index(".")]] = pg.transform.scale(
-        pg.image.load(path.join("Assets/world/decor", file)), (50, 50))
+            pg.image.load(path.join("Assets/world/decor", file)), (50, 50))
     width, height = textures["PLACEHOLDER"].get_size()
 
     def __init__(self, pos, collision_layer, texture="PLACEHOLDER"):
@@ -407,3 +438,36 @@ class Button:
         pg.draw.rect(surf, (80, 80, 80), pg.Rect(self.position, self.text.get_size()), border_radius=3)
         pg.draw.rect(surf, (120, 120, 120), pg.Rect(self.position, self.text.get_size()), 1, border_radius=3)
         surf.blit(self.text, self.rect)
+
+
+class Icon:
+    textures = {file[:file.index(".")]: pg.transform.scale(
+        pg.image.load(path.join("Assets/world/blocks", file)), (50, 50)) for
+        file in listdir("Assets/world/blocks")}
+    for file in listdir("Assets/world/decor"):
+        textures[file[:file.index(".")]] = pg.transform.scale(
+            pg.image.load(path.join("Assets/world/decor", file)), (50, 50))
+    width, height = textures["PLACEHOLDER"].get_size()
+
+    def __init__(self, pos, img):
+        self.position = pg.Vector2(pos)
+        self.img = img
+        self.display_img = self.textures[self.img]
+        self.width, self.height = self.display_img.get_size()
+        self.rect = pg.Rect(self.position, (self.width, self.height))
+        self.show_outline = False
+
+    def update(self, delta):
+        mouse_pos = pg.mouse.get_pos()
+        if self.rect.collidepoint(mouse_pos):
+            self.show_outline = True
+            if pg.mouse.get_pressed(3)[0]:
+                return self.img
+        else:
+            self.show_outline = False
+        return None
+
+    def draw(self, surf):
+        surf.blit(self.display_img, self.position)
+        if self.show_outline:
+            pg.draw.rect(surf, (255, 0, 0), self.rect, 3)
