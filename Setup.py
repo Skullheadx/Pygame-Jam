@@ -45,6 +45,9 @@ def get_display_rect(collision_rect):
 def get_display_point(vec):
     return vec - camera_offset
 
+def get_camera_offset():
+    return camera_offset
+
 from Area import Area
 
 from PIL import Image

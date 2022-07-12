@@ -1,4 +1,6 @@
+from abc import get_cache_token
 from regex import D
+from Function.WorldCoords import getWorldCoords
 from Setup import *
 from CommonImports.colours import white, black
 from Function.createText import createText
@@ -40,14 +42,15 @@ class DialogueUI:
 
         try:
             X, Y = 0, 0
-            if(self.dialogue_list[self.char][2][0] == -10000 or self.dialogue_list[self.char][2][1] == -10000):
+            if(self.dialogue_list[self.char][2][0] == -10000 and self.dialogue_list[self.char][2][1] == -10000):
                 X = get_display_point(agent.position)[0] + agent.width / 2
                 Y = get_display_point(agent.position)[1]
             else:
-                X, Y = get_display_point((Xt, Yt))
+                X, Y = get_display_point((self.dialogue_list[self.char][2][0], self.dialogue_list[self.char][2][1]))
 
-            print(get_display_point(agent.position)[0] + agent.width / 2, get_display_point(agent.position)[1])
-
+                # print(get_display_point((X, Y)))
+                print(get_camera_offset()[0] + SCREEN_WIDTH/2, get_camera_offset()[1] + SCREEN_HEIGHT/2)
+            
             self.text = self.dialogue_list[self.char][0]
             self.checkTime()
             self.createDialogue()
