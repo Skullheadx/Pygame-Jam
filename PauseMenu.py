@@ -21,7 +21,7 @@ class PauseMenu:
 
 
     def update(self, game):
-        for event in pg.event.get():
+        for event in pg.event.get((pg.KEYUP,pg.MOUSEBUTTONUP)):
             if event.type == pg.KEYUP and event.key == pg.K_ESCAPE:
                 game.paused = False
                 

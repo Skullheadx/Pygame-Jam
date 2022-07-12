@@ -22,10 +22,11 @@ from World import World
 from Item import PotionItem
 from Spike import Spike
 from Particle import Cloud
+from Function.createText import createText
+from Object import Object
 
 class Game:
     cloud_density = 1/100000
-
 
     def __init__(self, level):
         self.collision_layer = {"none": set(), "world": set(), "player": set(), "enemy": set(), "pet": set(),
@@ -67,6 +68,7 @@ class Game:
         self.fadeT = fade()
         self.next_level = 0
 
+        self.hints = [(Object((270, 640)), "Hello")]
         self.dialogue = DialogueUI()
 
         self.paused = False
@@ -128,7 +130,7 @@ class Game:
             for particle in particles:
                 particle.update(delta)
 
-            for event in pg.event.get():
+            for event in pg.event.get(pg.KEYUP):
                 if event.type == pg.KEYUP:
                     if event.key == pg.K_ESCAPE:
                         self.paused = True
@@ -136,6 +138,10 @@ class Game:
             self.world.update(delta)
             self.fade = self.Transition.fade
 
+            if self.level in [2,5]:
+                for particle in Setup.particles:
+                    if isinstance(particle, Cloud):
+                        del Setup.particles[Setup.particles.index(particle)]
 
         # self.pet.update(delta, self.player, self.camera_pos)
 
@@ -174,13 +180,26 @@ class Game:
         self.player.draw(surf)
 
         if (self.level == 1):
-
             # self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
             self.dialogue.draw(surf, self.player, "text1", 4, 1, 100, 200)
             self.dialogue.draw(surf, self.player, "text2", 3, 2)
             self.dialogue.draw(surf, self.player, "text3", 2, 3)
             self.dialogue.draw(surf, self.player, "text4", 1, 4)
             self.dialogue.draw(surf, self.player, "text5", 0.5, 5)
+            # for o,text in self.hints:
+            #     o.position -= Setup.camera_offset
+            #     self.dialogue.draw(surf,o, text)
+            #     # a,b = createText(o.position.x,o.position.y,10,(0,0,0),"Regular",text)
+            #
+            #     # surf.blit(a,pg.Vector2(b)-Setup.camera_offset)
+            #     # print(o.position,text,b)
+            #     pg.draw.circle(surf,(255,0,0),o.position,10)
+            #     o.position += Setup.camera_offset
+            self.dialogue.draw(surf, self.player, "Next dimension, here I am!", 4, 1)
+            # self.dialogue.draw(surf, self.player, "text2", 3, 2)
+            # self.dialogue.draw(surf, self.player, "text3", 2, 3)
+            # self.dialogue.draw(surf, self.player, "text4", 1, 4)
+            # self.dialogue.draw(surf, self.player, "text5", 0.5, 5)
 
         if(self.level == 13):
             self.dialogue.draw(surf, self.player, "text1", 4, 1, 325, 320)
@@ -225,4 +244,3 @@ class Game:
         if self.player.dead:
             self.scene.update()
             self.scene.draw()
-
