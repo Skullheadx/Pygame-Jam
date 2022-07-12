@@ -2,18 +2,18 @@ from argparse import Action
 from Setup import *
 from Player import Player
 from Actors import Actor
-from Weapon import Melee
-
+from Weapon import Sword
+from Particle import Dust
 
 class Enemy(Actor):
     speed = Actor.speed * 0.33
     jump_strength = Actor.jump_strength * 0.5
     colour = (235, 64, 52)
     friction = 0.9
-    run_gif = Image.open("Assets/skeleton/skeleton_run.gif")
+    run_gif = Image.open("Assets/enemy/Goon_Run.gif")
     run_frames = []
     for i in range(run_gif.n_frames):
-        run_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(run_gif, i)), (125, 125)))
+        run_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(run_gif, i)), (180, 180)))
     def __init__(self, pos, collision_layer, collision_mask):
         super().__init__(pos, collision_layer, collision_mask)
 
@@ -26,8 +26,8 @@ class Enemy(Actor):
 
         # self.health = 0 # for debugging without getting killed
 
-        self.weapon = Melee(self.position, (-Melee.width / 2 + 7, Melee.height / 2 + self.height / 3 - 8),
-                            (-5, Melee.height), self.width, -1, -10)
+        self.weapon = Sword(self.position, (0, 0), self.width, -1)
+
 
         self.buffer = []
 
@@ -40,11 +40,10 @@ class Enemy(Actor):
     def update(self, delta, target=None):
         super().update(delta)
         if not self.attacked and target is not None and self.stun_time == 0:
-            # print('a')
-            self.follow_target(target)
-            # if random.random() < 2/fps and not self.weapon.attacking and self.weapon.get_collision_rect().colliderect(target.get_collision_rect()):
-            #     target.attack(self, self.weapon, self.direction)
-            #     print('attack')
+            self.follow_target(target, stop_dist=target.width/2+self.weapon.width)
+            if not target.attacked and get_display_rect(self.weapon.get_collision_rect()).colliderect(
+                    get_display_rect(target.get_collision_rect())):
+                target.attack(self, self.weapon, self.direction)
 
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
@@ -59,11 +58,12 @@ class Enemy(Actor):
             frame = math.floor(self.current_frame)
             if self.velocity.x > 0:
                 self.display = self.run_frames[math.floor(frame)]
-                self.display_offsets["enemy"] = pg.Vector2(-40, -35)
+                self.display_offsets["enemy"] = pg.Vector2(-60, -35)
             elif self.velocity.x <= 0:
                 self.display = pg.transform.flip(self.run_frames[math.floor(frame)], True, False)
-                self.display_offsets["enemy"] = pg.Vector2(-55, -35)
-
+                self.display_offsets["enemy"] = pg.Vector2(-60, -35)
+            if frame % 4 == 0 and self.on_ground:
+                Dust(pg.Vector2(self.get_collision_rect().midbottom) + pg.Vector2(math.copysign(1, self.velocity.x) * -self.width/2,-15), 16, self.direction)
             self.current_frame = (self.current_frame + 0.5) % self.run_gif.n_frames
             
 
@@ -78,7 +78,7 @@ class Enemy(Actor):
 
     def draw(self, surf):
         self.weapon.draw(surf)
-        # super(Enemy, self).draw(surf)
+        super(Enemy, self).draw(surf)
         surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft + self.display_offsets["enemy"])
 
         # for b in self.buffer:

@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import threading
 
 from Setup import *
+from Particle import Dust
 # from PhysicsBody import PhysicsBody
 from Block import Block
 
@@ -18,6 +19,7 @@ class Actor:
     variable_jump_time = timedelta(milliseconds=125)  # how long to hold jump so we go higher
     terminal_velocity = 15
     invincibility_time = 150
+
 
     def __init__(self, pos, collision_layer, collision_mask):
         self.position = pg.Vector2(pos)
@@ -39,7 +41,7 @@ class Actor:
         self.jumping = False
         self.coyote_time = datetime.utcnow()
         self.hold_jump = datetime.utcnow()
-        self.stun_time = 750
+        self.stun_time = 1000
         self.attacked = False
         self.invincibility_frames = 0
 
@@ -47,6 +49,7 @@ class Actor:
         if self.jumping:
             if self.on_ground:
                 self.jumping = False
+                Dust(pg.Vector2(self.get_collision_rect().midbottom) + pg.Vector2(-16,-15), 32, 0)
 
         self.stun_time -= delta
         self.stun_time = max(self.stun_time, 0)

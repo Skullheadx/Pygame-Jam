@@ -7,9 +7,11 @@ from Actors import Actor
 from datetime import datetime, timedelta
 from Potion import Potion
 from Weapon import Sword
+from Particle import Dust
 
 
 class Player(Actor):
+    friction = 0.2
     scale = 100
     factor = 640 / scale
     crop = pg.Rect(179, 169, 170, 401)
@@ -81,6 +83,12 @@ class Player(Actor):
     #     print('a')
 
     def update(self, delta):
+
+        if self.attacked:
+            self.friction = 0.9
+        else:
+            self.friction = 0.2
+
         super().update(delta)
 
         # Get and handle input
@@ -154,6 +162,9 @@ class Player(Actor):
             elif self.velocity.x < 0:
                 self.display = pg.transform.flip(self.run_frames[math.floor(frame)], True, False)
                 self.display_offsets["player"] = pg.Vector2(-65, -35)
+
+            if frame % 2 == 0 and self.on_ground:
+                Dust(pg.Vector2(self.get_collision_rect().midbottom) + pg.Vector2(math.copysign(1, self.velocity.x) * -self.width/2,-15), 16, self.direction)
 
             self.current_frame = (self.current_frame + 0.5) % self.run_gif.n_frames
 
@@ -255,7 +266,11 @@ class Player(Actor):
                 surf.blit(pg.transform.flip(self.weapon.img, False, True),
                           get_display_rect(self.get_collision_rect()).topleft + pg.Vector2(0, 55) +
                           self.display_offsets["weapon"])
-        surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft + self.display_offsets["player"])
+
+        a = get_display_rect(self.get_collision_rect())
+        b = a.topleft + self.display_offsets["player"]
+        if pg.Rect(b,a.size).colliderect(screen_rect):
+            surf.blit(self.display, b)
         #
         # for b in self.buffer:
         #     pg.draw.rect(surf,(0,0,255),get_display_rect(b),3)

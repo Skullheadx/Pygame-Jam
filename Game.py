@@ -67,6 +67,9 @@ class Game:
                 self.collision_layer["enemy"].remove(enemy)
                 self.collision_layer["body"].add(self.enemies[i])
 
+        for particle in particles:
+            particle.update(delta)
+
         self.world.update(delta)
         self.fade = self.Transition.fade
 
@@ -90,6 +93,10 @@ class Game:
             pass;
 
         self.world.draw(surf)
+
+        for particle in particles:
+            particle.draw(surf)
+
         for enemy in self.enemies:
             enemy.draw(surf)
 
