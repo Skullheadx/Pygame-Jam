@@ -72,7 +72,7 @@ class Game:
         self.dialogue = DialogueUI()
 
         self.paused = False
-        self.PauseMenu = PauseMenu()
+        self.PauseMenu = PauseMenu(self.level)
 
         if self.level in [1,3,4]:
             # Density = total clouds / area
@@ -109,6 +109,7 @@ class Game:
 
     def update(self, delta):
         if self.paused == True:
+            self.level = self.PauseMenu.level
             pass
         else:
             Setup.camera_offset = self.player.update(delta)
@@ -180,7 +181,6 @@ class Game:
 
         if (self.level == 1):
             # self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
-            self.dialogue.draw(surf, self.player, "")
             # for o,text in self.hints:
             #     o.position -= Setup.camera_offset
             #     self.dialogue.draw(surf,o, text)
@@ -190,6 +190,25 @@ class Game:
             #     # print(o.position,text,b)
             #     pg.draw.circle(surf,(255,0,0),o.position,10)
             #     o.position += Setup.camera_offset
+            self.dialogue.draw(surf, self.player, "text1", 4, 1)
+            self.dialogue.draw(surf, self.player, "text2", 3, 2)
+            self.dialogue.draw(surf, self.player, "text3", 2, 3)
+            self.dialogue.draw(surf, self.player, "text4", 1, 4)
+            self.dialogue.draw(surf, self.player, "text5", 0.5, 5)
+
+        if(self.level == 13):
+            self.dialogue.draw(surf, self.player, "text1", 4, 1)
+            self.dialogue.draw(surf, self.player, "text2", 3, 2)
+            self.dialogue.draw(surf, self.player, "text3", 2, 3)
+            self.dialogue.draw(surf, self.player, "text4", 1, 4)
+            self.dialogue.draw(surf, self.player, "text5", 0.5, 5)
+
+        if(self.level == 14):
+            self.dialogue.draw(surf, self.player, "text2", 3, 2)
+            self.dialogue.draw(surf, self.player, "text3", 2, 3)
+            self.dialogue.draw(surf, self.player, "text4", 1, 4)
+            self.dialogue.draw(surf, self.player, "text5", 0.5, 5)
+
         # self.dashMeter.update(self.player.lastDash)
         # self.dashMeter.draw(surf)
         self.healthBar.draw(surf, self.player.health)
@@ -213,10 +232,10 @@ class Game:
             self.next_level = self.level + 1
             self.level = -4
 
-        if self.player.dead:
-            self.scene.update()
-            self.scene.draw()
-
         if self.paused == True:
             self.PauseMenu.update(self)
             self.PauseMenu.draw()
+
+        if self.player.dead:
+            self.scene.update()
+            self.scene.draw()

@@ -1,6 +1,8 @@
+from regex import D
 from Setup import *
 from CommonImports.colours import white, black
 from Function.createText import createText
+from datetime import datetime, timedelta
 
 class DialogueUI:
 
@@ -8,6 +10,11 @@ class DialogueUI:
         self.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet commodo leo."
         self.old_text = ""
         self.char = 0
+
+        self.IDS = []
+        self.dialogue_list = []
+        self.PSA = 0
+        self.lastTextTime = datetime.utcnow()
 
         self.skip = False
         self.texts = []
@@ -17,17 +24,31 @@ class DialogueUI:
     def update(self):
         return;
 
-    def draw(self, surf, agent, text):
+    def draw(self, surf, agent, text, sec, ID):
         
-        X = get_display_point(agent.position)[0] + agent.width / 2
-        Y = get_display_point(agent.position)[1]
-        self.text = text
-        self.createDialogue()
+        if(not ID in self.IDS):
+            temp = []
+            self.PSA += sec
+            temp.append(text)
+            temp.append(self.PSA)
+            self.IDS.append(ID)
+            self.dialogue_list.append(temp)
 
-        for i in range(len(self.drawText)):
-            j = len(self.drawText) - i
-            text_rect = self.drawText[i].get_rect(center=(X, Y-(20*j)))
-            surf.blit(self.drawText[i], text_rect)
+        try:
+            self.text = self.dialogue_list[self.char][0]
+            self.checkTime()
+
+            X = get_display_point(agent.position)[0] + agent.width / 2
+            Y = get_display_point(agent.position)[1]
+
+            self.createDialogue()
+
+            for i in range(len(self.drawText)):
+                j = len(self.drawText) - i
+                text_rect = self.drawText[i].get_rect(center=(X, Y-(20*j)))
+                surf.blit(self.drawText[i], text_rect)
+        except:
+            pass;
     
     def createDialogue(self):
         if(self.text == self.old_text):
@@ -36,7 +57,6 @@ class DialogueUI:
             self.old_text == self.text
             self.texts = []
             self.drawText = []
-            self.char = 0
             self.skip == False
 
         if(self.skip == False):
@@ -56,10 +76,13 @@ class DialogueUI:
 
         for i in range(len(self.texts)):
             self.drawText.append(createText(0, 0, 20, white, "Regular", self.texts[i])[0])
-            # if(self.char/30 > i):
-            #     self.drawText.append(createText(0, 0, 30, white, "Regular", self.texts[i])[0])
-            # else:
-            #     self.drawText.append(createText(0, 0, 30, white, "Regular", self.texts[i][self.char%30:])[0])
-        # self.char += 1
 
         return;
+
+    def checkTime(self):
+        if(datetime.utcnow() - self.lastTextTime >= timedelta(seconds=self.dialogue_list[self.char][1])):
+            if(self.char +1 < len(self.dialogue_list)):
+                self.char = self.char + 1
+            else:
+                self.char = 0
+                self.dialogue_list = []
