@@ -27,6 +27,9 @@ class Game:
 
         # self.load_world(level)
 
+        self.sky = pg.image.load("Assets/world/VOID.png").convert()
+
+
         self.world = World(self.collision_layer)
 
         enemy_positions, player_position, self.portal_position = self.world.load_world(level)
@@ -80,8 +83,7 @@ class Game:
 
         # screen.fill((0, 191, 255))
         # screen.fill((255,255,255))
-        sky = pg.image.load("Assets/world/VOID.png")
-        surf.blit(sky,(0,0))
+        surf.blit(self.sky,(0,0))
 
         if (self.level == 1):
             self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
