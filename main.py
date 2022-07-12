@@ -1,3 +1,4 @@
+from typing import Final
 from Setup import *
 import Setup
 from Game import Game
@@ -5,6 +6,8 @@ from Test import Test
 from LevelCreator import LevelCreator
 from MainMenu import Menu
 from Function.Transition import TransitionScene
+from UI.FinalScreen import FinalScreen
+from UI.Credits import Credits
 
 from DevLevelSelect import DevLevelSelect
 
@@ -13,10 +16,10 @@ delta = 1000//fps
 # scene = TransitionScene()
 scene = DevLevelSelect()
 old_level = 0
-level = 1
+level = 0
 next_level = 0
 
-final_level = 6
+# final_level = 6
 
 while Setup.is_running:
     if pg.event.peek(pg.QUIT):
@@ -28,6 +31,8 @@ while Setup.is_running:
 
     if old_level != level:
         match level:
+            case -5:
+                scene = Credits()
             case -4:
                 scene = TransitionScene(next_level)
             case -3:
@@ -36,6 +41,8 @@ while Setup.is_running:
                 scene = LevelCreator()
             case 0:
                 scene = Menu()
+            case 6:
+                scene = FinalScreen()
             case _:
                 scene = Game(level)
         old_level = level

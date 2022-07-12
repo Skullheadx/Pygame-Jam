@@ -197,19 +197,6 @@ class Game:
             # self.dialogue.draw(surf, self.player, "text4", 1, 4)
             # self.dialogue.draw(surf, self.player, "text5", 0.5, 5)
 
-        if(self.level == 13):
-            self.dialogue.draw(surf, self.player, "text1", 4, 1, 325, 320)
-            self.dialogue.draw(surf, self.player, "text2", 3, 2)
-            self.dialogue.draw(surf, self.player, "text3", 2, 3)
-            self.dialogue.draw(surf, self.player, "text4", 1, 4)
-            self.dialogue.draw(surf, self.player, "text5", 0.5, 5)
-
-        if (self.level == 14):
-            self.dialogue.draw(surf, self.player, "text2", 3, 2)
-            self.dialogue.draw(surf, self.player, "text3", 2, 3)
-            self.dialogue.draw(surf, self.player, "text4", 1, 4)
-            self.dialogue.draw(surf, self.player, "text5", 0.5, 5)
-
         # self.dashMeter.update(self.player.lastDash)
         # self.dashMeter.draw(surf)
         self.healthBar.draw(surf, self.player.health)
