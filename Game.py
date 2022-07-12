@@ -59,6 +59,8 @@ class Game:
 
     def update(self, delta):
         Setup.camera_offset = self.player.update(delta)
+        Setup.camera_offset.x = max(0, min(Setup.camera_offset.x, MAP_WIDTH - SCREEN_WIDTH))
+        Setup.camera_offset.y = max(0, min(Setup.camera_offset.y, MAP_HEIGHT - SCREEN_HEIGHT))
         if self.player.dead:
             self.level = self.scene.level
 

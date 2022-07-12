@@ -51,6 +51,6 @@ while is_running:
 
     pg.display.update()
     delta = clock.tick(fps)
-    print(clock.get_fps())
+    # print(clock.get_fps())
 
 pg.quit()
