@@ -17,7 +17,7 @@ class Actor:
     coyote_time_amount = timedelta(milliseconds=100)  # seconds after walking off ground that it still counts
     jump_buffer = []
     variable_jump_time = timedelta(milliseconds=125)  # how long to hold jump so we go higher
-    terminal_velocity = 15
+    terminal_velocity = 10
     invincibility_time = 150
 
 
