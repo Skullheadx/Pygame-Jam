@@ -16,8 +16,8 @@ class EndScreen:
 
         
     def update(self):
-        for ev in pg.event.get():
-            if ev.type == pg.MOUSEBUTTONDOWN:
+        for ev in pg.event.get(pg.MOUSEBUTTONDOWN): # only track this event
+            if ev.type == pg.MOUSEBUTTONDOWN: # dont need this line
                 mouseX, mouseY = pg.mouse.get_pos()
                 for i in range(len(self.texts)):
                     x1 = self.texts[i][1][0]

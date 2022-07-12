@@ -110,6 +110,10 @@ class Player(Actor):
         self.direction = math.copysign(1, pg.mouse.get_pos()[0] - get_display_point(self.position).x)
         self.weapon.update(delta, self.position, self.direction)
 
+        if self.velocity.x == 0 and self.state == "RUN":
+            self.state = "IDLE"
+
+
         if self.state == "IDLE":
             self.display_offsets["player"] = pg.Vector2(0, 0)
 
