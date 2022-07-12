@@ -6,11 +6,11 @@ class EndScreen:
 
     def __init__(self):
         self.texts = []
-        X = 250
-        self.texts.append(createText(X, 100, 32, black, "Bold", "You Died",))
-        self.texts.append(createText(X, 250, 24, black, "Regular", "Respawn"))
-        self.texts.append(createText(X, 350, 24, black, "Regular", "Options"))
-        self.texts.append(createText(X, 450, 24, black, "Regular", "Quit"))
+        X = SCREEN_WIDTH
+        Y = SCREEN_HEIGHT/2
+        self.texts.append(createText(X, Y, 32, black, "Bold", "You Died", 'c'))
+        self.texts.append(createText(X, Y+150, 24, black, "Regular", "Respawn", 'c'))
+        self.texts.append(createText(X, Y+300, 24, black, "Regular", "Quit", 'c'))
 
         self.level = -1
 
@@ -39,6 +39,4 @@ class EndScreen:
             case 1:
                 self.level = -1
             case 2:
-                print("Options")
-            case 3:
                 pg.quit();
