@@ -1,5 +1,5 @@
 from Setup import *
-from CommonImports.colours import black
+from CommonImports.colours import white
 from Function.createText import createText
 
 class Menu:
@@ -8,10 +8,13 @@ class Menu:
         self.texts = []
         X = SCREEN_WIDTH
         Y = SCREEN_HEIGHT/2 - 100
-        self.texts.append(createText(X, Y, 48, black, "Bold", "Interstellar Pirate Title", "c"))
-        self.texts.append(createText(X, Y+200, 32, black, "Regular", "Start", "c"))
-        self.texts.append(createText(X, Y+350, 32, black, "Regular", "Options", "c"))
-        self.texts.append(createText(X, Y+500, 32, black, "Regular", "Quit", "c"))
+        self.texts.append(createText(X, Y, 48, white, "Bold", "Interstellar Pirate Title", "c"))
+        self.texts.append(createText(X, Y+200, 32, white, "Regular", "Start", "c"))
+        self.texts.append(createText(X, Y+350, 32, white, "Regular", "Options", "c"))
+        self.texts.append(createText(X, Y+500, 32, white, "Regular", "Quit", "c"))
+
+        backgroundImage = pg.image.load('./Assets/mainmenu_background.png')
+        self.backgroundImage = pg.transform.scale(backgroundImage, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
         self.level = 0
 
@@ -31,7 +34,8 @@ class Menu:
             return
 
     def draw(self, surf):
-        screen.fill((255, 255, 255))
+        # screen.fill((255, 255, 255))
+        surf.blit(self.backgroundImage, (0, 0))
         for i in self.texts:
             screen.blit(i[0], i[1])
 

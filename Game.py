@@ -28,6 +28,8 @@ class Game:
 
         # self.load_world(level)
 
+        self.levels = [[],[],[8, 9]]
+
         self.sky = pg.image.load("Assets/world/VOID.png").convert()
 
 
@@ -91,6 +93,9 @@ class Game:
         # screen.fill((0, 191, 255))
         # screen.fill((255,255,255))
         surf.blit(self.sky,(0,0))
+
+        if(self.level in self.levels[2]):
+            self.sky = pg.image.load("Assets/world/sky_level_background.png").convert()
 
         if (self.level == 1):
             self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
