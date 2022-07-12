@@ -58,4 +58,5 @@ class Menu:
             case 2:
                 self.level = 1
             case 3:
-                pg.quit();
+                Setup.is_running = False # this works. who keeps changing it
+                # pg.quit(); # plz no

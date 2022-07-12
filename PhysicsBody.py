@@ -21,7 +21,7 @@ class PhysicsBody:
 
         self.movable = True
         self.attacked = False
-        self.invincibility_frames = 0
+        self.invincibility_frames = self.invincibility_time
 
         collision_layer.add(self)  # the layer the actor is on for collisions
         self.collision_layer = collision_layer
