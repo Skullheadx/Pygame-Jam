@@ -265,6 +265,7 @@ class Player(Actor):
             if self.state != "ATTACK":
                 self.state = "ATTACK"
                 self.current_frame = 0
+                # self.sword_swing_channel.stop()
                 self.sword_swing_channel.play(self.sword_swing_sound)
         if self.state == "ATTACK":
             if 12 > math.floor(self.current_frame) > 6:
@@ -288,6 +289,16 @@ class Player(Actor):
             elif self.direction == -1:
                 surf.blit(pg.transform.flip(self.weapon.img, False, True),
                           get_display_rect(self.get_collision_rect()).topleft + pg.Vector2(0, 55) +
+                          self.display_offsets["weapon"])
+        elif self.state == "RUN":
+            # self.weapon.draw(surf, self.display_offsets["weapon"])
+            if self.velocity.x > 0:
+                surf.blit(pg.transform.flip(self.weapon.img2, True, True),
+                          get_display_rect(self.get_collision_rect()).topleft + pg.Vector2(-25, 25) +
+                          self.display_offsets["weapon"])
+            else:
+                surf.blit(pg.transform.flip(self.weapon.img2, False, True),
+                          get_display_rect(self.get_collision_rect()).topleft + pg.Vector2(0, 25) +
                           self.display_offsets["weapon"])
 
         a = get_display_rect(self.get_collision_rect())

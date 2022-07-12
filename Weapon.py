@@ -65,6 +65,8 @@ class Melee:
 class Sword:
     img = pg.transform.scale(pg.image.load("Assets/SWORD.png"), (50, 50))
     img,_ = rotate(pg.Vector2(img.get_rect().topright),img, -30,pg.Vector2(img.get_rect().bottomleft))
+    img2,_ = rotate(pg.Vector2(img.get_rect().topright),img, -90,pg.Vector2(img.get_rect().bottomleft))
+
     flipped_img = pg.transform.flip(img,True,False)
     width,height = (75,200)
     damage = -25

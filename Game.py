@@ -62,6 +62,20 @@ class Game:
 
         self.dialogue = DialogueUI()
 
+
+        if self.level == 1:
+            pg.mixer.music.load("Assets/Music/Overworld_Music.ogg")
+        if self.level == 2:
+            pg.mixer.music.load("Assets/Music/Cave_Music.ogg")
+        if self.level == 3:
+            pg.mixer.music.load("Assets/Music/Sky_Music.ogg")
+        if self.level == 4:
+            pg.mixer.music.load("Assets/Music/Combat_Music.ogg")
+        else:
+            pg.mixer.music.load("Assets/Music/Overworld_Music.ogg")
+
+        pg.mixer.music.play(-1)
+
     # def load_world(self, level):
 
     def update(self, delta):
