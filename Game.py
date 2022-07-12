@@ -130,7 +130,7 @@ class Game:
             for particle in particles:
                 particle.update(delta)
 
-            for event in pg.event.get():
+            for event in pg.event.get(pg.KEYUP):
                 if event.type == pg.KEYUP:
                     if event.key == pg.K_ESCAPE:
                         self.paused = True
@@ -190,7 +190,7 @@ class Game:
             #     # print(o.position,text,b)
             #     pg.draw.circle(surf,(255,0,0),o.position,10)
             #     o.position += Setup.camera_offset
-            self.dialogue.draw(surf, self.player, "text1", 4, 1)
+            self.dialogue.draw(surf, self.player, "Next dimension, here I am!", 4, 1)
             self.dialogue.draw(surf, self.player, "text2", 3, 2)
             self.dialogue.draw(surf, self.player, "text3", 2, 3)
             self.dialogue.draw(surf, self.player, "text4", 1, 4)

@@ -45,7 +45,7 @@ class DevLevelSelect:
             pass;
         
     def update(self, delta):
-        for ev in pg.event.get():
+        for ev in pg.event.get(pg.MOUSEBUTTONDOWN):
             if ev.type == pg.MOUSEBUTTONDOWN:
                 mouseX, mouseY = pg.mouse.get_pos()
                 for i in range(len(self.texts)):
