@@ -6,17 +6,18 @@ class Menu:
 
     def __init__(self):
         self.texts = []
-        X = 250
-        self.texts.append(createText(X, 100, 32, black, "Bold", "Interstellar Pirate Title",))
-        self.texts.append(createText(X, 250, 24, black, "Regular", "Start"))
-        self.texts.append(createText(X, 350, 24, black, "Regular", "Options"))
-        self.texts.append(createText(X, 450, 24, black, "Regular", "Quit"))
+        X = SCREEN_WIDTH
+        Y = SCREEN_HEIGHT/2 - 100
+        self.texts.append(createText(X, Y, 48, black, "Bold", "Interstellar Pirate Title", "c"))
+        self.texts.append(createText(X, Y+200, 32, black, "Regular", "Start", "c"))
+        self.texts.append(createText(X, Y+350, 32, black, "Regular", "Options", "c"))
+        self.texts.append(createText(X, Y+500, 32, black, "Regular", "Quit", "c"))
 
         self.level = 0
 
         
     def update(self, delta):
-        for ev in pg.event.get():
+        for ev in pg.event.get(pg.MOUSEBUTTONDOWN):
             if ev.type == pg.MOUSEBUTTONDOWN:
                 mouseX, mouseY = pg.mouse.get_pos()
                 for i in range(len(self.texts)):
