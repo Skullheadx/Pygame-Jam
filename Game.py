@@ -8,6 +8,7 @@ from EndScreen import EndScreen
 from Enemy import Enemy
 from Function.Fade import fade
 from Function.Portal import Transition
+from PauseMenu import PauseMenu
 from Pet import Pet
 from PhysicsBody import PhysicsBody
 from Player import Player
@@ -32,7 +33,7 @@ class Game:
 
         # self.load_world(level)
 
-        self.levels = [[], [], [8, 9]]
+        self.levels = [[], [], [3,4]]
 
 
         self.world = World(self.collision_layer)
@@ -52,7 +53,7 @@ class Game:
                              self.collision_layer["spike"])
         # self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
         self.enemies = [Enemy(pos, self.collision_layer["enemy"],
-                              [self.collision_layer["player"], self.collision_layer["world"]]) for pos in
+                              [self.collision_layer["player"], self.collision_layer["world"], self.collision_layer["enemy"]]) for pos in
                         enemy_positions]
         self.scene = EndScreen()
         # self.dashMeter = DashMeter(self.player.dashCooldown)
@@ -68,12 +69,18 @@ class Game:
 
         self.dialogue = DialogueUI()
 
+        self.paused = False
+        self.PauseMenu = PauseMenu()
+
         if self.level in [1,3,4]:
             # Density = total clouds / area
             # Total_clouds = area * density
             for i in range(round(MAP_WIDTH * SCREEN_HEIGHT * 2 / 3 * self.cloud_density)):
                 Cloud((random.random() * MAP_WIDTH, random.random() * SCREEN_HEIGHT * 2 / 3), random.randint(100,125))
-
+        else:
+            for particle in Setup.particles:
+                if isinstance(particle, Cloud):
+                    del Setup.particles[Setup.particles.index(particle)]
         self.sky = pg.image.load("Assets/world/sky_level_background.png").convert()
 
         try:
@@ -99,26 +106,34 @@ class Game:
     # def load_world(self, level):
 
     def update(self, delta):
-        Setup.camera_offset = self.player.update(delta)
-        Setup.camera_offset.x = max(0, min(Setup.camera_offset.x, MAP_WIDTH - SCREEN_WIDTH))
-        Setup.camera_offset.y = max(0, min(Setup.camera_offset.y, MAP_HEIGHT - SCREEN_HEIGHT))
-        if self.player.dead:
-            self.level = self.scene.level
+        if self.paused == True:
+            pass
+        else:
+            Setup.camera_offset = self.player.update(delta)
+            Setup.camera_offset.x = max(0, min(Setup.camera_offset.x, MAP_WIDTH - SCREEN_WIDTH))
+            Setup.camera_offset.y = max(0, min(Setup.camera_offset.y, MAP_HEIGHT - SCREEN_HEIGHT))
+            if self.player.dead:
+                self.level = self.scene.level
 
-        for i, enemy in enumerate(self.enemies):
-            enemy.update(delta, self.player)
-            if enemy.dead:
-                self.enemies[i] = PhysicsBody(enemy.position, enemy.velocity, enemy.width, enemy.height, enemy.colour,
-                                              self.collision_layer["body"],
-                                              [self.collision_layer["world"], self.collision_layer["body"]])
-                self.collision_layer["enemy"].remove(enemy)
-                self.collision_layer["body"].add(self.enemies[i])
+            for i, enemy in enumerate(self.enemies):
+                enemy.update(delta, self.player)
+                if enemy.dead:
+                    self.enemies[i] = PhysicsBody(enemy.position, enemy.velocity, enemy.width, enemy.height, enemy.colour,
+                                                self.collision_layer["body"],
+                                                [self.collision_layer["world"], self.collision_layer["body"]])
+                    self.collision_layer["enemy"].remove(enemy)
+                    self.collision_layer["body"].add(self.enemies[i])
 
-        for particle in particles:
-            particle.update(delta)
+            for particle in particles:
+                particle.update(delta)
 
-        self.world.update(delta)
-        self.fade = self.Transition.fade
+            for event in pg.event.get():
+                if event.type == pg.KEYUP:
+                    if event.key == pg.K_ESCAPE:
+                        self.paused = True
+
+            self.world.update(delta)
+            self.fade = self.Transition.fade
 
         # self.pet.update(delta, self.player, self.camera_pos)
 
@@ -132,8 +147,8 @@ class Game:
         if (self.player.position[1] > 10000):
             self.player.dead = True
 
-        if (self.level in self.levels[2]):
-            self.sky = pg.image.load("Assets/world/sky_level_background.png").convert()
+        # if (self.level in self.levels[2]):
+        #     self.sky = pg.image.load("Assets/world/sky_level_background.png").convert()
 
         for particle in particles:
             particle.draw(surf)
@@ -144,9 +159,7 @@ class Game:
         for spike in self.collision_layer["spike"]:
             spike.draw(surf)
 
-        if (self.level == 1):
-            # self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
-            self.dialogue.draw(surf, self.player, "player dialogue")
+
 
         try:
             self.Transition.draw(surf, self.player.position, self.portal_position)
@@ -157,6 +170,11 @@ class Game:
             enemy.draw(surf)
 
         self.player.draw(surf)
+
+        if (self.level == 1):
+
+            # self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
+            self.dialogue.draw(surf, self.player, "")
         # self.dashMeter.update(self.player.lastDash)
         # self.dashMeter.draw(surf)
         self.healthBar.draw(surf, self.player.health)
@@ -164,8 +182,8 @@ class Game:
 
         # print(self.player.get_collision_rect())s
         # Debug Lines. DO NOT CROSS THEM!
-        pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(SCREEN_WIDTH, -Setup.camera_offset.y), 10)
-        pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(-Setup.camera_offset.x, SCREEN_HEIGHT), 10)
+        # pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(SCREEN_WIDTH, -Setup.camera_offset.y), 10)
+        # pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(-Setup.camera_offset.x, SCREEN_HEIGHT), 10)
         # self.pet.draw(surf)
 
         if (self.fade == True):
@@ -183,3 +201,7 @@ class Game:
         if self.player.dead:
             self.scene.update()
             self.scene.draw()
+
+        if self.paused == True:
+            self.PauseMenu.update(self)
+            self.PauseMenu.draw()

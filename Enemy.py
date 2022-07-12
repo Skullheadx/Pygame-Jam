@@ -7,8 +7,8 @@ from Weapon import Sword
 from Particle import Dust
 
 class Enemy(Actor):
-    speed = Actor.speed * 0.33
-    jump_strength = Actor.jump_strength * 0.5
+    speed = Actor.speed * 0.4
+    jump_strength = Actor.jump_strength * 1.1
     colour = (235, 64, 52)
     friction = 0.9
     run_gif = Image.open("Assets/enemy/Goon_Run.gif")
@@ -48,7 +48,7 @@ class Enemy(Actor):
     def update(self, delta, target=None):
         super().update(delta)
         if not self.attacked and target is not None and self.stun_time == 0:
-            self.follow_target(target, stop_dist=target.width/2+self.weapon.width)
+            self.follow_target(target, follow_range=750,stop_dist=target.width/2+self.weapon.width)
             if not target.attacked and get_display_rect(self.weapon.get_collision_rect()).colliderect(
                     get_display_rect(target.get_collision_rect())):
                 if self.state != "ATTACK":
