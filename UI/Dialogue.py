@@ -13,7 +13,7 @@ class DialogueUI:
         self.old_text = ""
         self.char = 0
 
-        self.IDS = []
+        self.IDS = [0]
         self.dialogue_list = []
         self.PSA = 0
         self.lastTextTime = datetime.utcnow()
@@ -51,7 +51,11 @@ class DialogueUI:
                 # print(get_display_point((X, Y)))
                 print(get_camera_offset()[0] + SCREEN_WIDTH/2, get_camera_offset()[1] + SCREEN_HEIGHT/2)
             
-            self.text = self.dialogue_list[self.char][0]
+            if(ID == 0):
+                self.text = text
+                X, Y = get_display_point((Xt, Yt))
+            else:
+                self.text = self.dialogue_list[self.char][0]
             self.checkTime()
             self.createDialogue()
 
