@@ -265,6 +265,7 @@ class Player(Actor):
             if self.state != "ATTACK":
                 self.state = "ATTACK"
                 self.current_frame = 0
+                # self.sword_swing_channel.stop()
                 self.sword_swing_channel.play(self.sword_swing_sound)
         if self.state == "ATTACK":
             if 12 > math.floor(self.current_frame) > 6:
