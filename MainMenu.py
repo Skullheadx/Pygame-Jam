@@ -1,3 +1,4 @@
+import Setup
 from Setup import *
 from CommonImports.colours import white
 from Function.createText import createText
