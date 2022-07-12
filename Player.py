@@ -289,6 +289,16 @@ class Player(Actor):
                 surf.blit(pg.transform.flip(self.weapon.img, False, True),
                           get_display_rect(self.get_collision_rect()).topleft + pg.Vector2(0, 55) +
                           self.display_offsets["weapon"])
+        elif self.state == "RUN":
+            # self.weapon.draw(surf, self.display_offsets["weapon"])
+            if self.velocity.x > 0:
+                surf.blit(pg.transform.flip(self.weapon.img2, True, True),
+                          get_display_rect(self.get_collision_rect()).topleft + pg.Vector2(-25, 25) +
+                          self.display_offsets["weapon"])
+            else:
+                surf.blit(pg.transform.flip(self.weapon.img2, False, True),
+                          get_display_rect(self.get_collision_rect()).topleft + pg.Vector2(0, 25) +
+                          self.display_offsets["weapon"])
 
         a = get_display_rect(self.get_collision_rect())
         b = a.topleft + self.display_offsets["player"]

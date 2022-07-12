@@ -30,6 +30,7 @@ class Enemy(Actor):
         self.movable = False
 
         self.direction = -1
+        self.prev_direction = self.direction
 
         # self.health = 0 # for debugging without getting killed
 
@@ -54,13 +55,14 @@ class Enemy(Actor):
                     self.state = "ATTACK"
                     self.current_frame = 0
                 elif 4 < self.current_frame:
-                    target.attack(self, self.weapon, math.copysign(1, -self.velocity.x))
+                    target.attack(self, self.weapon, self.direction)
 
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
 
+        self.prev_direction = self.direction
         if self.velocity.x == 0:
-            self.direction = 0
+            self.direction = self.prev_direction
         else:
             self.direction = math.copysign(1, self.velocity.x)
         self.weapon.update(delta, self.position, self.direction)
@@ -69,21 +71,21 @@ class Enemy(Actor):
             frame = math.floor(self.current_frame)
             if self.velocity.x > 0:
                 self.display = self.run_frames[math.floor(frame)]
-                self.display_offsets["enemy"] = pg.Vector2(-60, -35)
+                self.display_offsets["enemy"] = pg.Vector2(-30, -35)
             elif self.velocity.x <= 0:
                 self.display = pg.transform.flip(self.run_frames[math.floor(frame)], True, False)
-                self.display_offsets["enemy"] = pg.Vector2(-60, -35)
+                self.display_offsets["enemy"] = pg.Vector2(-90, -35)
             if frame % 4 == 0 and self.on_ground:
                 Dust(pg.Vector2(self.get_collision_rect().midbottom) + pg.Vector2(math.copysign(1, self.velocity.x) * -self.width/2,-15), 16, self.direction)
             self.current_frame = (self.current_frame + 0.25) % self.run_gif.n_frames
         elif self.state == "ATTACK":
             frame = math.floor(self.current_frame)
-            if self.velocity.x > 0:
-                self.display = self.attack_frames[math.floor(frame)]
+            if self.direction == 1:
+                self.display = pg.transform.flip(self.attack_frames[math.floor(frame)], False, False)
                 self.display_offsets["enemy"] = pg.Vector2(-50, -50)
             else:
                 self.display = pg.transform.flip(self.attack_frames[math.floor(frame)], True, False)
-                self.display_offsets["enemy"] = pg.Vector2(-100, -50)
+                self.display_offsets["enemy"] = pg.Vector2(-80, -50)
             self.current_frame += 0.4
             if math.floor(self.current_frame) >= self.attack_gif.n_frames-1:
                 self.state = "RUN"
@@ -99,7 +101,7 @@ class Enemy(Actor):
 
     def draw(self, surf):
         # self.weapon.draw(surf)
-        # super(Enemy, self).draw(surf)
+        super(Enemy, self).draw(surf)
         surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft + self.display_offsets["enemy"])
 
         # for b in self.buffer:
