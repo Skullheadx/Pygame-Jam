@@ -1,10 +1,11 @@
 from Setup import *
 from Function.createText import createText
 import time
+from Save.SaveGame import SaveGame
 
 class PauseMenu:
 
-    def __init__(self):
+    def __init__(self, level):
         X = SCREEN_WIDTH
         Y = SCREEN_HEIGHT/2
 
@@ -15,6 +16,8 @@ class PauseMenu:
         self.overlay = pg.Surface((1080, 640))
         self.overlay.fill((0, 0 ,0))
         self.overlay.set_alpha(127)
+
+        self.level = level
 
 
     def update(self, game):
@@ -27,7 +30,8 @@ class PauseMenu:
                 if self.resume[1].collidepoint(mouse_loc):
                     game.paused = False
                 if self.main_menu[1].collidepoint(mouse_loc):
-                    print("Main Menu")
+                    SaveGame(self.level)
+                    self.level = 0
                 if self.quit[1].collidepoint(mouse_loc):
                     pg.quit()
             return

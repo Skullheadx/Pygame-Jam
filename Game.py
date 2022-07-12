@@ -70,7 +70,7 @@ class Game:
         self.dialogue = DialogueUI()
 
         self.paused = False
-        self.PauseMenu = PauseMenu()
+        self.PauseMenu = PauseMenu(self.level)
 
         if self.level in [1,3,4]:
             # Density = total clouds / area
@@ -107,6 +107,7 @@ class Game:
 
     def update(self, delta):
         if self.paused == True:
+            self.level = self.PauseMenu.level
             pass
         else:
             Setup.camera_offset = self.player.update(delta)
@@ -134,6 +135,7 @@ class Game:
 
             self.world.update(delta)
             self.fade = self.Transition.fade
+
 
         # self.pet.update(delta, self.player, self.camera_pos)
 
@@ -198,10 +200,11 @@ class Game:
             self.next_level = self.level + 1
             self.level = -4
 
+        if self.paused == True:
+            self.PauseMenu.update(self)
+            self.PauseMenu.draw()
+
         if self.player.dead:
             self.scene.update()
             self.scene.draw()
 
-        if self.paused == True:
-            self.PauseMenu.update(self)
-            self.PauseMenu.draw()

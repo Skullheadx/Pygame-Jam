@@ -11,7 +11,8 @@ class Menu:
         Y = SCREEN_HEIGHT/2
         self.texts.append(createText(X, Y, 48, white, "Bold", "Interstellar Pirate Title", "c"))
         self.texts.append(createText(X, Y+200, 32, white, "Regular", "Start", "c"))
-        self.texts.append(createText(X, Y+350, 32, white, "Regular", "Quit", "c"))
+        self.texts.append(createText(X, Y+350, 32, white, "Regular", "New Game", "c"))
+        self.texts.append(createText(X, Y+500, 32, white, "Regular", "Quit", "c"))
 
         backgroundImage = pg.image.load('./Assets/mainmenu_background.png')
         self.backgroundImage = pg.transform.scale(backgroundImage, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -47,10 +48,13 @@ class Menu:
     def menuFunctions(self, num):
         match num:
             case 1:
-                print(LoadGame())
                 try:
                     self.level = LoadGame()
+                    if(self.level == 0):
+                        self.level = 1
                 except:
                     self.level = self.level + 1
             case 2:
+                self.level = 1
+            case 3:
                 pg.quit();
