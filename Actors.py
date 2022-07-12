@@ -88,7 +88,7 @@ class Actor:
         self.is_dead(reason)
 
     def attack(self, enemy, weapon, direction):
-        if not self.attacked:
+        if not self.attacked and self.invincibility_frames == 0:
             self.push(direction, 2, -1)
             self.modify_health(weapon.damage, "enemy")
             self.attacked = True
@@ -200,5 +200,5 @@ class Actor:
         # pg.draw.rect(surf, (0,0,0), self.get_collision_rect(), border_radius=8, width=2)
 
         # Uncomment for debugging area hitboxes
-        # for area in self.areas.values():
-        #     area.draw(surf)
+        for area in self.areas.values():
+            area.draw(surf)

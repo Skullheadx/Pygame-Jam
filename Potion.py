@@ -17,11 +17,6 @@ class Potion:
         if player.health > 100:
             player.health = 100
             
-        del player.potion_bag[0]
-        player.potion_cooldown = 30
-        threading.Thread(target = player.potion_cooldown_timer).start()
-
-
-
-
-
+        del self.player.potion_bag[0]
+        self.player.potion_cooldown = 4
+        threading.Thread(target = self.player.potion_cooldown_timer).start()
