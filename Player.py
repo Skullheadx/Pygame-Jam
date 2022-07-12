@@ -199,7 +199,7 @@ class Player(Actor):
                 Dust(pg.Vector2(self.get_collision_rect().midbottom) + pg.Vector2(
                     math.copysign(1, self.velocity.x) * -self.width / 2, -15), 16, self.direction)
 
-            self.current_frame = (self.current_frame + 0.5) % self.run_gif.n_frames
+            self.current_frame = (self.current_frame + 0.4) % self.run_gif.n_frames
 
         if self.state == "RUN":
             if self.previous_state != "RUN":

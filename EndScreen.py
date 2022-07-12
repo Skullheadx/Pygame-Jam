@@ -1,3 +1,4 @@
+import Setup
 from Setup import *
 from CommonImports.colours import black
 from Function.createText import createText
@@ -39,4 +40,5 @@ class EndScreen:
             case 1:
                 self.level = -1
             case 2:
-                pg.quit();
+                Setup.is_running = False
+                # pg.quit();

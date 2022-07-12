@@ -1,4 +1,5 @@
 from Setup import *
+import Setup
 from Game import Game
 from Test import Test
 from LevelCreator import LevelCreator
@@ -8,18 +9,16 @@ from Function.Transition import TransitionScene
 from DevLevelSelect import DevLevelSelect
 
 delta = 1000//fps
-is_running = True
-
 # scene = Menu()
 # scene = TransitionScene()
 scene = DevLevelSelect()
 old_level = 0
-level = -2
+level = 2
 next_level = 0
 
-while is_running:
+while Setup.is_running:
     if pg.event.peek(pg.QUIT):
-        is_running = False
+        Setup.is_running = False
 
     if level == -1:
         level = old_level

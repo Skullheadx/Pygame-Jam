@@ -20,22 +20,25 @@ from UI.PotionUI import PotionUI
 from World import World
 from Item import PotionItem
 from Spike import Spike
+from Particle import Cloud
 
 class Game:
+    cloud_density = 1/100000
+
 
     def __init__(self, level):
-        self.collision_layer = {"none": set(), "world": set(), "player": set(), "enemy": set(), "pet": set(), "body":set(), "potion":set(), "spike":set()}
+        self.collision_layer = {"none": set(), "world": set(), "player": set(), "enemy": set(), "pet": set(),
+                                "body": set(), "potion": set(), "spike": set()}
 
         # self.load_world(level)
 
-        self.levels = [[],[],[8, 9]]
-
-        self.sky = pg.image.load("Assets/world/VOID.png").convert()
+        self.levels = [[], [], [8, 9]]
 
 
         self.world = World(self.collision_layer)
 
-        enemy_positions, player_position, self.portal_position, heal_positions, spike_positions = self.world.load_world(level)
+        enemy_positions, player_position, self.portal_position, heal_positions, spike_positions = self.world.load_world(
+            level)
 
         for i in heal_positions:
             PotionItem(i, self.collision_layer["potion"])
@@ -65,16 +68,27 @@ class Game:
 
         self.dialogue = DialogueUI()
 
+        if self.level in [1,3,4]:
+            # Density = total clouds / area
+            # Total_clouds = area * density
+            for i in range(round(MAP_WIDTH * SCREEN_HEIGHT * 2 / 3 * self.cloud_density)):
+                Cloud((random.random() * MAP_WIDTH, random.random() * SCREEN_HEIGHT * 2 / 3), random.randint(100,125))
+
+        self.sky = pg.image.load("Assets/world/sky_level_background.png").convert()
 
         try:
             if self.level == 1:
                 pg.mixer.music.load("Assets/Music/Overworld_Music.ogg")
             if self.level == 2:
                 pg.mixer.music.load("Assets/Music/Cave_Music.ogg")
-            if self.level == 8 or self.level == 9:
+                self.sky = pg.image.load("Assets/world/VOID.png").convert()
+
+            if self.level == 3 or self.level == 4:
                 pg.mixer.music.load("Assets/Music/Sky_Music.ogg")
-            if self.level == 4:
+            if self.level == 5:
                 pg.mixer.music.load("Assets/Music/Combat_Music.ogg")
+                self.sky = pg.image.load("Assets/world/VOID.png").convert()
+
             else:
                 pg.mixer.music.load("Assets/Music/Overworld_Music.ogg")
 
@@ -95,7 +109,8 @@ class Game:
             enemy.update(delta, self.player)
             if enemy.dead:
                 self.enemies[i] = PhysicsBody(enemy.position, enemy.velocity, enemy.width, enemy.height, enemy.colour,
-                                              self.collision_layer["body"], [self.collision_layer["world"], self.collision_layer["body"]])
+                                              self.collision_layer["body"],
+                                              [self.collision_layer["world"], self.collision_layer["body"]])
                 self.collision_layer["enemy"].remove(enemy)
                 self.collision_layer["body"].add(self.enemies[i])
 
@@ -112,13 +127,22 @@ class Game:
 
         # screen.fill((0, 191, 255))
         # screen.fill((255,255,255))
-        surf.blit(self.sky,(0,0))
+        surf.blit(self.sky, (0, 0))
 
-        if(self.player.position[1] > 10000):
-                self.player.dead = True
+        if (self.player.position[1] > 10000):
+            self.player.dead = True
 
-        if(self.level in self.levels[2]):
+        if (self.level in self.levels[2]):
             self.sky = pg.image.load("Assets/world/sky_level_background.png").convert()
+
+        for particle in particles:
+            particle.draw(surf)
+        self.world.draw(surf)
+
+        for potion in self.collision_layer["potion"]:
+            potion.draw(surf)
+        for spike in self.collision_layer["spike"]:
+            spike.draw(surf)
 
         if (self.level == 1):
             self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
@@ -129,25 +153,14 @@ class Game:
         except:
             pass;
 
-        self.world.draw(surf)
-
-        for potion in self.collision_layer["potion"]:
-            potion.draw(surf)
-        for spike in self.collision_layer["spike"]:
-            spike.draw(surf)
-
-        for particle in particles:
-            particle.draw(surf)
-
         for enemy in self.enemies:
             enemy.draw(surf)
-
 
         self.player.draw(surf)
         # self.dashMeter.update(self.player.lastDash)
         # self.dashMeter.draw(surf)
         self.healthBar.draw(surf, self.player.health)
-        self.potionUI.draw(surf, self.player.potion_bag, self.player.potion_cooldown)            
+        self.potionUI.draw(surf, self.player.potion_bag, self.player.potion_cooldown)
 
         # print(self.player.get_collision_rect())s
         # Debug Lines. DO NOT CROSS THEM!
@@ -155,14 +168,14 @@ class Game:
         pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(-Setup.camera_offset.x, SCREEN_HEIGHT), 10)
         # self.pet.draw(surf)
 
-        if(self.fade == True):
+        if (self.fade == True):
             self.fadeT.update(True)
             self.fadeT.draw()
         else:
             self.fadeT.update()
             self.fadeT.draw()
 
-        if(self.fadeT.transparency >= 255):
+        if (self.fadeT.transparency >= 255):
             self.Transition.fade = False
             self.next_level = self.level + 1
             self.level = -4

@@ -23,6 +23,8 @@ clock = pg.time.Clock()
 fps = 60
 screen = pg.display.set_mode(dimensions, pg.SCALED)
 
+is_running = True
+
 
 def rotate(pos, img, angle, pivot):
     vec = (pos - pivot).rotate(-angle) + pivot

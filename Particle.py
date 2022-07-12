@@ -26,3 +26,19 @@ class Dust:
 
     def draw(self, surf):
         surf.blit(self.display, get_display_point(self.position))
+
+class Cloud:
+    img = pg.image.load("Assets/world/CLOUD.png")
+
+    def __init__(self, pos, cloud_size):
+        self.position = pg.Vector2(pos)
+        self.velocity = pg.Vector2(random.random()/5000,0)
+        self.cloud_size = cloud_size
+        self.display_img = pg.transform.scale(self.img, (self.cloud_size, self.cloud_size))
+        Setup.particles.append(self)
+
+    def update(self, delta):
+        self.position += self.velocity * delta
+
+    def draw(self, surf):
+        surf.blit(self.display_img, self.position - Setup.camera_offset * 0.25)
