@@ -1,3 +1,4 @@
+import Setup
 from Setup import *
 from CommonImports.colours import white
 from Function.createText import createText
@@ -53,4 +54,5 @@ class Menu:
                 except:
                     self.level = self.level + 1
             case 2:
-                pg.quit();
+                Setup.is_running = False # plz so that i don't get errors in the console
+                # pg.quit();
