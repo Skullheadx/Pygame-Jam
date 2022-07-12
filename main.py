@@ -13,7 +13,7 @@ delta = 1000//fps
 # scene = TransitionScene()
 scene = DevLevelSelect()
 old_level = 0
-level = 2
+level = 0
 next_level = 0
 
 while Setup.is_running:

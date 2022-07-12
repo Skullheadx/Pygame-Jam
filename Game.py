@@ -145,7 +145,7 @@ class Game:
             spike.draw(surf)
 
         if (self.level == 1):
-            self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
+            # self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
             self.dialogue.draw(surf, self.player, "player dialogue")
 
         try:

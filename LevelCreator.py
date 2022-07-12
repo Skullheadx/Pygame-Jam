@@ -16,6 +16,10 @@ class LevelCreator:
         textures.append(file[:file.index(".")])
 
     def __init__(self):
+        self.mode = "MOVE"
+        self.pos1 = pg.Vector2(0,0)
+        self.pos2 = pg.Vector2(0,0)
+
         self.blocks = {"none": [[] for _ in range(self.canvas_layers)],
                        "world": [[] for _ in range(self.canvas_layers)]}
 
@@ -117,7 +121,7 @@ class LevelCreator:
                 if p == "":
                     break
                 x, y = p.split(',')
-                self.add_block(self.apply_transformations((float(x), float(y))), self.blocks[l], t, i)
+                self.add_block(self.apply_transformations((float(x), float(y))), self.blocks[l], t, i//3)
 
     def toggle_collidable(self):
         if self.collision_layer == "none":
@@ -216,7 +220,15 @@ class LevelCreator:
         for event in pg.event.get((pg.MOUSEBUTTONDOWN, pg.MOUSEWHEEL, pg.KEYUP)):
             if event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    pg.mouse.get_rel()
+                    if pg.key.get_pressed()[pg.K_LSHIFT]:
+                        self.mode = "SELECT"
+                        self.pos1 = self.fit_to_grid(pg.mouse.get_pos(), True)
+                    else:
+                        self.mode = "MOVE"
+                        pg.mouse.get_rel()
+                elif event.button == 3:
+                    if self.mode == "SELECT":
+                        pg.mouse.get_rel()
             if event.type == pg.MOUSEWHEEL:
                 if event.y < 0:
                     current_frame_zoom *= 0.75
@@ -234,10 +246,23 @@ class LevelCreator:
 
         mouse_pressed = pg.mouse.get_pressed(3)
         if mouse_pressed[0]:
-            mouse_rel = pg.mouse.get_rel()
-            self.total_offset += pg.Vector2(mouse_rel[0] / self.zoom, mouse_rel[1] / self.zoom)
+            if self.mode == "MOVE":
+                mouse_rel = pg.mouse.get_rel()
+                self.total_offset += pg.Vector2(mouse_rel[0] / self.zoom, mouse_rel[1] / self.zoom)
+            elif self.mode == "SELECT":
+                self.pos2 = self.fit_to_grid(pg.mouse.get_pos(), True)
         if mouse_pressed[2]:
-            self.add_block(pg.mouse.get_pos(), self.blocks[self.collision_layer], self.textures[self.current_texture],
+            if self.mode == "SELECT":
+                mouse_rel = pg.Vector2(pg.mouse.get_rel())
+                self.pos1 += mouse_rel
+                self.pos2 += mouse_rel
+                # self.pos2 = self.fit_to_grid(self.pos2)
+                # for mask in self.blocks.values():
+                #     for layer in mask:
+                #         for block in layer:
+                #             block.position
+            elif self.mode == "MOVE":
+                self.add_block(pg.mouse.get_pos(), self.blocks[self.collision_layer], self.textures[self.current_texture],
                            self.current_layer)
 
         self.translation_matrix = np.array([[1, 0, self.total_offset.x],
@@ -296,8 +321,13 @@ class LevelCreator:
         display_img.set_alpha(200)
         surf.blit(pg.transform.scale(display_img, self.apply_rect_transformations(display_img.get_rect()).size),
                   self.apply_transformations(self.fit_to_grid(pg.mouse.get_pos(), use_floor=True)))
+
+        if self.mode == "SELECT":
+            pg.draw.rect(surf,(255,0,0),self.apply_rect_transformations(pg.Rect(self.pos1, self.pos2-self.pos1)),3)
+
         for button in self.buttons:
             button.draw(surf)
+
 
 
 class Grid:
