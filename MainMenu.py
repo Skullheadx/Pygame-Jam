@@ -1,6 +1,7 @@
 from Setup import *
 from CommonImports.colours import white
 from Function.createText import createText
+from Save.SaveGame import LoadGame
 
 class Menu:
 
@@ -17,9 +18,11 @@ class Menu:
 
         self.level = 0
 
-        pg.mixer.music.load('Assets/Music/Main_Menu_Music.ogg')
-        pg.mixer.music.play(-1)
-
+        try:
+            pg.mixer.music.load('Assets/Music/Main_Menu_Music.ogg')
+            pg.mixer.music.play(-1)
+        except:
+            pass;
         
     def update(self, delta):
         for ev in pg.event.get(pg.MOUSEBUTTONDOWN):
@@ -44,6 +47,10 @@ class Menu:
     def menuFunctions(self, num):
         match num:
             case 1:
-                self.level = self.level + 1
+                print(LoadGame())
+                try:
+                    self.level = LoadGame()
+                except:
+                    self.level = self.level + 1
             case 2:
                 pg.quit();

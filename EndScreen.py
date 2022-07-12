@@ -2,18 +2,19 @@ import Setup
 from Setup import *
 from CommonImports.colours import black
 from Function.createText import createText
+from Save.SaveGame import SaveGame
 
 class EndScreen:
 
-    def __init__(self):
+    def __init__(self, level=-1):
         self.texts = []
         X = SCREEN_WIDTH
         Y = SCREEN_HEIGHT/2
         self.texts.append(createText(X, Y, 32, black, "Bold", "You Died", 'c'))
         self.texts.append(createText(X, Y+150, 24, black, "Regular", "Respawn", 'c'))
-        self.texts.append(createText(X, Y+300, 24, black, "Regular", "Quit", 'c'))
+        self.texts.append(createText(X, Y+300, 24, black, "Regular", "Save and Exit", 'c'))
 
-        self.level = -1
+        self.level = level
 
         
     def update(self):
@@ -40,5 +41,6 @@ class EndScreen:
             case 1:
                 self.level = -1
             case 2:
-                Setup.is_running = False
+                SaveGame(self.level)
+                self.level = 0
                 # pg.quit();
