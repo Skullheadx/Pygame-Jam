@@ -45,7 +45,8 @@ class Cloud:
         self.position += self.velocity * delta
 
     def draw(self, surf):
-        surf.blit(self.display_img, self.position - Setup.camera_offset * 0.25)
+        if pg.Rect(self.position - Setup.camera_offset * 0.25, self.display_img.get_size()):
+            surf.blit(self.display_img, self.position - Setup.camera_offset * 0.25)
 
 class Treasure:
     imgs = [pg.image.load("Assets/world/decor/GOLDCOIN.png"),

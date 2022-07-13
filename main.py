@@ -16,7 +16,7 @@ delta = 1000//fps
 # scene = TransitionScene()
 scene = Menu()
 old_level = 0
-level = 1
+level = 0
 next_level = 0
 
 # final_level = 6
@@ -45,6 +45,7 @@ while Setup.is_running:
                 scene = FinalScreen()
             case _:
                 scene = Game(level)
+                scene.saved_jeff = False
         old_level = level
 
     level = scene.level

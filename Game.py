@@ -22,7 +22,7 @@ from RangedAttack import RangedAttack
 
 
 class Game:
-    cloud_density = 1 / 100000
+    cloud_density = 1 / 1000
     saved_jeff = False
 
     def __init__(self, level):
@@ -123,11 +123,15 @@ class Game:
 
         self.seen_text = [False for _ in range(100)]  # Trust hardcoding at its best
 
-        if self.level in [1, 3, 4]:
+        if self.level in [1, 3]:
             # Density = total clouds / area
             # Total_clouds = area * density
-            for i in range(round(MAP_WIDTH * SCREEN_HEIGHT * 2 / 3 * self.cloud_density)):
-                Cloud((random.random() * MAP_WIDTH, random.random() * SCREEN_HEIGHT * 2 / 3), random.randint(100, 125))
+            if self.level == 3:
+                for i in range(round(SCREEN_WIDTH * SCREEN_HEIGHT * self.cloud_density)):
+                    Cloud((random.random() * MAP_WIDTH, get_display_point(self.player.position).y - 1700 + random.random() * SCREEN_HEIGHT), random.randint(100, 125))
+            elif self.level == 1:
+                for i in range(round(SCREEN_WIDTH * SCREEN_HEIGHT * self.cloud_density)):
+                    Cloud((random.random() * MAP_WIDTH, random.random() * SCREEN_HEIGHT * 2/3 + 50), random.randint(100, 125))
         else:
             for particle in Setup.particles:
                 if isinstance(particle, Cloud):
@@ -285,7 +289,7 @@ class Game:
                 self.bosshealthBar.update()
 
             if self.level == 1:
-                print(self.player.position)
+                # print(self.player.position)
                 if self.player.position[0] > 6750 and self.player.position[1] >= 1500:
                     self.player.has_pet = True
 
@@ -400,27 +404,27 @@ class Game:
                 self.dialogue.draw(surf, self.player, "Shoot! They got to the portal already!", 10, 3)
                 self.dialogue.draw(surf, self.player, "I can't let those goons get another second ahead of me.", 10, 4)
         elif self.level == 3:
-            if self.seen_text[5] or self.player.position.x > 13000:
-                self.seen_text[5] = True
+            if self.seen_text[0] or self.player.position.x > 13000:
+                self.seen_text[0] = True
                 self.dialogue.draw(surf, self.player, "I suppose you are the captain...", 5, 1)
                 self.dialogue.draw(surf, self.jeff, "That's me. And the treasure is MINE!", 7,2)
-            if self.seen_text[6] or isinstance(self.jeff, PhysicsBody):
+            if self.seen_text[1] or isinstance(self.jeff, PhysicsBody):
                 # self.seen_text[5] = False
-                self.seen_text[6] = True
+                self.seen_text[1] = True
                 self.dialogue.draw(surf, self.jeff, "Noooo! Please don't kill me!", 5, 3)
                 self.dialogue.draw(surf, self.player, "...", 5, 4)
         elif self.level == 4:
             # print(self.player.position)
-            if self.seen_text[7] or True:
-                self.seen_text[7] = True
+            if self.seen_text[0] or True:
+                self.seen_text[0] = True
                 if self.jeff is not None:
                     self.dialogue.draw(surf, self.jeff, "You didn't kill us... So we'll help you.", 5, 0, 1890, 3350)
                 self.dialogue.draw(surf, self.player, "Here it is... The greatest treasure of all time and space...", 5, 1)
-            if self.seen_text[8] or self.player.position.x > 5000:
-                self.seen_text[8] = True
+            if self.seen_text[1] or self.player.position.x > 5000:
+                self.seen_text[1] = True
                 self.dialogue.draw(surf, self.king, "I am the Bone King! The protector of this dimension and NONE shall pass!", 20,2)
-            if self.seen_text[9] or isinstance(self.king, PhysicsBody):
-                self.seen_text[9] = True
+            if self.seen_text[2] or isinstance(self.king, PhysicsBody):
+                self.seen_text[2] = True
                 if self.jeff is not None:
                     self.dialogue.draw(surf, self.jeff, "We have won! Go through the portal... the honour is yours", 20,2)
 
