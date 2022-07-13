@@ -239,7 +239,7 @@ class Game:
             if self.level == 4:
                 self.bosshealthBar.update()
 
-            if self.level == 86:
+            if self.level == 1:
                 print(self.player.position)
                 if self.player.position[0] > 6750 and self.player.position[1] >= 1500:
                     self.player.has_pet = True

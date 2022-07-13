@@ -16,7 +16,7 @@ delta = 1000//fps
 # scene = TransitionScene()
 scene = Menu()
 old_level = 0
-level = 86
+level = 1
 next_level = 0
 
 # final_level = 6
