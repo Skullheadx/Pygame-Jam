@@ -301,7 +301,7 @@ class Player(Actor):
                         if not enemy.attacked and get_display_rect(self.weapon.get_collision_rect()).colliderect(
                                 get_display_rect(enemy.get_collision_rect())):
                             enemy_type = str(type(enemy))
-                            print(enemy_type)
+                            # print(enemy_type)
                             if enemy.health > 0:
                                 if enemy_type == "<class 'Enemy.Enemy'>":
                                     pg.mixer.Sound.play(self.grunt_sound)
