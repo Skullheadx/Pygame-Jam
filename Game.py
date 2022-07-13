@@ -207,8 +207,8 @@ class Game:
                 self.jeff.update(delta, self.player)
                 if self.jeff.dead:
                     self.collision_layer["enemy"].remove(self.jeff)
-                    self.jeff = PhysicsBody(self.jeff.position, self.jeff.velocity, self.jeff.width / 2,
-                                            self.jeff.height / 4,
+                    self.jeff = PhysicsBody(self.jeff.position, self.jeff.velocity, self.jeff.width,
+                                            self.jeff.height,
                                             self.jeff.colour,
                                             self.collision_layer["body"],
                                             [self.collision_layer["world"], self.collision_layer["body"]],
@@ -227,7 +227,7 @@ class Game:
             self.fade = self.Transition.fade
 
             if self.level == 3 and self.fade:
-                if (isinstance(self.jeff, PhysicsBody) and not self.jeff.was_beaten) and (not (isinstance(self.jeff, Enemy) and self.jeff.position.y > 10000)):
+                if self.jeff.position.y < 10000 and (isinstance(self.jeff, PhysicsBody) and not self.jeff.was_beaten):
                     self.saved_jeff = True
                     print('good')
 

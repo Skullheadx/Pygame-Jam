@@ -37,7 +37,7 @@ class PhysicsBody:
             self.offset = pg.Vector2(-50,-65)
         elif is_jeff:
             self.display = pg.transform.scale(pg.image.load("Assets/enemy/Jeff_Death.png"), (200,200))
-            self.offset = pg.Vector2(-50,-160)
+            self.offset = pg.Vector2(-50,-140)
             self.goon_skin = True
         else:
             self.display = pg.transform.scale(pg.image.load("Assets/skeleton/SKELETON.png"), (50,50))
@@ -110,6 +110,6 @@ class PhysicsBody:
 
     def draw(self, surf):
         # print(self.position, self.velocity)
-        pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=8)
+        # pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=8)
         surf.blit(self.display,get_display_rect(self.get_collision_rect()).topleft + self.offset)
         # surf.blit(self.display,get_display_rect(self.get_collision_rect()))
