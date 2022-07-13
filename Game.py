@@ -190,19 +190,20 @@ class Game:
         # screen.fill((255,255,255))
         surf.blit(self.sky, (0, 0))
 
-        if (self.level == 5 or self.level == 7):
+        if (self.level == 4):
+            print(get_camera_offset())
             if self.king is not None:
                 if self.king.skeleton_attack == True:
                     for i in range(random.randint(1, 2)):
-                        if(len(self.collision_layer["enemy"]) < 4 and len(self.skeleton_spawn_coords) < 2):
-                            self.skeleton_spawn_coords.append([(random.randint(1100, 2000), random.randint(1900, 2100)), 0])
+                        if(len(self.skeleton_spawn_coords) < 2):
+                            self.skeleton_spawn_coords.append([(random.randint(4000, 5200), random.randint(3250, 3350)), 0])
                     self.king.skeleton_attack = False
 
             for i in range(len(self.skeleton_spawn_coords)):
                 try:
-                    surf.blit(self.skeleton_portal_gif[self.skeleton_spawn_coords[i][1]], get_display_point((self.skeleton_spawn_coords[i][0][0] + 40, 1849)))  
+                    surf.blit(self.skeleton_portal_gif[self.skeleton_spawn_coords[i][1]], get_display_point((self.skeleton_spawn_coords[i][0][0] + 40, 3150)))  
 
-                    if(self.skeleton_spawn_coords[i][0][1] <= 1780):
+                    if(self.skeleton_spawn_coords[i][0][1] <= 3050):
                         skele = Skeleton(self.skeleton_spawn_coords[i][0], self.collision_layer["enemy"], [self.collision_layer["player"],self.collision_layer["world"],self.collision_layer["enemy"]])
                         self.skeletons.append(skele)
                         self.skeleton_spawn_coords[i][0] = (100000, 100000)
