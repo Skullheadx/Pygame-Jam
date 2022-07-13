@@ -37,7 +37,6 @@ class Pet(Actor):
             diff = self.position - plpos
             if(abs(diff[0]) >= 1500 or abs(diff[1]) >= 1000):
                 self.position = plpos
-        print(self.position)
 
         if(self.frame + 0.1 < len(self.move_frames)):
             self.frame += 0.08
