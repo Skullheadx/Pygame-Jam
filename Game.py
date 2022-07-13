@@ -225,8 +225,10 @@ class Game:
             self.world.update(delta)
             self.fade = self.Transition.fade
 
-            if self.level == 3 and self.fade and isinstance(self.jeff, PhysicsBody) and not self.jeff.was_beaten:
-                self.saved_jeff = True
+            if self.level == 3 and self.fade:
+                if (isinstance(self.jeff, PhysicsBody) and not self.jeff.was_beaten) and (not (isinstance(self.jeff, Enemy) and self.jeff.position.y > 10000)):
+                    self.saved_jeff = True
+                    print('good')
 
             if self.level in [2, 5]:
                 for particle in Setup.particles:
