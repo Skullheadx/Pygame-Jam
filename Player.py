@@ -40,7 +40,8 @@ class Player(Actor):
     # Enemy SFX
     grunt_sound = pg.mixer.Sound("Assets/SFX/Grunt Sound.wav")
     skeleton_damaged_sound = pg.mixer.Sound("Assets/SFX/Skeleton_Damaged.wav")
-    
+    player_grunt = pg.mixer.Sound("Assets/SFX/Player Grunt.wav")
+    player_grunt_channel = pg.mixer.Channel(4)
 
     width, height = idle_frames[0].get_size()
 
@@ -103,6 +104,7 @@ class Player(Actor):
 
     def attack(self, enemy, weapon, direction):
         self.friction = 0.9
+        self.player_grunt_channel.play(self.player_grunt)
 
         super().attack(enemy, weapon, direction)
 
