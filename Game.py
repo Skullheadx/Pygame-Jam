@@ -131,7 +131,7 @@ class Game:
             pass;
         # self.test = RangedAttack((1650,1250),self.collision_layer["world"], self.collision_layer["arrow"])
         if(self.level == 4):
-            self.portal_position = (5475, 2000)
+            self.portal_position = (5475, 2400)
 
     # def load_world(self, level):
 
