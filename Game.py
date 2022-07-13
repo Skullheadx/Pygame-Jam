@@ -70,7 +70,7 @@ class Game:
         self.fadeT = fade()
         self.next_level = 0
 
-        self.hints = [(Object((270, 640)), "Hello")]
+        # self.hints = [(Object((270, 640)), "Hello")]
         self.dialogue = DialogueUI()
 
         self.paused = False
@@ -143,6 +143,8 @@ class Game:
                     self.collision_layer["enemy"].remove(enemy)
                     self.collision_layer["body"].add(self.skeletons[i])
             self.king.update(delta)
+            if self.king.dead:
+                print("You win!")
 
             for particle in particles:
                 particle.update(delta)

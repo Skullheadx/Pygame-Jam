@@ -118,12 +118,12 @@ class Skeleton(Actor):
     run_gif = Image.open("Assets/skeleton/skeleton_run.gif")
     run_frames = []
     for i in range(run_gif.n_frames):
-        run_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(run_gif, i)), (180, 180)))
+        run_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(run_gif, i)), (170, 170)))
 
     attack_gif = Image.open("Assets/skeleton/skeleton_attack.gif")
     attack_frames = []
     for i in range(attack_gif.n_frames):
-        attack_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(attack_gif, i)), (180, 180)))
+        attack_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(attack_gif, i)), (170, 170)))
 
     def __init__(self, pos, collision_layer, collision_mask):
         super().__init__(pos, collision_layer, collision_mask)
@@ -206,7 +206,7 @@ class Skeleton(Actor):
 
     def draw(self, surf):
         # self.weapon.draw(surf)
-        # super(Enemy, self).draw(surf)
+        super(Skeleton, self).draw(surf)
         surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft + self.display_offsets["enemy"])
 
         # for b in self.buffer:
@@ -255,7 +255,7 @@ class King(Actor):
     def update(self, delta, target=None):
         super().update(delta)
         if not self.attacked and target is not None and self.stun_time == 0:
-            self.follow_target(target, follow_range=750,stop_dist=target.width/2+self.weapon.width)
+            # self.follow_target(target, follow_range=750,stop_dist=target.width/2+self.weapon.width)
             if not target.attacked and get_display_rect(self.weapon.get_collision_rect()).colliderect(
                     get_display_rect(target.get_collision_rect())):
                 if self.state != "ATTACK":
