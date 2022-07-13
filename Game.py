@@ -103,9 +103,9 @@ class Game:
                 pg.mixer.music.load("Assets/Music/Cave_Music.ogg")
                 self.sky = pg.image.load("Assets/world/VOID.png").convert()
 
-            if self.level == 3 or self.level == 4:
+            if self.level == 3:
                 pg.mixer.music.load("Assets/Music/Sky_Music.ogg")
-            if self.level == 5:
+            if self.level == 4:
                 pg.mixer.music.load("Assets/Music/Combat_Music.ogg")
                 self.sky = pg.image.load("Assets/world/VOID.png").convert()
 

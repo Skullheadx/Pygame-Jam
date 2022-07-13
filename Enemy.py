@@ -148,7 +148,7 @@ class Skeleton(Actor):
         self.direction = -1
         self.prev_direction = self.direction
 
-        # self.health = 0 # for debugging without getting killed
+        self.health = 0 # for debugging without getting killed
 
         self.weapon = Sword(self.position, (0, 0), self.width, -1)
 
@@ -286,12 +286,15 @@ class King(Actor):
                 self.attack_cooldown = random.randint(2,5) * 1000
 
             if not get_display_rect(self.weapon.get_collision_rect()).colliderect(
-                    get_display_rect(target.get_collision_rect())):
+                    get_display_rect(target.get_collision_rect())) and (1500 ** 2 > (self.position - target.position).length_squared()):
+
+
                 if (self.position - target.position).length_squared() > 750 ** 2:
                     self.ranged_attack.append(RangedAttack(target.position + pg.Vector2(0,-400),self.arrow_collision_mask, self.arrow_collision_layer))
                     self.attack_cooldown = random.randint(5,10) * 1000
                 else:
                     print("Summon Skeles!")
+                    self.attack_cooldown = random.randint(5,10) * 1000
 
 
             # else:
@@ -299,7 +302,7 @@ class King(Actor):
             #         self.state = "SUMMON"
             #         self.current_frame = 0
             #         self.attack_cooldown = random.randint(2,5) * 1000
-        if (self.state == "ATTACK") and (2 < self.current_frame) and (not self.attacked) and not target.attacked:
+        if (self.state == "ATTACK") and (4 < self.current_frame) and (not self.attacked) and not target.attacked:
             if get_display_rect(self.weapon.get_collision_rect()).colliderect(
                     get_display_rect(target.get_collision_rect())):
                 target.attack(self, self.weapon, math.copysign(1, target.position.x - self.position.x))
@@ -330,11 +333,11 @@ class King(Actor):
             frame = math.floor(self.current_frame)
             if self.direction == 1:
                 self.display = pg.transform.flip(self.attack_frames[math.floor(frame)], False, False)
-                self.display_offsets["enemy"] = pg.Vector2(-15, -25)
+                self.display_offsets["enemy"] = pg.Vector2(-15, -5)
             else:
                 self.display = pg.transform.flip(self.attack_frames[math.floor(frame)], True, False)
                 self.display_offsets["enemy"] = pg.Vector2(-15, 25)
-            self.current_frame += 0.4
+            self.current_frame += 0.2
             if math.floor(self.current_frame) >= self.attack_gif.n_frames-1:
                 self.state = "RUN"
                 self.current_frame = 0
