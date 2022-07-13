@@ -133,11 +133,13 @@ class Game:
                 pg.mixer.music.load("Assets/Music/Overworld_Music.ogg")
 
             pg.mixer.music.play(-1)
+            pg.mixer.music.set_volume(0.5)
+
         except:
             pass;
         # self.test = RangedAttack((1650,1250),self.collision_layer["world"], self.collision_layer["arrow"])
         if(self.level == 4):
-            self.portal_position = (5475, 2000)
+            self.portal_position = (5475, 2400)
 
     # def load_world(self, level):
 
