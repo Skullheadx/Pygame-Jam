@@ -39,6 +39,7 @@ class Player(Actor):
     landing_sound_channel = pg.mixer.Channel(3)
     # Enemy SFX
     grunt_sound = pg.mixer.Sound("Assets/SFX/Grunt Sound.wav")
+    skeleton_damaged_sound = pg.mixer.Sound("Assets/SFX/Skeleton_Damaged.wav")
     
 
     width, height = idle_frames[0].get_size()
@@ -296,9 +297,12 @@ class Player(Actor):
 
                         if not enemy.attacked and get_display_rect(self.weapon.get_collision_rect()).colliderect(
                                 get_display_rect(enemy.get_collision_rect())):
-                            print(enemy.health)
+                            enemy_type = str(type(enemy))
                             if enemy.health > 0:
-                                pg.mixer.Sound.play(self.grunt_sound)
+                                if enemy_type == "<class 'Enemy.Enemy'>":
+                                    pg.mixer.Sound.play(self.grunt_sound)
+                                if enemy_type == "<class 'Enemy.Skeleton'>":
+                                    pg.mixer.Sound.play(self.skeleton_damaged_sound)
                             enemy.attack(self, self.weapon, self.direction)
                 for arrow in self.arrows:
                     if not arrow.attacked and get_display_rect(self.weapon.get_collision_rect()).colliderect(
