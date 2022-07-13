@@ -118,12 +118,12 @@ class Skeleton(Actor):
     run_gif = Image.open("Assets/skeleton/skeleton_run.gif")
     run_frames = []
     for i in range(run_gif.n_frames):
-        run_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(run_gif, i)), (170, 170)))
+        run_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(run_gif, i)), (170, 138)))
 
     attack_gif = Image.open("Assets/skeleton/skeleton_attack.gif")
     attack_frames = []
     for i in range(attack_gif.n_frames):
-        attack_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(attack_gif, i)), (170, 170)))
+        attack_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(attack_gif, i)), (170, 138)))
 
     def __init__(self, pos, collision_layer, collision_mask):
         super().__init__(pos, collision_layer, collision_mask)
@@ -175,10 +175,10 @@ class Skeleton(Actor):
             frame = math.floor(self.current_frame)
             if self.velocity.x > 0:
                 self.display = self.run_frames[math.floor(frame)]
-                self.display_offsets["enemy"] = pg.Vector2(-30, -35)
+                self.display_offsets["enemy"] = pg.Vector2(-60, -35)
             elif self.velocity.x <= 0:
                 self.display = pg.transform.flip(self.run_frames[math.floor(frame)], True, False)
-                self.display_offsets["enemy"] = pg.Vector2(-90, -35)
+                self.display_offsets["enemy"] = pg.Vector2(-60, -35)
             if frame % 4 == 0 and self.on_ground:
                 Dust(pg.Vector2(self.get_collision_rect().midbottom) + pg.Vector2(math.copysign(1, self.velocity.x) * -self.width/2,-15), 16, self.direction)
             self.current_frame = (self.current_frame + 0.25) % self.run_gif.n_frames
@@ -186,10 +186,10 @@ class Skeleton(Actor):
             frame = math.floor(self.current_frame)
             if self.direction == 1:
                 self.display = pg.transform.flip(self.attack_frames[math.floor(frame)], False, False)
-                self.display_offsets["enemy"] = pg.Vector2(-50, -50)
+                self.display_offsets["enemy"] = pg.Vector2(-60, -35)
             else:
                 self.display = pg.transform.flip(self.attack_frames[math.floor(frame)], True, False)
-                self.display_offsets["enemy"] = pg.Vector2(-80, -50)
+                self.display_offsets["enemy"] = pg.Vector2(-60, -35)
             self.current_frame += 0.4
             if math.floor(self.current_frame) >= self.attack_gif.n_frames-1:
                 self.state = "RUN"
