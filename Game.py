@@ -232,7 +232,7 @@ class Game:
             self.fadeT.update()
             self.fadeT.draw()
 
-        if (self.fadeT.transparency >= 255):
+        if (self.fadeT.transparency >= 255 and self.player.dead == False):
             self.Transition.fade = False
             self.next_level = self.level + 1
             self.level = -4

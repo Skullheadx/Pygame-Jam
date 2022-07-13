@@ -14,3 +14,7 @@ ignore_*
 Save/SaveData.txt
 /.idea
 .idea/Pygame-Jam-main.iml
+build
+dist
+*.exe
+*.spec
