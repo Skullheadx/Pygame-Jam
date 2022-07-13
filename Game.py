@@ -75,6 +75,8 @@ class Game:
         self.paused = False
         self.PauseMenu = PauseMenu(self.level)
 
+        self.seen_text = [False for _ in range(100)] # Trust hardcoding at its best
+
         if self.level in [1, 3, 4]:
             # Density = total clouds / area
             # Total_clouds = area * density
@@ -174,22 +176,27 @@ class Game:
         except:
             pass;
 
+        if (self.level == 1):
+            # self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
+            self.dialogue.draw(surf, self.player, "Press A or D to move.", 400, 0, 900, 1800)
+            self.dialogue.draw(surf, self.player, "Press W or SPACE to jump.", 400, 0, 1800, 1750)
+            self.dialogue.draw(surf, self.player, "Left click to attack.", 400, 0, 2400, 1540)
+            self.dialogue.draw(surf, self.player, "Press 1 to heal using potions", 400, 0, 2400, 1600)
+            if self.seen_text[0] or self.player.position.x > 3000:
+                self.seen_text[0] = True
+                self.dialogue.draw(surf, self.player, "These goons must be guarding something!", 10, 1)
+                self.dialogue.draw(surf, self.player, "It may just be what I am looking for...", 10, 2)
+            elif self.seen_text[1] or self.player.position.y > 1800:
+                self.seen_text[1] = True
+                self.dialogue.draw(surf, self.player, "This treasure is pennies compared to what I'm after.", 10, 3)
+                self.dialogue.draw(surf, self.player, "But this portal will bring me one dimension closer!", 10, 4)
+
         for enemy in self.enemies:
             enemy.draw(surf)
 
         self.player.draw(surf)
 
-        if (self.level == 1):
-            # self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
-            self.dialogue.draw(surf, self.player, "Press A or D to move.", 400, 0, 900, 1800)
-            # self.dialogue.draw(surf, self.player, "Press W or SPACE to jump.", 400, 0, 1800, 1750)
-            # self.dialogue.draw(surf, self.player, "Left click to attack.", 400, 0, 2500, 1600)
-            # if self.player.position.x > 3000:
-            #     self.dialogue.draw(surf, self.player, "These goons must be guarding something!", 5, 1)
-            #     self.dialogue.draw(surf, self.player, "It may just be what I am looking for...", 5, 2)
-            # if self.player.position.y > 2000:
-            #     self.dialogue.draw(surf, self.player, "This treasure is pennies compared to what I'm after.", 4, 3)
-            #     self.dialogue.draw(surf, self.player, "But this portal will bring me one dimension closer!", 5, 4)
+
 
             # self.dialogue.draw(surf, self.player, "Next dimension, next portal...", 4, 1)
             # self.dialogue.draw(surf, self.player, "It's really that simple.", 4, 2)

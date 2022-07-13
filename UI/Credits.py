@@ -1,6 +1,6 @@
 import Setup
 from Setup import *
-from CommonImports.colours import black
+from CommonImports.colours import black, red
 from Function.createText import createText
 
 class Credits:
@@ -13,7 +13,8 @@ class Credits:
         # CHANGE YOUR NAME HERE IF YOU WANT
         self.texts.append(createText(X, Y+800, 24, black, "Regular", "Exit", "c"))
 
-        self.texts.append(createText(X, Y, 48, black, "Bold", "Credits:", "c"))
+        self.texts.append(createText(X, Y-40, 48, black, "Bold", "Credits:", "c"))
+        self.texts.append(createText(X, Y+40, 30, red, "SemiBold", "FAILURE Studios", "c"))
 
         self.texts.append(createText(X - 400, Y+200, 32, black, "Regular", "Programmers:", "c"))
         self.texts.append(createText(X - 400, Y+300, 24, black, "Regular", "Skullhead", "c"))
