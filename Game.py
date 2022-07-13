@@ -78,6 +78,12 @@ class Game:
         
         self.skeleton_spawn_frame = pg.transform.scale(pil_to_game(get_gif_frame(Image.open("Assets/skeleton/skeleton_attack.gif"), 0)), (170, 138))
         self.skeleton_spawn_coords = []
+        skeleton_portal_gif = Image.open("Assets/skeleton/portal.gif")
+        self.skeleton_portal_gif = []
+        for i in range(skeleton_portal_gif.n_frames):
+            self.skeleton_portal_gif.append(pg.transform.scale(pil_to_game(get_gif_frame(skeleton_portal_gif, i)), (96, 64)))
+        
+        
 
         self.paused = False
         self.PauseMenu = PauseMenu(self.level)
@@ -179,12 +185,47 @@ class Game:
         # self.pet.update(delta, self.player, self.camera_pos)
 
     def draw(self, surf):
+
+
+
         # screen.fill((0, 191, 255))
 
         # screen.fill((0, 191, 255))
         # screen.fill((255,255,255))
         surf.blit(self.sky, (0, 0))
 
+        if (self.level == 4):
+            print(get_camera_offset())
+            if self.king is not None:
+                if self.king.skeleton_attack == True:
+                    for i in range(random.randint(1, 2)):
+                        if(len(self.skeleton_spawn_coords) < 2):
+                            self.skeleton_spawn_coords.append([(random.randint(4000, 5200), random.randint(3250, 3350)), 0])
+                    self.king.skeleton_attack = False
+
+            for i in range(len(self.skeleton_spawn_coords)):
+                try:
+                    surf.blit(self.skeleton_portal_gif[self.skeleton_spawn_coords[i][1]], get_display_point((self.skeleton_spawn_coords[i][0][0] + 40, 3150)))  
+
+                    if(self.skeleton_spawn_coords[i][0][1] <= 3050):
+                        skele = Skeleton(self.skeleton_spawn_coords[i][0], self.collision_layer["enemy"], [self.collision_layer["player"],self.collision_layer["world"],self.collision_layer["enemy"]])
+                        self.skeletons.append(skele)
+                        self.skeleton_spawn_coords[i][0] = (100000, 100000)
+                    else:
+                        lst = list(self.skeleton_spawn_coords[i][0])
+                        lst[1] -= 2
+                        self.skeleton_spawn_coords[i][0] = tuple(lst)
+                        surf.blit(self.skeleton_spawn_frame, get_display_point(self.skeleton_spawn_coords[i][0]))
+                        if(self.skeleton_spawn_coords[i][1] <= 5):
+                            self.skeleton_spawn_coords[i][1] += 1
+                    
+                    if(self.skeleton_spawn_coords[i][0][0] > 50000 and self.skeleton_spawn_coords[i][0][1] > 50000):
+                        self.skeleton_spawn_coords[i][1] -= 1
+                        if(self.skeleton_spawn_coords[i][1] >= 0):
+                            self.skeleton_spawn_coords.pop(i)
+                except IndexError:
+                    pass;
+        
         if (self.player.position[1] > 10000):
             self.player.dead = True
 
@@ -221,26 +262,6 @@ class Game:
                 self.seen_text[1] = True
                 self.dialogue.draw(surf, self.player, "This treasure is pennies compared to what I'm after...", 10, 3)
                 self.dialogue.draw(surf, self.player, "But this portal will bring me one dimension closer!", 10, 4)
-
-        if (self.level == 5):
-            if self.king is not None:
-                if self.king.skeleton_attack == True:
-                    for i in range(random.randint(1, 3)):
-                        # if(len(self.collision_layer["enemy"]) < 5 and len(self.skeleton_spawn_coords) < 5):
-                        self.skeleton_spawn_coords.append((random.randint(1100, 2000), random.randint(1900, 2100)))
-                    self.king.skeleton_attack = False
-
-
-            for i in range(len(self.skeleton_spawn_coords)):
-                if(self.skeleton_spawn_coords[i][1] <= 1780):
-                    skele = Skeleton(self.skeleton_spawn_coords[i], self.collision_layer["enemy"], [self.collision_layer["player"],self.collision_layer["world"],self.collision_layer["enemy"]])
-                    self.skeletons.append(skele)
-                    self.skeleton_spawn_coords.pop(i)
-                else:
-                    lst = list(self.skeleton_spawn_coords[i])
-                    lst[1] -= 1
-                    self.skeleton_spawn_coords[i] = tuple(lst)
-                    surf.blit(self.skeleton_spawn_frame, get_display_point(self.skeleton_spawn_coords[i]))  
 
         for enemy in self.enemies:
             enemy.draw(surf)

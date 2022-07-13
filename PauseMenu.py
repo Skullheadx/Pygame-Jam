@@ -11,8 +11,8 @@ class PauseMenu:
 
         self.subtitle = createText(X, Y - 150, 60, (255, 255, 255), "Regular", "Pause Menu", 'c')
         self.resume = createText(X, Y + 100, 30, (255, 255, 255), "Regular", "Resume", 'c')
-        self.main_menu = createText(X, Y + 200, 30, (255, 255, 255), "Regular", "Main Menu", 'c')
-        self.quit = createText(X, Y + 300, 30, (255, 255, 255), "Regular", "Quit", 'c')
+        self.main_menu = createText(X, Y + 300, 30, (255, 255, 255), "Regular", "Main Menu", 'c')
+        self.quit = createText(X, Y + 500, 30, (255, 255, 255), "Regular", "Quit", 'c')
         self.overlay = pg.Surface((1080, 640))
         self.overlay.fill((0, 0 ,0))
         self.overlay.set_alpha(127)

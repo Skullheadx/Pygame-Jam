@@ -33,8 +33,8 @@ class PhysicsBody:
             self.display = pg.transform.scale(pg.image.load("Assets/enemy/Goon_Death.png"), (200,200))
             self.offset = pg.Vector2(-50,-65)
         else:
-            self.display = pg.transform.scale(pg.image.load("Assets/skeleton/SKELETON.png"), (100,100))
-            self.offset = pg.Vector2(0,-self.display.get_height()/2)
+            self.display = pg.transform.scale(pg.image.load("Assets/skeleton/SKELETON.png"), (50,50))
+            self.offset = pg.Vector2(0, 10)
 
     def update(self, delta, test=None, test2=None):
         if self.on_ground:
