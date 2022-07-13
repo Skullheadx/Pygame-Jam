@@ -18,7 +18,7 @@ class PhysicsBody:
         self.on_ground = False
 
         self.dead = False
-
+        self.health = 0
         self.movable = True
         self.attacked = False
         self.invincibility_frames = self.invincibility_time
