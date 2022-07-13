@@ -70,7 +70,13 @@ class Treasure:
         self.invincibility_frames = 250
         self.on_ground = False
 
-    def update(self, delta):
+        self.set_pos = False
+
+    def update(self, delta, pos):
+        if not self.set_pos:
+            self.position = pg.Vector2(pos)
+            self.set_pos = True
+
         if self.on_ground:
             self.velocity.x *= self.friction
         self.velocity.y += self.gravity

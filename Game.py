@@ -46,7 +46,7 @@ class Game:
                               self.collision_layer["enemy"]],
                              (self.collision_layer["world"], self.collision_layer["arrow"]))
             self.treasure = [Treasure(self.king.position - pg.Vector2(0, 50),pg.Vector2((random.random() -0.5) * 2, random.random() -2.5), self.collision_layer["body"],
-                                      [self.collision_layer["world"]]) for i in range(15)]
+                                      [self.collision_layer["world"]]) for i in range(10)]
         else:
             self.king = None
             self.treasure = None
@@ -173,7 +173,7 @@ class Game:
                 self.king.update(delta, self.player)
                 if isinstance(self.king, PhysicsBody):
                     for t in self.treasure:
-                        t.update(delta)
+                        t.update(delta, self.king.position)
                 if self.king.dead:
                     self.collision_layer["enemy"].remove(self.king)
                     self.king = PhysicsBody(self.king.position, self.king.velocity, self.king.width / 2,
@@ -218,9 +218,7 @@ class Game:
         # screen.fill((0, 191, 255))
         # screen.fill((255,255,255))
         surf.blit(self.sky, (0, 0))
-        for particle in particles:
-            particle.draw(surf)
-        self.world.draw(surf)
+
         if (self.level == 4):
             # print(get_camera_offset())
             if self.king is not None and isinstance(self.king, King):
@@ -230,9 +228,6 @@ class Game:
                             self.skeleton_spawn_coords.append([(random.randint(4000, 5000), random.randint(3250, 3350)), 0])
                     self.king.skeleton_attack = False
 
-            if isinstance(self.king, PhysicsBody):
-                for t in self.treasure:
-                    t.draw(surf)
 
             for i in range(len(self.skeleton_spawn_coords)):
                 try:
@@ -260,13 +255,15 @@ class Game:
                 except IndexError:
                     pass;
 
-            if(self.king.dead == True):
-                self.Transition.update()
-                self.Transition.draw(surf, self.player.position, self.portal_position)
-                if(self.portal_position[1] < 3150):
-                    lst = list(self.portal_position)
-                    lst[1] += 2
-                    self.portal_position = tuple(lst)
+        if self.king is not None and isinstance(self.king, PhysicsBody):
+            self.Transition.update()
+            self.Transition.draw(surf, self.player.position, self.portal_position)
+            print('a')
+            if(self.portal_position[1] < 3150):
+                lst = list(self.portal_position)
+                lst[1] += 2
+                self.portal_position = tuple(lst)
+                print('b')
                 # print(get_camera_offset(), getWorldCoords(0, 0))
         
         if (self.player.position[1] > 10000):
@@ -275,7 +272,13 @@ class Game:
         # if (self.level in self.levels[2]):
         #     self.sky = pg.image.load("Assets/world/sky_level_background.png").convert()
 
+        for particle in particles:
+            particle.draw(surf)
+        self.world.draw(surf)
 
+        if isinstance(self.king, PhysicsBody):
+            for t in self.treasure:
+                t.draw(surf)
 
         for potion in self.collision_layer["potion"]:
             potion.draw(surf)
