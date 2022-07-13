@@ -148,7 +148,7 @@ class Skeleton(Actor):
         self.direction = -1
         self.prev_direction = self.direction
 
-        self.health = 0 # for debugging without getting killed
+        self.health = 75 # for debugging without getting killed
 
         self.weapon = Sword(self.position, (0, 0), self.width, -1)
 
@@ -290,7 +290,7 @@ class King(Actor):
 
 
                 if (self.position - target.position).length_squared() > 750 ** 2:
-                    self.ranged_attack.append(RangedAttack(target.position + pg.Vector2(0,-400),self.arrow_collision_mask, self.arrow_collision_layer))
+                    self.ranged_attack.append(RangedAttack(target.position + pg.Vector2(0,-250),self.arrow_collision_mask, self.arrow_collision_layer))
                     self.attack_cooldown = random.randint(5,10) * 1000
                 else:
                     self.skeleton_attack = True

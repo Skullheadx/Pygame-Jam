@@ -300,10 +300,13 @@ class Player(Actor):
                         if not enemy.attacked and get_display_rect(self.weapon.get_collision_rect()).colliderect(
                                 get_display_rect(enemy.get_collision_rect())):
                             enemy_type = str(type(enemy))
+                            print(enemy_type)
                             if enemy.health > 0:
                                 if enemy_type == "<class 'Enemy.Enemy'>":
                                     pg.mixer.Sound.play(self.grunt_sound)
                                 if enemy_type == "<class 'Enemy.Skeleton'>":
+                                    pg.mixer.Sound.play(self.skeleton_damaged_sound)
+                            if enemy_type == "<class 'PhysicsBody.PhysicsBody'>" and enemy.goon_skin == False:
                                     pg.mixer.Sound.play(self.skeleton_damaged_sound)
                             enemy.attack(self, self.weapon, self.direction)
                 for arrow in self.arrows:

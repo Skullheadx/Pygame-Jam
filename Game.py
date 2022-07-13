@@ -110,7 +110,6 @@ class Game:
             if self.level == 2:
                 pg.mixer.music.load("Assets/Music/Cave_Music.ogg")
                 self.sky = pg.image.load("Assets/world/VOID.png").convert()
-
             if self.level == 3:
                 pg.mixer.music.load("Assets/Music/Sky_Music.ogg")
             if self.level == 4:
@@ -164,7 +163,14 @@ class Game:
             if self.king is not None:
                 self.king.update(delta, self.player)
                 if self.king.dead:
-                    print("You win!")
+                    self.collision_layer["enemy"].remove(self.king)
+                    self.king = PhysicsBody(self.king.position, self.king.velocity, self.king.width/2, self.king.height/2,
+                                                  self.king.colour,
+                                                  self.collision_layer["body"],
+                                                  [self.collision_layer["world"], self.collision_layer["body"]], goon_skin=False)
+                    self.collision_layer["body"].add(self.king)
+                    for enemy in self.skeletons:
+                        enemy.dead = True
 
             for particle in particles:
                 particle.update(delta)
@@ -195,7 +201,8 @@ class Game:
         surf.blit(self.sky, (0, 0))
 
         if (self.level == 4):
-            if self.king is not None:
+            # print(get_camera_offset())
+            if self.king is not None and isinstance(self.king, King):
                 if self.king.skeleton_attack == True:
                     for i in range(random.randint(1, 2)):
                         if(len(self.skeleton_spawn_coords) < 2):

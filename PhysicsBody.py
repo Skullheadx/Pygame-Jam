@@ -29,6 +29,8 @@ class PhysicsBody:
 
         self.display_offsets = {"enemy":pg.Vector2(0,0)}
 
+        self.goon_skin = goon_skin
+
         if goon_skin:
             self.display = pg.transform.scale(pg.image.load("Assets/enemy/Goon_Death.png"), (200,200))
             self.offset = pg.Vector2(-50,-65)
