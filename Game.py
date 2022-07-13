@@ -64,7 +64,7 @@ class Game:
                              self.collision_layer["potion"],
                              self.collision_layer["spike"],
                              self.collision_layer["arrow"])
-        # self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
+        self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
         self.enemies = [Enemy(pos, self.collision_layer["enemy"],
                               [self.collision_layer["player"], self.collision_layer["world"],
                                self.collision_layer["enemy"]]) for pos in
@@ -158,7 +158,7 @@ class Game:
             Setup.camera_offset = self.player.update(delta)
             Setup.camera_offset.x = max(0, min(Setup.camera_offset.x, MAP_WIDTH - SCREEN_WIDTH))
             Setup.camera_offset.y = max(0, min(Setup.camera_offset.y, MAP_HEIGHT - SCREEN_HEIGHT))
-
+            
             for i, enemy in enumerate(self.enemies):
                 enemy.update(delta, self.player)
                 if enemy.dead:
@@ -239,7 +239,7 @@ class Game:
             if self.level == 4:
                 self.bosshealthBar.update()
 
-        # self.pet.update(delta, self.player, self.camera_pos)
+        self.pet.update(delta, self.player)
 
     def draw(self, surf):
 
@@ -378,6 +378,7 @@ class Game:
             self.jeff.draw(surf)
         self.player.draw(surf)
 
+
         # self.dialogue.draw(surf, self.player, "Next dimension, next portal...", 4, 1)
         # self.dialogue.draw(surf, self.player, "It's really that simple.", 4, 2)
         # for o,text in self.hints:
@@ -404,7 +405,7 @@ class Game:
         # Debug Lines. DO NOT CROSS THEM!
         # pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(SCREEN_WIDTH, -Setup.camera_offset.y), 10)
         # pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(-Setup.camera_offset.x, SCREEN_HEIGHT), 10)
-        # self.pet.draw(surf)
+        self.pet.draw(surf, self.player.position)
 
         if (self.fade == True):
             self.fadeT.update(True)
