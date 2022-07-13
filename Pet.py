@@ -15,6 +15,7 @@ class Pet(Actor):
     def __init__(self, pos, collision_layer, collision_mask):
         super().__init__(pos, collision_layer, collision_mask)
         self.frame = 0
+        self.has_pet = False;
     
     def update(self, delta, target):
         super().update(delta)
@@ -32,9 +33,11 @@ class Pet(Actor):
             display = pg.transform.flip(display, True, False)
 
         surf.blit(display, get_display_rect(self.get_collision_rect()).topleft + d_off)
-        diff = self.position - plpos
-        if(abs(diff[0]) >= 1500 or abs(diff[1]) >= 1000):
-            self.position = plpos
+        if(self.has_pet == True):
+            diff = self.position - plpos
+            if(abs(diff[0]) >= 1500 or abs(diff[1]) >= 1000):
+                self.position = plpos
+        print(self.position)
 
         if(self.frame + 0.1 < len(self.move_frames)):
             self.frame += 0.08
