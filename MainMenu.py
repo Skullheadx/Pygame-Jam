@@ -10,9 +10,9 @@ class Menu:
         self.texts = []
         X = SCREEN_WIDTH
         Y = SCREEN_HEIGHT/2
-        self.texts.append(createText(X, Y, 48, white, "Bold", "Interstellar Pirate Title", "c"))
-        self.texts.append(createText(X, Y+200, 32, white, "Regular", "Start", "c"))
-        self.texts.append(createText(X, Y+350, 32, white, "Regular", "New Game", "c"))
+        self.texts.append(createText(X, Y, 48, white, "Bold", "Pirates of the Dead", "c"))
+        self.texts.append(createText(X, Y+200, 32, white, "Regular", "New Game", "c"))
+        self.texts.append(createText(X, Y+350, 32, white, "Regular", "Load Game", "c"))
         self.texts.append(createText(X, Y+500, 32, white, "Regular", "Quit", "c"))
 
         backgroundImage = pg.image.load('./Assets/mainmenu_background.png')
@@ -49,14 +49,14 @@ class Menu:
     def menuFunctions(self, num):
         match num:
             case 1:
+                self.level = 1
+            case 2:
                 try:
                     self.level = LoadGame()
                     if(self.level == 0):
                         self.level = 1
                 except:
                     self.level = self.level + 1
-            case 2:
-                self.level = 1
             case 3:
                 Setup.is_running = False # this works. who keeps changing it
                 # pg.quit(); # plz no

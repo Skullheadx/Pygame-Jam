@@ -9,7 +9,7 @@ class PhysicsBody:
     friction = Actor.friction
     invincibility_time = 150
 
-    def __init__(self, pos, vel, width, height, colour, collision_layer, collision_mask):
+    def __init__(self, pos, vel, width, height, colour, collision_layer, collision_mask, goon_skin=True):
         self.position = pg.Vector2(pos)
         self.velocity = pg.Vector2(vel)
         self.width, self.height = height, width
@@ -26,6 +26,11 @@ class PhysicsBody:
         collision_layer.add(self)  # the layer the actor is on for collisions
         self.collision_layer = collision_layer
         self.collision_mask = collision_mask  # the layer the actor detects collisions against
+
+        if goon_skin:
+            self.display = pg.image.load("Assets/enemy/Pirate_Goon.png")
+        else:
+            self.display = pg.image.load("Assets/skeleton/SKELETON.png")
 
     def update(self, delta, test=None, test2=None):
         if self.on_ground:
@@ -94,3 +99,4 @@ class PhysicsBody:
     def draw(self, surf):
         # print(self.position, self.velocity)
         pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=8)
+        surf.blit(self.display,get_display_rect(self.get_collision_rect()))

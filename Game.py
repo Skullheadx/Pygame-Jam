@@ -1,6 +1,6 @@
 import Setup
 from EndScreen import EndScreen
-from Enemy import Enemy
+from Enemy import Enemy, Skeleton, King
 from Function.Fade import fade
 from Function.Portal import Transition
 from Item import PotionItem
@@ -30,7 +30,7 @@ class Game:
 
         self.world = World(self.collision_layer)
 
-        enemy_positions, player_position, self.portal_position, heal_positions, spike_positions = self.world.load_world(
+        enemy_positions, player_position, self.portal_position, heal_positions, spike_positions, skele_positions, king_position = self.world.load_world(
             level)
 
         for i in heal_positions:
@@ -48,6 +48,16 @@ class Game:
                               [self.collision_layer["player"], self.collision_layer["world"],
                                self.collision_layer["enemy"]]) for pos in
                         enemy_positions]
+        if king_position is not None:
+            self.skeletons = [Skeleton(pos, self.collision_layer["enemy"],
+                                  [self.collision_layer["player"], self.collision_layer["world"],
+                                   self.collision_layer["enemy"]]) for pos in
+                                    skele_positions]
+            self.king = King(king_position, self.collision_layer["enemy"],
+                                  [self.collision_layer["player"], self.collision_layer["world"],
+                                   self.collision_layer["enemy"]] )
+
+
         self.scene = EndScreen()
         # self.dashMeter = DashMeter(self.player.dashCooldown)
         self.healthBar = HealthBar()
@@ -95,6 +105,7 @@ class Game:
             else:
                 pg.mixer.music.load("Assets/Music/Overworld_Music.ogg")
 
+
             pg.mixer.music.play(-1)
         except:
             pass;
@@ -122,6 +133,16 @@ class Game:
                                                   [self.collision_layer["world"], self.collision_layer["body"]])
                     self.collision_layer["enemy"].remove(enemy)
                     self.collision_layer["body"].add(self.enemies[i])
+            for i, enemy in enumerate(self.skeletons):
+                enemy.update(delta, self.player)
+                if enemy.dead:
+                    self.skeletons[i] = PhysicsBody(enemy.position, enemy.velocity, enemy.width, enemy.height,
+                                                  enemy.colour,
+                                                  self.collision_layer["body"],
+                                                  [self.collision_layer["world"], self.collision_layer["body"]], goon_skin=False)
+                    self.collision_layer["enemy"].remove(enemy)
+                    self.collision_layer["body"].add(self.skeletons[i])
+            self.king.update(delta)
 
             for particle in particles:
                 particle.update(delta)
@@ -187,7 +208,10 @@ class Game:
 
         for enemy in self.enemies:
             enemy.draw(surf)
+        for enemy in self.skeletons:
+            enemy.draw(surf)
 
+        self.king.draw(surf)
         self.player.draw(surf)
 
         # self.dialogue.draw(surf, self.player, "Next dimension, next portal...", 4, 1)
