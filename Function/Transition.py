@@ -1,7 +1,6 @@
 from Setup import *
 from random import randint, uniform
 from datetime import datetime, timedelta
-from CommonImports.colours import white
 from Function.Fade import fade
 
 class TransitionScene:
@@ -15,7 +14,7 @@ class TransitionScene:
         self.next_level = next_level
 
         self.stars = []
-        for i in range(100):
+        for i in range(250):
             self.stars.append([randint(0, SCREEN_WIDTH), randint(0, SCREEN_HEIGHT), uniform(1, 2)])
         self.starLen = 0
         self.timeSinceStart = datetime.utcnow()
@@ -59,6 +58,6 @@ class TransitionScene:
         surf.fill((0, 0, 0))
         if(self.starLen > 0):
             for i in range(len(self.stars)):
-                pg.draw.line(surf, white, (self.stars[i][0], self.stars[i][1]), (self.stars[i][0] - (self.starLen*self.stars[i][2]), self.stars[i][1] + (self.starLen*self.stars[i][2]/15)))
+                pg.draw.line(surf, (144, 131, 255), (self.stars[i][0], self.stars[i][1]), (self.stars[i][0] - 1, self.stars[i][1] + 1), 2)
         image = pg.transform.rotate(self.char_frames[self.frames], self.rotate_angle)
         surf.blit(image, (self.x2, self.y2))
