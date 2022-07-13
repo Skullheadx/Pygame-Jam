@@ -30,7 +30,7 @@ class Game:
 
         self.world = World(self.collision_layer)
 
-        enemy_positions, player_position, self.portal_position, heal_positions, spike_positions, skele_positions, king_position = self.world.load_world(
+        enemy_positions, player_position, self.portal_position, heal_positions, spike_positions, self.skele_positions, king_position = self.world.load_world(
             level)
 
         for i in heal_positions:
@@ -52,7 +52,7 @@ class Game:
             self.skeletons = [Skeleton(pos, self.collision_layer["enemy"],
                                   [self.collision_layer["player"], self.collision_layer["world"],
                                    self.collision_layer["enemy"]]) for pos in
-                                    skele_positions]
+                                    self.skele_positions]
             self.king = King(king_position, self.collision_layer["enemy"],
                                   [self.collision_layer["player"], self.collision_layer["world"],
                                    self.collision_layer["enemy"]] )
@@ -72,6 +72,9 @@ class Game:
 
         # self.hints = [(Object((270, 640)), "Hello")]
         self.dialogue = DialogueUI()
+        
+        self.skeleton_spawn_frame = pg.transform.scale(pil_to_game(get_gif_frame(Image.open("Assets/skeleton/skeleton_attack.gif"), 0)), (170, 138))
+        self.skeleton_spawn_coords = []
 
         self.paused = False
         self.PauseMenu = PauseMenu(self.level)
@@ -207,6 +210,25 @@ class Game:
                 self.seen_text[1] = True
                 self.dialogue.draw(surf, self.player, "This treasure is pennies compared to what I'm after...", 10, 3)
                 self.dialogue.draw(surf, self.player, "But this portal will bring me one dimension closer!", 10, 4)
+
+        if (self.level == 5):
+            if self.king.skeleton_attack == True:
+                for i in range(random.randint(1, 3)):
+                    # if(len(self.collision_layer["enemy"]) < 5 and len(self.skeleton_spawn_coords) < 5):
+                    self.skeleton_spawn_coords.append((random.randint(1100, 2000), random.randint(1900, 2100)))
+                self.king.skeleton_attack = False
+
+
+            for i in range(len(self.skeleton_spawn_coords)):
+                if(self.skeleton_spawn_coords[i][1] <= 1780):
+                    skele = Skeleton(self.skeleton_spawn_coords[i], self.collision_layer["enemy"], [self.collision_layer["player"],self.collision_layer["world"],self.collision_layer["enemy"]])
+                    self.skeletons.append(skele)
+                    self.skeleton_spawn_coords.pop(i)
+                else:
+                    lst = list(self.skeleton_spawn_coords[i])
+                    lst[1] -= 1
+                    self.skeleton_spawn_coords[i] = tuple(lst)
+                    surf.blit(self.skeleton_spawn_frame, get_display_point(self.skeleton_spawn_coords[i]))  
 
         for enemy in self.enemies:
             enemy.draw(surf)

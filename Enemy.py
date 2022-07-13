@@ -252,6 +252,8 @@ class King(Actor):
         self.display = self.run_frames[math.floor(self.current_frame)]
         self.state = "RUN"
 
+        self.skeleton_attack = True;
+
     def update(self, delta, target=None):
         super().update(delta)
         if not self.attacked and target is not None and self.stun_time == 0:
