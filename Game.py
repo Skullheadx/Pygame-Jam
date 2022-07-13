@@ -295,7 +295,7 @@ class Game:
                 # print(self.player.position)
                 if self.player.position[0] > 6750 and self.player.position[1] >= 1500:
                     self.has_pet = True
-                self.pet.has_pet = self.has_pet
+            self.pet.has_pet = self.has_pet
 
             if self.has_pet == True:
                 self.pet.update(delta, self.player)
