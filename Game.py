@@ -67,6 +67,7 @@ class Game:
         else:
             self.jeff = None
         # self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
+        self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
         self.enemies = [Enemy(pos, self.collision_layer["enemy"],
                               [self.collision_layer["player"], self.collision_layer["world"],
                                self.collision_layer["enemy"]]) for pos in
@@ -173,7 +174,7 @@ class Game:
             Setup.camera_offset = self.player.update(delta)
             Setup.camera_offset.x = max(0, min(Setup.camera_offset.x, MAP_WIDTH - SCREEN_WIDTH))
             Setup.camera_offset.y = max(0, min(Setup.camera_offset.y, MAP_HEIGHT - SCREEN_HEIGHT))
-
+            
             for i, enemy in enumerate(self.enemies):
                 enemy.update(delta, self.player)
                 if enemy.dead:
@@ -282,6 +283,15 @@ class Game:
 
             if self.level == 4:
                 self.bosshealthBar.update()
+
+            if self.level == 1:
+                print(self.player.position)
+                if self.player.position[0] > 6750 and self.player.position[1] >= 1500:
+                    self.player.has_pet = True
+
+            if self.player.has_pet == True:
+                self.pet.update(delta, self.player)
+                #update pet
 
         # self.pet.update(delta, self.player, self.camera_pos)
 
@@ -430,6 +440,7 @@ class Game:
             self.jeff.draw(surf)
         self.player.draw(surf)
 
+
         # self.dialogue.draw(surf, self.player, "Next dimension, next portal...", 4, 1)
         # self.dialogue.draw(surf, self.player, "It's really that simple.", 4, 2)
         # for o,text in self.hints:
@@ -456,7 +467,7 @@ class Game:
         # Debug Lines. DO NOT CROSS THEM!
         # pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(SCREEN_WIDTH, -Setup.camera_offset.y), 10)
         # pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(-Setup.camera_offset.x, SCREEN_HEIGHT), 10)
-        # self.pet.draw(surf)
+        self.pet.draw(surf, self.player.position)
 
         if (self.fade == True):
             self.fadeT.update(True)
@@ -477,3 +488,7 @@ class Game:
         if self.player.dead:
             self.scene.update()
             self.scene.draw()
+
+        if self.player.has_pet == True:
+            pass
+            #draw pet
