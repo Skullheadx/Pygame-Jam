@@ -64,9 +64,10 @@ class Game:
         else:
             self.pet = Pet(self.player.position - [100000, 100000], self.collision_layer["pet"], [self.collision_layer["world"]])
 
-        print(self.player.position)
+        # print(self.player.position)
 
         self.has_pet = False
+        # print(self.saved_jeff)
         if jeff_position is not None:
             self.jeff = Enemy(jeff_position, self.collision_layer["enemy"],
                               [self.collision_layer["player"], self.collision_layer["world"],
@@ -83,7 +84,7 @@ class Game:
                                    [self.collision_layer["player"], self.collision_layer["world"],
                                     self.collision_layer["enemy"]]) for pos in
                           self.skele_positions]
-        self.allies = [Enemy(self.player.position + pg.Vector2(-150,-200), self.collision_layer["pet"],
+        self.allies = [Enemy(self.player.position + pg.Vector2(-125,-300), self.collision_layer["pet"],
                               [self.collision_layer["pet"], self.collision_layer["world"],
                                self.collision_layer["enemy"]]) for i in
                         range(1)]
@@ -102,7 +103,7 @@ class Game:
         self.scene.level = self.level
         if self.level == 4 and self.saved_jeff:
             self.jeff_target = self.skeletons
-            self.jeff = Enemy(self.player.position + pg.Vector2(-50, -500), self.collision_layer["pet"],
+            self.jeff = Enemy(self.player.position + pg.Vector2(-50, -300), self.collision_layer["pet"],
                               [self.collision_layer["pet"], self.collision_layer["world"],
                                self.collision_layer["enemy"]],is_jeff=True)
             self.jeff.stun_time = 10000
@@ -207,7 +208,7 @@ class Game:
                             target = skele
                     if self.king is not None and (self.king.position - enemy.position).length_squared() < min_distance:
                         target = self.king
-                    enemy.update(delta, target, 10000000)
+                    enemy.update(delta, target, 100000000)
             for i, enemy in enumerate(self.skeletons):
                 enemy.update(delta, self.player)
                 if enemy.dead:
@@ -281,10 +282,11 @@ class Game:
             self.fade = self.Transition.fade
 
             if self.level == 3 and self.fade:
-                if self.jeff.position.y < 10000 and (isinstance(self.jeff, PhysicsBody) and not self.jeff.was_beaten):
+                if self.jeff.position.y < 20000 and (isinstance(self.jeff, PhysicsBody) and not self.jeff.was_beaten):
                     self.saved_jeff = True
-                else:
-                    self.saved_jeff = False
+                # else:
+                #     self.saved_jeff = False
+
 
             if self.level in [2, 5]:
                 for particle in Setup.particles:

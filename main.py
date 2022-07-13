@@ -16,10 +16,11 @@ delta = 1000//fps
 # scene = TransitionScene()
 scene = Menu()
 old_level = 0
-level = 0
+level = 3
 next_level = 0
 
 has_snake = False;
+saved_jeff = False
 
 # final_level = 6
 
@@ -47,7 +48,6 @@ while Setup.is_running:
                 scene = FinalScreen()
             case _:
                 scene = Game(level)
-                scene.saved_jeff = False
         old_level = level
 
     level = scene.level
@@ -64,6 +64,17 @@ while Setup.is_running:
     elif(1 < level < 5):
         try:
             scene.has_pet = has_snake
+        except:
+            pass;
+
+    if level == 3:
+        try:
+            saved_jeff = scene.saved_jeff
+        except:
+            pass;
+    elif(level == 4):
+        try:
+            scene.saved_jeff = saved_jeff
         except:
             pass;
 
