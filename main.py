@@ -16,10 +16,10 @@ delta = 1000//fps
 # scene = TransitionScene()
 scene = Menu()
 old_level = 0
-level = 2
+level = 0
 next_level = 0
 
-has_snake = True;
+has_snake = False;
 
 # final_level = 6
 
