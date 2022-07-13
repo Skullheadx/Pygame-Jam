@@ -34,7 +34,7 @@ def rotate(pos, img, angle, pivot):
 
 camera_offset = center.copy()
 
-MAP_WIDTH, MAP_HEIGHT = 12000,10000
+MAP_WIDTH, MAP_HEIGHT = 250000,250000
 
 
 def get_display_rect(collision_rect):

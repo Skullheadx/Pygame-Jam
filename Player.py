@@ -42,7 +42,7 @@ class Player(Actor):
 
     colour = (52, 94, 235)
 
-    def __init__(self, pos, collision_layer, collision_mask, can_hurt, heals, spikes):
+    def __init__(self, pos, collision_layer, collision_mask, can_hurt, heals, spikes, arrows):
         super().__init__(pos, collision_layer, collision_mask)
         # self.initial_position = pg.Vector2(pos)
         # self.dashCooldown = timedelta(seconds=2, microseconds=500000)
@@ -62,8 +62,10 @@ class Player(Actor):
         self.spike_layer = spikes
 
         self.heal_layer = heals
+        self.arrows = arrows
+
         self.potion_cooldown = 0
-        self.starting_potions = 3
+        self.starting_potions = 1
         self.potion_bag = [Potion(self)]
         for i in range(self.starting_potions - 1):
             self.potion_bag.append(Potion(self))  # use one liner
@@ -135,7 +137,12 @@ class Player(Actor):
         #     self.direction = math.copysign(1, self.velocity.x)
         self.direction = math.copysign(1, pg.mouse.get_pos()[0] - get_display_point(self.position).x)
         self.weapon.update(delta, self.position, self.direction)
-
+        for arrow in self.arrows:
+            if (not arrow.used) and (not arrow.in_ground) and (not self.attacked) and (self.invincibility_frames == 0) and self.get_collision_rect().colliderect(self.get_collision_rect()):
+                self.modify_health(-1, "arrow")
+                arrow.used = True
+                self.attacked = True
+                self.invincibility_frames = self.invincibility_time
         if self.velocity.x == 0 and self.state == "RUN":
             self.state = "IDLE"
 
@@ -287,6 +294,10 @@ class Player(Actor):
                         if not enemy.attacked and get_display_rect(self.weapon.get_collision_rect()).colliderect(
                                 get_display_rect(enemy.get_collision_rect())):
                             enemy.attack(self, self.weapon, self.direction)
+                for arrow in self.arrows:
+                    if not arrow.attacked and get_display_rect(self.weapon.get_collision_rect()).colliderect(
+                            get_display_rect(arrow.get_collision_rect())):
+                        arrow.attack(self, self.weapon, self.direction)
 
     def draw(self, surf):
         # super().draw(surf)

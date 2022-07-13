@@ -93,3 +93,21 @@ class Sword:
 
     def draw(self, surf, display_offset = pg.Vector2(0,0)):
         surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft + display_offset)
+class Lightning:
+    width,height = (250,250)
+    damage = -35
+
+    def __init__(self, pos, offset, width,direction):
+        self.position = pg.Vector2(pos)
+        self.offset = pg.Vector2(offset)
+
+    def update(self, delta, pos, direction):
+        self.position = pg.Vector2(pos)
+
+    def get_collision_rect(self):
+        return pg.Rect(self.position - self.offset - pg.Vector2(self.width,self.height/4),(self.width, self.height))
+
+
+    def draw(self, surf, display_offset = pg.Vector2(0,0)):
+        pass
+        # surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft + display_offset)
