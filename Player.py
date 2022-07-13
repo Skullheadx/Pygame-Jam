@@ -37,6 +37,7 @@ class Player(Actor):
     sword_swing_channel = pg.mixer.Channel(2)
     landing_sound = pg.mixer.Sound("Assets/SFX/Jump_Landing.wav")
     landing_sound_channel = pg.mixer.Channel(3)
+    potion_drink_sound = pg.mixer.Sound("Assets/SFX/Potion Drink.wav")
     # Enemy SFX
     grunt_sound = pg.mixer.Sound("Assets/SFX/Grunt Sound.wav")
     skeleton_damaged_sound = pg.mixer.Sound("Assets/SFX/Skeleton_Damaged.wav")

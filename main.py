@@ -41,7 +41,7 @@ while Setup.is_running:
                 scene = LevelCreator()
             case 0:
                 scene = Menu()
-            case 6:
+            case 5:
                 scene = FinalScreen()
             case _:
                 scene = Game(level)

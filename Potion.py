@@ -13,6 +13,7 @@ class Potion:
             self.consume_potion(player)
     
     def consume_potion(self, player):
+        pg.mixer.Sound.play(player.potion_drink_sound)
         player.health += self.heal
         if player.health > 100:
             player.health = 100
