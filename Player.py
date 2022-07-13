@@ -38,11 +38,20 @@ class Player(Actor):
     landing_sound = pg.mixer.Sound("Assets/SFX/Jump_Landing.wav")
     landing_sound_channel = pg.mixer.Channel(3)
     potion_drink_sound = pg.mixer.Sound("Assets/SFX/Potion Drink.wav")
+
+    running_sound.set_volume(0.5)
+    sword_swing_sound.set_volume(0.5)
+    landing_sound.set_volume(0.5)
+    potion_drink_sound.set_volume(0.25)
     # Enemy SFX
     grunt_sound = pg.mixer.Sound("Assets/SFX/Grunt Sound.wav")
     skeleton_damaged_sound = pg.mixer.Sound("Assets/SFX/Skeleton_Damaged.wav")
     player_grunt = pg.mixer.Sound("Assets/SFX/Player Grunt.wav")
     player_grunt_channel = pg.mixer.Channel(4)
+
+    grunt_sound.set_volume(0.5)
+    skeleton_damaged_sound.set_volume(0.5)
+    player_grunt.set_volume(0.5)
 
     width, height = idle_frames[0].get_size()
 
