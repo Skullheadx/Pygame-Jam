@@ -213,7 +213,7 @@ class Skeleton(Actor):
 
     def draw(self, surf):
         # self.weapon.draw(surf)
-        super(Skeleton, self).draw(surf)
+        # super(Skeleton, self).draw(surf)
         surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft + self.display_offsets["enemy"])
 
         # for b in self.buffer:
