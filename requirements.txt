@@ -1,0 +1,14 @@
+regex
+pillow
+pygame
+numpy
+functools
+datetime
+threading
+abc
+math
+argparse
+os
+tkinter
+time
+random
