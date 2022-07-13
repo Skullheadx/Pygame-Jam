@@ -1,29 +1,20 @@
-from re import T
-
-from regex import F
-
 import Setup
-from Block import Block
 from EndScreen import EndScreen
 from Enemy import Enemy
 from Function.Fade import fade
 from Function.Portal import Transition
+from Item import PotionItem
+from Object import Object
+from Particle import Cloud
 from PauseMenu import PauseMenu
-from Pet import Pet
 from PhysicsBody import PhysicsBody
 from Player import Player
 from Setup import *
-from Setup import camera_offset
-from UI.DashMeter import DashMeter
+from Spike import Spike
 from UI.Dialogue import DialogueUI
 from UI.HealthBar import HealthBar
 from UI.PotionUI import PotionUI
 from World import World
-from Item import PotionItem
-from Spike import Spike
-from Particle import Cloud
-from Function.createText import createText
-from Object import Object
 
 
 class Game:
@@ -75,7 +66,7 @@ class Game:
         self.paused = False
         self.PauseMenu = PauseMenu(self.level)
 
-        self.seen_text = [False for _ in range(100)] # Trust hardcoding at its best
+        self.seen_text = [False for _ in range(100)]  # Trust hardcoding at its best
 
         if self.level in [1, 3, 4]:
             # Density = total clouds / area
@@ -181,14 +172,16 @@ class Game:
             self.dialogue.draw(surf, self.player, "Press A or D to move.", 400, 0, 900, 1800)
             self.dialogue.draw(surf, self.player, "Press W or SPACE to jump.", 400, 0, 1800, 1750)
             self.dialogue.draw(surf, self.player, "Left click to attack.", 400, 0, 2400, 1540)
-            self.dialogue.draw(surf, self.player, "Press 1 to heal using potions", 400, 0, 2400, 1600)
+            self.dialogue.draw(surf, self.player, "Press 1 to heal using potions", 400, 0, 2400, 1580)
+            # print(self.player.position)
             if self.seen_text[0] or self.player.position.x > 3000:
                 self.seen_text[0] = True
                 self.dialogue.draw(surf, self.player, "These goons must be guarding something!", 10, 1)
-                self.dialogue.draw(surf, self.player, "It may just be what I am looking for...", 10, 2)
-            elif self.seen_text[1] or self.player.position.y > 1800:
+                self.dialogue.draw(surf, self.player, "It may just be what I am looking for...", 7, 2)
+            if self.seen_text[1] or (self.player.position.y > 2500 and self.player.position.x > 6000):
+                self.seen_text[0] = False
                 self.seen_text[1] = True
-                self.dialogue.draw(surf, self.player, "This treasure is pennies compared to what I'm after.", 10, 3)
+                self.dialogue.draw(surf, self.player, "This treasure is pennies compared to what I'm after...", 10, 3)
                 self.dialogue.draw(surf, self.player, "But this portal will bring me one dimension closer!", 10, 4)
 
         for enemy in self.enemies:
@@ -196,23 +189,21 @@ class Game:
 
         self.player.draw(surf)
 
-
-
-            # self.dialogue.draw(surf, self.player, "Next dimension, next portal...", 4, 1)
-            # self.dialogue.draw(surf, self.player, "It's really that simple.", 4, 2)
-            # for o,text in self.hints:
-            #     o.position -= Setup.camera_offset
-            #     self.dialogue.draw(surf,o, text)
-            #     # a,b = createText(o.position.x,o.position.y,10,(0,0,0),"Regular",text)
-            #
-            #     # surf.blit(a,pg.Vector2(b)-Setup.camera_offset)
-            #     # print(o.position,text,b)
-            #     pg.draw.circle(surf,(255,0,0),o.position,10)
-            #     o.position += Setup.camera_offset
-            # self.dialogue.draw(surf, self.player, "text2", 3, 2)
-            # self.dialogue.draw(surf, self.player, "text3", 2, 3)
-            # self.dialogue.draw(surf, self.player, "text4", 1, 4)
-            # self.dialogue.draw(surf, self.player, "text5", 0.5, 5)
+        # self.dialogue.draw(surf, self.player, "Next dimension, next portal...", 4, 1)
+        # self.dialogue.draw(surf, self.player, "It's really that simple.", 4, 2)
+        # for o,text in self.hints:
+        #     o.position -= Setup.camera_offset
+        #     self.dialogue.draw(surf,o, text)
+        #     # a,b = createText(o.position.x,o.position.y,10,(0,0,0),"Regular",text)
+        #
+        #     # surf.blit(a,pg.Vector2(b)-Setup.camera_offset)
+        #     # print(o.position,text,b)
+        #     pg.draw.circle(surf,(255,0,0),o.position,10)
+        #     o.position += Setup.camera_offset
+        # self.dialogue.draw(surf, self.player, "text2", 3, 2)
+        # self.dialogue.draw(surf, self.player, "text3", 2, 3)
+        # self.dialogue.draw(surf, self.player, "text4", 1, 4)
+        # self.dialogue.draw(surf, self.player, "text5", 0.5, 5)
 
         # self.dashMeter.update(self.player.lastDash)
         # self.dashMeter.draw(surf)
