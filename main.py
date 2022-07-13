@@ -16,7 +16,7 @@ delta = 1000//fps
 # scene = TransitionScene()
 scene = DevLevelSelect()
 old_level = 0
-level =4
+level = 4
 next_level = 0
 
 # final_level = 6
@@ -41,7 +41,7 @@ while Setup.is_running:
                 scene = LevelCreator()
             case 0:
                 scene = Menu()
-            case 6:
+            case 5:
                 scene = FinalScreen()
             case _:
                 scene = Game(level)

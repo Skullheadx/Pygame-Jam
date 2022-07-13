@@ -14,7 +14,7 @@ class FinalScreen:
         self.texts.append(createText(X, Y+350, 32, black, "Regular", "Main Menu", "c"))
         self.texts.append(createText(X, Y+500, 32, black, "Regular", "Quit", "c"))
 
-        self.level = 6
+        self.level = 5
 
         try:
             pg.mixer.music.load('Assets/Music/Main_Menu_Music.ogg')

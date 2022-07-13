@@ -61,6 +61,7 @@ class Game:
         else:
             self.king = None
 
+
         self.scene = EndScreen()
         # self.dashMeter = DashMeter(self.player.dashCooldown)
         self.healthBar = HealthBar()
@@ -68,6 +69,7 @@ class Game:
         self.level = level
         self.scene.level = self.level
 
+        
         self.Transition = Transition()
         self.fade = self.Transition.fade
         self.fadeT = fade()
@@ -123,6 +125,8 @@ class Game:
         except:
             pass;
         # self.test = RangedAttack((1650,1250),self.collision_layer["world"], self.collision_layer["arrow"])
+        if(self.level == 4):
+            self.portal_position = (5475, 2000)
 
     # def load_world(self, level):
 
@@ -191,12 +195,11 @@ class Game:
         surf.blit(self.sky, (0, 0))
 
         if (self.level == 4):
-            print(get_camera_offset())
             if self.king is not None:
                 if self.king.skeleton_attack == True:
                     for i in range(random.randint(1, 2)):
                         if(len(self.skeleton_spawn_coords) < 2):
-                            self.skeleton_spawn_coords.append([(random.randint(4000, 5200), random.randint(3250, 3350)), 0])
+                            self.skeleton_spawn_coords.append([(random.randint(4000, 5000), random.randint(3250, 3350)), 0])
                     self.king.skeleton_attack = False
 
             for i in range(len(self.skeleton_spawn_coords)):
@@ -221,6 +224,15 @@ class Game:
                             self.skeleton_spawn_coords.pop(i)
                 except IndexError:
                     pass;
+
+            if(self.king.dead == True):
+                self.Transition.update()
+                self.Transition.draw(surf, self.player.position, self.portal_position)
+                if(self.portal_position[1] < 3150):
+                    lst = list(self.portal_position)
+                    lst[1] += 2
+                    self.portal_position = tuple(lst)
+                # print(get_camera_offset(), getWorldCoords(0, 0))
         
         if (self.player.position[1] > 10000):
             self.player.dead = True
