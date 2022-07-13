@@ -14,7 +14,7 @@ from DevLevelSelect import DevLevelSelect
 delta = 1000//fps
 # scene = Menu()
 # scene = TransitionScene()
-scene = DevLevelSelect()
+scene = Menu()
 old_level = 0
 level =0
 next_level = 0
