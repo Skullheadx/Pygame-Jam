@@ -99,6 +99,9 @@ class Player(Actor):
 
         self.buffer = []
 
+        #easter egg stuff
+        self.has_pet = False
+
     def die(self):
         self.dead = True
 

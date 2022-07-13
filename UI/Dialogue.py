@@ -42,7 +42,7 @@ class DialogueUI:
             X, Y = 0, 0
             try:
                 if(self.dialogue_list[self.char][3] == True):
-                    X = get_display_point(self.dialogue_list[self.char][2].position)[0] + agent.width / 2
+                    X = get_display_point(self.dialogue_list[self.char][2].position)[0] + self.dialogue_list[self.char][2].width / 2
                     Y = get_display_point(self.dialogue_list[self.char][2].position)[1]
                 else:
                     X, Y = get_display_point((self.dialogue_list[self.char][2][0], self.dialogue_list[self.char][2][1]))

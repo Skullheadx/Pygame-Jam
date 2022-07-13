@@ -9,6 +9,7 @@ from Item import PotionItem
 from Object import Object
 from Particle import Cloud, Treasure
 from PauseMenu import PauseMenu
+from Pet import Pet
 from PhysicsBody import PhysicsBody
 from Player import Player
 from Setup import *
@@ -323,6 +324,7 @@ class Game:
             self.dialogue.draw(surf, self.player, "Press W or SPACE to jump.", 400, 0, 1800, 1750)
             self.dialogue.draw(surf, self.player, "Left click to attack.", 400, 0, 2400, 1540)
             self.dialogue.draw(surf, self.player, "Press 1 to heal using potions", 400, 0, 2400, 1580)
+            self.dialogue.draw(surf, self.player, "This way ->", 400, 0, 5600, 1500)
             # print(self.player.position)
             if self.seen_text[0] or self.player.position.x > 3000:
                 self.seen_text[0] = True
