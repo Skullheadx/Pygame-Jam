@@ -22,6 +22,7 @@ from RangedAttack import RangedAttack
 
 class Game:
     cloud_density = 1 / 100000
+    saved_jeff = False
 
     def __init__(self, level):
         self.collision_layer = {"none": set(), "world": set(), "player": set(), "enemy": set(), "pet": set(),
@@ -210,7 +211,7 @@ class Game:
                                             self.jeff.colour,
                                             self.collision_layer["body"],
                                             [self.collision_layer["world"], self.collision_layer["body"]],
-                                            goon_skin=False)
+                                            goon_skin=False, is_jeff=True)
                     self.collision_layer["body"].add(self.jeff)
 
             for particle in particles:
@@ -223,6 +224,9 @@ class Game:
 
             self.world.update(delta)
             self.fade = self.Transition.fade
+
+            if self.level == 3 and self.fade and isinstance(self.jeff, PhysicsBody) and not self.jeff.was_beaten:
+                self.saved_jeff = True
 
             if self.level in [2, 5]:
                 for particle in Setup.particles:
@@ -340,24 +344,24 @@ class Game:
         elif self.level == 3:
             if self.seen_text[5] or self.player.position.x > 13000:
                 self.seen_text[5] = True
-                self.dialogue.draw(surf, self.player, "I suppose you are the captain...", 15, 1)
-                self.dialogue.draw(surf, self.jeff, "That's me. And NO ONE is going to get that treasure, but me!", 15,2)
-            elif self.seen_text[6] or isinstance(self.jeff, PhysicsBody):
-                self.seen_text[5] = False
+                self.dialogue.draw(surf, self.player, "I suppose you are the captain...", 3, 1)
+                self.dialogue.draw(surf, self.jeff, "That's me. And the treasure is MINE!", 5,2)
+            if self.seen_text[6] or isinstance(self.jeff, PhysicsBody):
+                # self.seen_text[5] = False
                 self.seen_text[6] = True
-                self.dialogue.draw(surf, self.jeff, "Noooo! Please don't kill me!", 15, 3)
-                self.dialogue.draw(surf, self.player, "...", 15, 4)
+                self.dialogue.draw(surf, self.jeff, "Noooo! Please don't kill me!", 3, 3)
+                self.dialogue.draw(surf, self.player, "...", 5, 4)
         elif self.level == 4:
-            if self.seen_text[5] or self.player.position.x > 13000:
-                self.seen_text[5] = True
-                self.dialogue.draw(surf, self.player, "I suppose you are the captain...", 15, 1)
-                self.dialogue.draw(surf, self.jeff, "That's me. And NO ONE is going to get that treasure, but me!", 15,2)
-            elif self.seen_text[6] or isinstance(self.jeff, PhysicsBody):
-                self.seen_text[5] = False
-                self.seen_text[6] = True
-                self.dialogue.draw(surf, self.jeff, "Noooo! Please don't kill me!", 15, 3)
-                self.dialogue.draw(surf, self.player, "...", 15, 4)
-
+            # print(self.player.position)
+            if self.seen_text[7] or self.player.position.x > 2000:
+                self.seen_text[7] = True
+                self.dialogue.draw(surf, self.player, "Here it is... The greatest treasure of all time and space...", 10, 1)
+                if self.jeff is not None:
+                    self.dialogue.draw(surf, self.jeff, "We're here to help!", 5, 3)
+            if self.seen_text[8] or self.player.position.x > 5000:
+                self.seen_text[8] = True
+                self.seen_text[7] = False
+                self.dialogue.draw(surf, self.king, "I am the Bone King! The protector of this dimension and NONE shall pass!", 20,2)
 
         for enemy in self.enemies:
             enemy.draw(surf)

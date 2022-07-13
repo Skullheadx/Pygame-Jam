@@ -39,7 +39,7 @@ class Enemy(Actor):
 
         # self.health = 0 # for debugging without getting killed
         if is_jeff:
-            # self.health *= 2
+            self.health /= 2
             self.run_gif = Image.open("Assets/enemy/Jeff_RUn-export.gif")
             self.run_frames = []
             for i in range(self.run_gif.n_frames):
