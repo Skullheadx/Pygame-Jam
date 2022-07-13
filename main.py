@@ -16,7 +16,7 @@ delta = 1000//fps
 # scene = TransitionScene()
 scene = Menu()
 old_level = 0
-level = 3
+level = 0
 next_level = 0
 
 has_snake = False;
