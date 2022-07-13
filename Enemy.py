@@ -148,7 +148,8 @@ class Skeleton(Actor):
         self.direction = -1
         self.prev_direction = self.direction
 
-        self.health = 75 # for debugging without getting killed
+        self.health = 75
+        self.health = 0 # for debugging without getting killed
 
         self.weapon = Sword(self.position, (0, 0), self.width, -1)
 
@@ -255,7 +256,7 @@ class King(Actor):
         self.direction = -1
         self.prev_direction = self.direction
 
-        self.health = 1000 # for debugging without getting killed
+        self.health = 100 # for debugging without getting killed
 
         self.weapon = Lightning(self.position, (-125 - self.width/2,0), self.width, -1)
         self.buffer = []

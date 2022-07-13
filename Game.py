@@ -1,3 +1,5 @@
+import random
+
 import Setup
 from EndScreen import EndScreen
 from Enemy import Enemy, Skeleton, King
@@ -5,7 +7,7 @@ from Function.Fade import fade
 from Function.Portal import Transition
 from Item import PotionItem
 from Object import Object
-from Particle import Cloud
+from Particle import Cloud, Treasure
 from PauseMenu import PauseMenu
 from PhysicsBody import PhysicsBody
 from Player import Player
@@ -17,13 +19,13 @@ from UI.PotionUI import PotionUI
 from World import World
 from RangedAttack import RangedAttack
 
+
 class Game:
     cloud_density = 1 / 100000
 
     def __init__(self, level):
         self.collision_layer = {"none": set(), "world": set(), "player": set(), "enemy": set(), "pet": set(),
-                                "body": set(), "potion": set(), "spike": set(), "arrow":set()}
-
+                                "body": set(), "potion": set(), "spike": set(), "arrow": set()}
 
         # self.load_world(level)
 
@@ -38,7 +40,16 @@ class Game:
             PotionItem(i, self.collision_layer["potion"])
         for i in spike_positions:
             Spike(i, self.collision_layer["spike"])
-
+        if king_position is not None:
+            self.king = King(king_position, self.collision_layer["enemy"],
+                             [self.collision_layer["player"], self.collision_layer["world"],
+                              self.collision_layer["enemy"]],
+                             (self.collision_layer["world"], self.collision_layer["arrow"]))
+            self.treasure = [Treasure(self.king.position - pg.Vector2(0, 50),pg.Vector2((random.random() -0.5) * 2, random.random() -2.5), self.collision_layer["body"],
+                                      [self.collision_layer["world"]]) for i in range(15)]
+        else:
+            self.king = None
+            self.treasure = None
         self.player = Player(player_position, self.collision_layer["player"],
                              [self.collision_layer["enemy"], self.collision_layer["world"]],
                              [self.collision_layer["enemy"], self.collision_layer["body"]],
@@ -54,12 +65,7 @@ class Game:
                                    [self.collision_layer["player"], self.collision_layer["world"],
                                     self.collision_layer["enemy"]]) for pos in
                           self.skele_positions]
-        if king_position is not None:
-            self.king = King(king_position, self.collision_layer["enemy"],
-                             [self.collision_layer["player"], self.collision_layer["world"],
-                              self.collision_layer["enemy"]],(self.collision_layer["world"], self.collision_layer["arrow"]))
-        else:
-            self.king = None
+
 
         self.scene = EndScreen()
         # self.dashMeter = DashMeter(self.player.dashCooldown)
@@ -75,15 +81,15 @@ class Game:
 
         # self.hints = [(Object((270, 640)), "Hello")]
         self.dialogue = DialogueUI()
-        
-        self.skeleton_spawn_frame = pg.transform.scale(pil_to_game(get_gif_frame(Image.open("Assets/skeleton/skeleton_attack.gif"), 0)), (170, 138))
+
+        self.skeleton_spawn_frame = pg.transform.scale(
+            pil_to_game(get_gif_frame(Image.open("Assets/skeleton/skeleton_attack.gif"), 0)), (170, 138))
         self.skeleton_spawn_coords = []
         skeleton_portal_gif = Image.open("Assets/skeleton/portal.gif")
         self.skeleton_portal_gif = []
         for i in range(skeleton_portal_gif.n_frames):
-            self.skeleton_portal_gif.append(pg.transform.scale(pil_to_game(get_gif_frame(skeleton_portal_gif, i)), (96, 64)))
-        
-        
+            self.skeleton_portal_gif.append(
+                pg.transform.scale(pil_to_game(get_gif_frame(skeleton_portal_gif, i)), (96, 64)))
 
         self.paused = False
         self.PauseMenu = PauseMenu(self.level)
@@ -117,7 +123,6 @@ class Game:
             else:
                 pg.mixer.music.load("Assets/Music/Overworld_Music.ogg")
 
-
             pg.mixer.music.play(-1)
         except:
             pass;
@@ -137,7 +142,7 @@ class Game:
             Setup.camera_offset = self.player.update(delta)
             Setup.camera_offset.x = max(0, min(Setup.camera_offset.x, MAP_WIDTH - SCREEN_WIDTH))
             Setup.camera_offset.y = max(0, min(Setup.camera_offset.y, MAP_HEIGHT - SCREEN_HEIGHT))
-            
+
             for i, enemy in enumerate(self.enemies):
                 enemy.update(delta, self.player)
                 if enemy.dead:
@@ -145,28 +150,43 @@ class Game:
                                                   enemy.colour,
                                                   self.collision_layer["body"],
                                                   [self.collision_layer["world"], self.collision_layer["body"]])
-                    self.collision_layer["enemy"].remove(enemy)
+                    if enemy in self.collision_layer["enemy"]:
+                        self.collision_layer["enemy"].remove(enemy)
                     self.collision_layer["body"].add(self.enemies[i])
             for i, enemy in enumerate(self.skeletons):
                 enemy.update(delta, self.player)
                 if enemy.dead:
-                    self.skeletons[i] = PhysicsBody(enemy.position, enemy.velocity, enemy.width, enemy.height,
-                                                  enemy.colour,
-                                                  self.collision_layer["body"],
-                                                  [self.collision_layer["world"], self.collision_layer["body"]], goon_skin=False)
-                    self.collision_layer["enemy"].remove(enemy)
+                    self.skeletons[i] = PhysicsBody(enemy.position, enemy.velocity, enemy.width, enemy.height / 2,
+                                                    enemy.colour,
+                                                    self.collision_layer["body"],
+                                                    [self.collision_layer["world"], self.collision_layer["body"]],
+                                                    goon_skin=False)
+                    if enemy in self.collision_layer["enemy"]:
+                        self.collision_layer["enemy"].remove(enemy)
                     self.collision_layer["body"].add(self.skeletons[i])
             if self.king is not None:
                 self.king.update(delta, self.player)
+                if isinstance(self.king, PhysicsBody):
+                    for t in self.treasure:
+                        t.update(delta)
                 if self.king.dead:
                     self.collision_layer["enemy"].remove(self.king)
-                    self.king = PhysicsBody(self.king.position, self.king.velocity, self.king.width/2, self.king.height/2,
-                                                  self.king.colour,
-                                                  self.collision_layer["body"],
-                                                  [self.collision_layer["world"], self.collision_layer["body"]], goon_skin=False)
+                    self.king = PhysicsBody(self.king.position, self.king.velocity, self.king.width / 2,
+                                            self.king.height / 4,
+                                            self.king.colour,
+                                            self.collision_layer["body"],
+                                            [self.collision_layer["world"], self.collision_layer["body"]],
+                                            goon_skin=False)
                     self.collision_layer["body"].add(self.king)
-                    for enemy in self.skeletons:
-                        enemy.dead = True
+                    for i, enemy in enumerate(self.skeletons):
+                        if enemy in self.collision_layer["enemy"]:
+                            self.collision_layer["enemy"].remove(enemy)
+                        self.skeletons[i] = PhysicsBody(enemy.position, enemy.velocity, enemy.width, enemy.height,
+                                                        enemy.colour,
+                                                        self.collision_layer["body"],
+                                                        [self.collision_layer["world"], self.collision_layer["body"]],
+                                                        goon_skin=False)
+                        self.collision_layer["body"].add(self.skeletons[i])
 
             for particle in particles:
                 particle.update(delta)
@@ -188,29 +208,37 @@ class Game:
 
     def draw(self, surf):
 
-
-
         # screen.fill((0, 191, 255))
 
         # screen.fill((0, 191, 255))
         # screen.fill((255,255,255))
         surf.blit(self.sky, (0, 0))
-
+        for particle in particles:
+            particle.draw(surf)
+        self.world.draw(surf)
         if (self.level == 4):
             # print(get_camera_offset())
             if self.king is not None and isinstance(self.king, King):
                 if self.king.skeleton_attack == True:
                     for i in range(random.randint(1, 2)):
-                        if(len(self.skeleton_spawn_coords) < 2):
-                            self.skeleton_spawn_coords.append([(random.randint(4000, 5200), random.randint(3250, 3350)), 0])
+                        if (len(self.skeleton_spawn_coords) < 2):
+                            self.skeleton_spawn_coords.append(
+                                [(random.randint(4000, 5200), random.randint(3250, 3350)), 0])
                     self.king.skeleton_attack = False
+
+            if isinstance(self.king, PhysicsBody):
+                for t in self.treasure:
+                    t.draw(surf)
 
             for i in range(len(self.skeleton_spawn_coords)):
                 try:
-                    surf.blit(self.skeleton_portal_gif[self.skeleton_spawn_coords[i][1]], get_display_point((self.skeleton_spawn_coords[i][0][0] + 40, 3150)))  
+                    surf.blit(self.skeleton_portal_gif[self.skeleton_spawn_coords[i][1]],
+                              get_display_point((self.skeleton_spawn_coords[i][0][0] + 40, 3150)))
 
-                    if(self.skeleton_spawn_coords[i][0][1] <= 3050):
-                        skele = Skeleton(self.skeleton_spawn_coords[i][0], self.collision_layer["enemy"], [self.collision_layer["player"],self.collision_layer["world"],self.collision_layer["enemy"]])
+                    if (self.skeleton_spawn_coords[i][0][1] <= 3050):
+                        skele = Skeleton(self.skeleton_spawn_coords[i][0], self.collision_layer["enemy"],
+                                         [self.collision_layer["player"], self.collision_layer["world"],
+                                          self.collision_layer["enemy"]])
                         self.skeletons.append(skele)
                         self.skeleton_spawn_coords[i][0] = (100000, 100000)
                     else:
@@ -218,25 +246,23 @@ class Game:
                         lst[1] -= 2
                         self.skeleton_spawn_coords[i][0] = tuple(lst)
                         surf.blit(self.skeleton_spawn_frame, get_display_point(self.skeleton_spawn_coords[i][0]))
-                        if(self.skeleton_spawn_coords[i][1] <= 5):
+                        if (self.skeleton_spawn_coords[i][1] <= 5):
                             self.skeleton_spawn_coords[i][1] += 1
-                    
-                    if(self.skeleton_spawn_coords[i][0][0] > 50000 and self.skeleton_spawn_coords[i][0][1] > 50000):
+
+                    if (self.skeleton_spawn_coords[i][0][0] > 50000 and self.skeleton_spawn_coords[i][0][1] > 50000):
                         self.skeleton_spawn_coords[i][1] -= 1
-                        if(self.skeleton_spawn_coords[i][1] >= 0):
+                        if (self.skeleton_spawn_coords[i][1] >= 0):
                             self.skeleton_spawn_coords.pop(i)
                 except IndexError:
                     pass;
-        
+
         if (self.player.position[1] > 10000):
             self.player.dead = True
 
         # if (self.level in self.levels[2]):
         #     self.sky = pg.image.load("Assets/world/sky_level_background.png").convert()
 
-        for particle in particles:
-            particle.draw(surf)
-        self.world.draw(surf)
+
 
         for potion in self.collision_layer["potion"]:
             potion.draw(surf)
