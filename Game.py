@@ -62,8 +62,7 @@ class Game:
         if(level == 1):
             self.pet = Pet([6852, 1500], self.collision_layer["pet"], [self.collision_layer["world"]])
         else:
-            self.pet = Pet(self.player.position, self.collision_layer["pet"], [self.collision_layer["world"]])
-
+            self.pet = Pet(self.player.position - [100000, 100000], self.collision_layer["pet"], [self.collision_layer["world"]])
         self.has_pet = False
         if jeff_position is not None:
             self.jeff = Enemy(jeff_position, self.collision_layer["enemy"],
@@ -293,7 +292,7 @@ class Game:
                 # print(self.player.position)
                 if self.player.position[0] > 6750 and self.player.position[1] >= 1500:
                     self.has_pet = True
-                self.pet.has_pet = self.has_pet
+            self.pet.has_pet = self.has_pet
 
             if self.has_pet == True:
                 self.pet.update(delta, self.player)
