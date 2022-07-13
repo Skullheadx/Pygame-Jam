@@ -21,8 +21,9 @@ class Menu:
         self.level = 0
 
         try:
-            pg.mixer.music.load('Assets/Music/Main_Menu_Music.ogg')
+            pg.mixer.music.load('Assets/Music/Main_Menu_Music1.ogg')
             pg.mixer.music.play(-1)
+            
         except:
             pass;
         

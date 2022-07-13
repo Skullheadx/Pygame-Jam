@@ -156,9 +156,6 @@ class Game:
                 pg.mixer.music.load("Assets/Music/Combat_Music.ogg")
                 self.sky = pg.image.load("Assets/world/VOID.png").convert()
 
-            else:
-                pg.mixer.music.load("Assets/Music/Overworld_Music.ogg")
-
             pg.mixer.music.play(-1)
             pg.mixer.music.set_volume(0.5)
 
