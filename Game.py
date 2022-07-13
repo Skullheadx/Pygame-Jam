@@ -59,6 +59,11 @@ class Game:
                              self.collision_layer["potion"],
                              self.collision_layer["spike"],
                              self.collision_layer["arrow"])
+        if(level == 1):
+            self.pet = Pet([6852, 1500], self.collision_layer["pet"], [self.collision_layer["world"]])
+        else:
+            self.pet = Pet(self.player.position, self.collision_layer["pet"], [self.collision_layer["world"]])
+        self.has_pet = False
         if jeff_position is not None:
             self.jeff = Enemy(jeff_position, self.collision_layer["enemy"],
                               [self.collision_layer["player"], self.collision_layer["world"],
@@ -162,7 +167,6 @@ class Game:
         # self.test = RangedAttack((1650,1250),self.collision_layer["world"], self.collision_layer["arrow"])
         if(self.level == 4):
             self.portal_position = (5475, 2400)
-
     # def load_world(self, level):
 
     def update(self, delta):
@@ -178,7 +182,7 @@ class Game:
             Setup.camera_offset = self.player.update(delta)
             Setup.camera_offset.x = max(0, min(Setup.camera_offset.x, MAP_WIDTH - SCREEN_WIDTH))
             Setup.camera_offset.y = max(0, min(Setup.camera_offset.y, MAP_HEIGHT - SCREEN_HEIGHT))
-            
+
             for i, enemy in enumerate(self.enemies):
                 enemy.update(delta, self.player)
                 if enemy.dead:
@@ -291,9 +295,9 @@ class Game:
             if self.level == 1:
                 # print(self.player.position)
                 if self.player.position[0] > 6750 and self.player.position[1] >= 1500:
-                    self.player.has_pet = True
+                    self.has_pet = True
 
-            if self.player.has_pet == True:
+            if self.has_pet == True:
                 self.pet.update(delta, self.player)
                 #update pet
 
@@ -375,6 +379,8 @@ class Game:
             self.Transition.draw(surf, self.player.position, self.portal_position)
         except:
             pass;
+
+        self.pet.draw(surf, self.player.position)
 
         if (self.level == 1):
             # self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
@@ -471,7 +477,6 @@ class Game:
         # Debug Lines. DO NOT CROSS THEM!
         # pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(SCREEN_WIDTH, -Setup.camera_offset.y), 10)
         # pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(-Setup.camera_offset.x, SCREEN_HEIGHT), 10)
-        self.pet.draw(surf, self.player.position)
 
         if (self.fade == True):
             self.fadeT.update(True)
@@ -493,6 +498,10 @@ class Game:
             self.scene.update()
             self.scene.draw()
 
-        if self.player.has_pet == True:
-            pass
+        # print(get_display_point(self.player.position))
+        # print(self.player.position)
+
+        # if self.player.has_pet == True:
+        #     self.pet.draw(surf, self.player.position)
+        #     pass
             #draw pet
