@@ -22,6 +22,10 @@ class Enemy(Actor):
     for i in range(attack_gif.n_frames):
         attack_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(attack_gif, i)), (180, 180)))
 
+    #SFX
+    player_grunt = pg.mixer.Sound("Assets/SFX/Player Grunt.wav")
+    player_grunt_channel = pg.mixer.Channel(4)
+
     def __init__(self, pos, collision_layer, collision_mask):
         super().__init__(pos, collision_layer, collision_mask)
 
@@ -57,6 +61,7 @@ class Enemy(Actor):
                     self.current_frame = 0
                 elif 4 < self.current_frame:
                     target.attack(self, self.weapon, self.direction)
+                    self.player_grunt_channel.play(self.player_grunt)
 
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
