@@ -12,21 +12,21 @@ class Enemy(Actor):
     jump_strength = Actor.jump_strength * 1.1
     colour = (235, 64, 52)
     friction = 0.9
-    run_gif = Image.open("Assets/enemy/Goon_Run.gif")
-    run_frames = []
-    for i in range(run_gif.n_frames):
-        run_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(run_gif, i)), (180, 180)))
-
-    attack_gif = Image.open("Assets/enemy/Goon_attack.gif")
-    attack_frames = []
-    for i in range(attack_gif.n_frames):
-        attack_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(attack_gif, i)), (180, 180)))
+    # run_gif = Image.open("Assets/enemy/Goon_Run.gif")
+    # run_frames = []
+    # for i in range(run_gif.n_frames):
+    #     run_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(run_gif, i)), (180, 180)))
+    #
+    # attack_gif = Image.open("Assets/enemy/Goon_attack.gif")
+    # attack_frames = []
+    # for i in range(attack_gif.n_frames):
+    #     attack_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(attack_gif, i)), (180, 180)))
 
     #SFX
     # player_grunt = pg.mixer.Sound("Assets/SFX/Player Grunt.wav")
     # player_grunt_channel = pg.mixer.Channel(4)
 
-    def __init__(self, pos, collision_layer, collision_mask):
+    def __init__(self, pos, collision_layer, collision_mask,is_jeff=False):
         super().__init__(pos, collision_layer, collision_mask)
 
         self.areas = {
@@ -38,6 +38,28 @@ class Enemy(Actor):
         self.prev_direction = self.direction
 
         # self.health = 0 # for debugging without getting killed
+        if is_jeff:
+            # self.health *= 2
+            self.run_gif = Image.open("Assets/enemy/Jeff_RUn-export.gif")
+            self.run_frames = []
+            for i in range(self.run_gif.n_frames):
+                self.run_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(self.run_gif, i)), (180, 180)))
+
+            self.attack_gif = Image.open("Assets/enemy/jeff_attack.gif")
+            self.attack_frames = []
+            for i in range(self.attack_gif.n_frames):
+                self.attack_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(self.attack_gif, i)), (180, 180)))
+        else:
+            self.run_gif = Image.open("Assets/enemy/Goon_Run.gif")
+            self.run_frames = []
+            for i in range(self.run_gif.n_frames):
+                self.run_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(self.run_gif, i)), (180, 180)))
+
+            self.attack_gif = Image.open("Assets/enemy/Goon_attack.gif")
+            self.attack_frames = []
+            for i in range(self.attack_gif.n_frames):
+                self.attack_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(self.attack_gif, i)), (180, 180)))
+
 
         self.weapon = Sword(self.position, (0, 0), self.width, -1)
 
@@ -332,12 +354,12 @@ class King(Actor):
 
         elif self.state == "ATTACK":
             frame = math.floor(self.current_frame)
-            if self.direction == 1:
-                self.display = pg.transform.flip(self.attack_frames[math.floor(frame)], False, False)
-                self.display_offsets["enemy"] = pg.Vector2(-15, -5)
-            else:
-                self.display = pg.transform.flip(self.attack_frames[math.floor(frame)], True, False)
-                self.display_offsets["enemy"] = pg.Vector2(-15, 25)
+            # if self.direction == 1:
+            #     self.display = pg.transform.flip(self.attack_frames[math.floor(frame)], False, False)
+            #     self.display_offsets["enemy"] = pg.Vector2(-15, -5)
+            # else:
+            self.display = pg.transform.flip(self.attack_frames[math.floor(frame)], True, False)
+            self.display_offsets["enemy"] = pg.Vector2(-15, 25)
             self.current_frame += 0.2
             if math.floor(self.current_frame) >= self.attack_gif.n_frames-1:
                 self.state = "RUN"

@@ -14,7 +14,7 @@ class World:
         with open(path.join("Levels", f'Level{level}.txt'), 'r') as f:
             file_contents = f.read().split("\n")
 
-        out = [[], center, "a", [], [], [], None]
+        out = [[], center, "a", [], [], [], None, None]
         for i in range(0, len(file_contents) - 1, 3):
             layer = file_contents[i].split("|")
             pos = file_contents[i + 1].split("|")
@@ -34,6 +34,8 @@ class World:
                     out[5].append((x, y))
                 elif t == "KING":
                     out[6] = (x, y)
+                elif t == "JEFF":
+                    out[7] = (x,y)
                 elif t == "PORTAL":
                     out[2] = (x, y)
                 elif t == "HEALTHPOTION":
