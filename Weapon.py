@@ -94,7 +94,7 @@ class Sword:
     def draw(self, surf, display_offset = pg.Vector2(0,0)):
         surf.blit(self.display, get_display_rect(self.get_collision_rect()).topleft + display_offset)
 class Lightning:
-    width,height = (200,200)
+    width,height = (250,250)
     damage = -35
 
     def __init__(self, pos, offset, width,direction):

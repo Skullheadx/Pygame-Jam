@@ -214,6 +214,7 @@ class Skeleton(Actor):
         # self.buffer.append(self.get_collision_rect())
         # pg.draw.rect(surf, (0, 255, 0), get_display_rect(self.get_collision_rect()), 2)
 class King(Actor):
+    width, height = Actor.width * 2, Actor.height * 2
     speed = Actor.speed * 0.4
     jump_strength = Actor.jump_strength * 1.1
     colour = (235, 64, 52)
@@ -226,7 +227,7 @@ class King(Actor):
     attack_gif = Image.open("Assets/skeleton/skeleton_king_summon.gif")
     attack_frames = []
     for i in range(attack_gif.n_frames):
-        attack_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(attack_gif, i)), (180, 180)))
+        attack_frames.append(pg.transform.scale(pil_to_game(get_gif_frame(attack_gif, i)), (120, 180)))
 
     def __init__(self, pos, collision_layer, collision_mask):
         super().__init__(pos, collision_layer, collision_mask)
@@ -241,8 +242,10 @@ class King(Actor):
 
         self.health = 1000 # for debugging without getting killed
 
-        self.weapon = Lightning(self.position, (-100 - self.width/2,0), self.width, -1)
+        self.weapon = Lightning(self.position, (-125 - self.width/2,0), self.width, -1)
         self.buffer = []
+
+        self.attack_cooldown = random.randint(2,5) * 1000
 
         self.display_offsets = {"enemy":pg.Vector2(0,0)}
 
@@ -252,15 +255,20 @@ class King(Actor):
 
     def update(self, delta, target=None):
         super().update(delta)
-        if not self.attacked and target is not None and self.stun_time == 0:
+        self.attack_cooldown -= delta
+        self.attack_cooldown = max(0, self.attack_cooldown)
+
+        if self.attack_cooldown == 0 and not self.attacked and target is not None and self.stun_time == 0:
             # self.follow_target(target, follow_range=750,stop_dist=target.width/2+self.weapon.width)
             if not target.attacked and get_display_rect(self.weapon.get_collision_rect()).colliderect(
                     get_display_rect(target.get_collision_rect())):
                 if self.state != "ATTACK":
                     self.state = "ATTACK"
                     self.current_frame = 0
-                elif 4 < self.current_frame:
-                    target.attack(self, self.weapon, math.copysign(1, target.position.x - self.position.x))
+                    self.attack_cooldown = random.randint(2,5) * 1000
+        if (self.state == "ATTACK") and (4 < self.current_frame) and (not self.attacked) and (target is not None) and (self.stun_time == 0) and (not target.attacked) and get_display_rect(self.weapon.get_collision_rect()).colliderect(
+                    get_display_rect(target.get_collision_rect())):
+            target.attack(self, self.weapon, math.copysign(1, target.position.x - self.position.x))
 
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)

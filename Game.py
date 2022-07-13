@@ -15,7 +15,7 @@ from UI.Dialogue import DialogueUI
 from UI.HealthBar import HealthBar
 from UI.PotionUI import PotionUI
 from World import World
-
+from RangedAttack import RangedAttack
 
 class Game:
     cloud_density = 1 / 100000
@@ -23,6 +23,7 @@ class Game:
     def __init__(self, level):
         self.collision_layer = {"none": set(), "world": set(), "player": set(), "enemy": set(), "pet": set(),
                                 "body": set(), "potion": set(), "spike": set()}
+
 
         # self.load_world(level)
 
@@ -109,10 +110,12 @@ class Game:
             pg.mixer.music.play(-1)
         except:
             pass;
+        self.test = RangedAttack((1650,1250),self.collision_layer["world"])
 
     # def load_world(self, level):
 
     def update(self, delta):
+        self.test.update(delta)
         if self.paused == True:
             self.level = self.PauseMenu.level
             pass
@@ -236,6 +239,8 @@ class Game:
         # self.dashMeter.draw(surf)
         self.healthBar.draw(surf, self.player.health)
         self.potionUI.draw(surf, self.player.potion_bag, self.player.potion_cooldown)
+
+        self.test.draw(surf)
 
         # print(self.player.get_collision_rect())s
         # Debug Lines. DO NOT CROSS THEM!

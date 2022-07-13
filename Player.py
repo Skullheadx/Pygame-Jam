@@ -63,7 +63,7 @@ class Player(Actor):
 
         self.heal_layer = heals
         self.potion_cooldown = 0
-        self.starting_potions = 3
+        self.starting_potions = 1
         self.potion_bag = [Potion(self)]
         for i in range(self.starting_potions - 1):
             self.potion_bag.append(Potion(self))  # use one liner
