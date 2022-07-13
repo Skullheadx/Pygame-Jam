@@ -47,9 +47,8 @@ class DialogueUI:
                 Y = get_display_point(agent.position)[1]
             else:
                 X, Y = get_display_point((self.dialogue_list[self.char][2][0], self.dialogue_list[self.char][2][1]))
-
                 # print(get_display_point((X, Y)))
-                print(get_camera_offset()[0] + SCREEN_WIDTH/2, get_camera_offset()[1] + SCREEN_HEIGHT/2)
+                # print(get_camera_offset()[0] + SCREEN_WIDTH/2, get_camera_offset()[1] + SCREEN_HEIGHT/2)
             
             if(ID == 0):
                 self.text = text
@@ -65,7 +64,7 @@ class DialogueUI:
                 surf.blit(self.drawText[i], text_rect)
         except:
             pass;
-    
+
     def createDialogue(self):
         if(self.text == self.old_text):
             self.skip == True

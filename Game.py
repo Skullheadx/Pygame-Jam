@@ -181,7 +181,18 @@ class Game:
 
         if (self.level == 1):
             # self.dialogue.draw(surf, self.enemies[0], "enemy dialogue")
-            self.dialogue.draw(surf, self.player, "text1", 400, 1, 900, 1800)
+            self.dialogue.draw(surf, self.player, "Press A or D to move.", 400, 0, 900, 1800)
+            # self.dialogue.draw(surf, self.player, "Press W or SPACE to jump.", 400, 0, 1800, 1750)
+            # self.dialogue.draw(surf, self.player, "Left click to attack.", 400, 0, 2500, 1600)
+            # if self.player.position.x > 3000:
+            #     self.dialogue.draw(surf, self.player, "These goons must be guarding something!", 5, 1)
+            #     self.dialogue.draw(surf, self.player, "It may just be what I am looking for...", 5, 2)
+            # if self.player.position.y > 2000:
+            #     self.dialogue.draw(surf, self.player, "This treasure is pennies compared to what I'm after.", 4, 3)
+            #     self.dialogue.draw(surf, self.player, "But this portal will bring me one dimension closer!", 5, 4)
+
+            # self.dialogue.draw(surf, self.player, "Next dimension, next portal...", 4, 1)
+            # self.dialogue.draw(surf, self.player, "It's really that simple.", 4, 2)
             # for o,text in self.hints:
             #     o.position -= Setup.camera_offset
             #     self.dialogue.draw(surf,o, text)
@@ -191,7 +202,6 @@ class Game:
             #     # print(o.position,text,b)
             #     pg.draw.circle(surf,(255,0,0),o.position,10)
             #     o.position += Setup.camera_offset
-            self.dialogue.draw(surf, self.player, "Next dimension, here I am!", 4, 2)
             # self.dialogue.draw(surf, self.player, "text2", 3, 2)
             # self.dialogue.draw(surf, self.player, "text3", 2, 3)
             # self.dialogue.draw(surf, self.player, "text4", 1, 4)
