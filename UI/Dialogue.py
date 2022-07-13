@@ -42,19 +42,25 @@ class DialogueUI:
 
         try:
             X, Y = 0, 0
-            if(self.dialogue_list[self.char][2][0] == -10000 and self.dialogue_list[self.char][2][1] == -10000):
-                X = get_display_point(agent.position)[0] + agent.width / 2
-                Y = get_display_point(agent.position)[1]
-            else:
-                X, Y = get_display_point((self.dialogue_list[self.char][2][0], self.dialogue_list[self.char][2][1]))
-                # print(get_display_point((X, Y)))
-                # print(get_camera_offset()[0] + SCREEN_WIDTH/2, get_camera_offset()[1] + SCREEN_HEIGHT/2)
-            
-            if(ID == 0):
-                self.text = text
-                X, Y = get_display_point((Xt, Yt))
-            else:
-                self.text = self.dialogue_list[self.char][0]
+            try:
+                if(self.dialogue_list[self.char][2][0] == -10000 and self.dialogue_list[self.char][2][1] == -10000):
+                    X = get_display_point(agent.position)[0] + agent.width / 2
+                    Y = get_display_point(agent.position)[1]
+                else:
+                    X, Y = get_display_point((self.dialogue_list[self.char][2][0], self.dialogue_list[self.char][2][1]))
+
+                    # print(get_display_point((X, Y)))
+                    print(get_camera_offset()[0] + SCREEN_WIDTH/2, get_camera_offset()[1] + SCREEN_HEIGHT/2)
+            except:
+                pass;
+            try:
+                if(ID == 0):
+                    self.text = text
+                    X, Y = get_display_point((Xt, Yt))
+                else:
+                    self.text = self.dialogue_list[self.char][0]
+            except:
+                pass;
             self.checkTime()
             self.createDialogue()
 
@@ -64,7 +70,7 @@ class DialogueUI:
                 surf.blit(self.drawText[i], text_rect)
         except:
             pass;
-
+    
     def createDialogue(self):
         if(self.text == self.old_text):
             self.skip == True
@@ -95,9 +101,12 @@ class DialogueUI:
         return;
 
     def checkTime(self):
-        if(datetime.utcnow() - self.lastTextTime >= timedelta(seconds=self.dialogue_list[self.char][1])):
-            if(self.char +1 < len(self.dialogue_list)):
-                self.char = self.char + 1
-            else:
-                self.char = 0
-                self.dialogue_list = []
+        try:
+            if(datetime.utcnow() - self.lastTextTime >= timedelta(seconds=self.dialogue_list[self.char][1])):
+                if(self.char +1 < len(self.dialogue_list)):
+                    self.char = self.char + 1
+                else:
+                    self.char = 0
+                    self.dialogue_list = []
+        except:
+            pass;
