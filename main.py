@@ -16,7 +16,7 @@ delta = 1000//fps
 # scene = TransitionScene()
 scene = DevLevelSelect()
 old_level = 0
-level = 3
+level = 8
 next_level = 0
 
 # final_level = 6

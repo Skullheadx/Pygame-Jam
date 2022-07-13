@@ -134,6 +134,9 @@ class Skeleton(Actor):
     # player_grunt = pg.mixer.Sound("Assets/SFX/Player Grunt.wav")
     # player_grunt_channel = pg.mixer.Channel(4)
 
+    player_grunt = pg.mixer.Sound("Assets/SFX/Player Grunt.wav")
+    player_grunt_channel = pg.mixer.Channel(4)
+
     def __init__(self, pos, collision_layer, collision_mask):
         super().__init__(pos, collision_layer, collision_mask)
 
