@@ -167,6 +167,7 @@ class Skeleton(Actor):
                     self.current_frame = 0
                 elif 4 < self.current_frame:
                     target.attack(self, self.weapon, self.direction)
+                    self.player_grunt_channel.play(self.player_grunt)
 
         # Deals with collision and applying velocity
         self.position, self.velocity = self.move_and_collide(self.position.copy(), self.velocity.copy(), delta)
