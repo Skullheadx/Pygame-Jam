@@ -52,9 +52,9 @@ class BossHealthBar:
         return;
         
     def update(self):
-        if self.color_change == 0 and self.bar_color[1] != 255:
+        if self.color_change == 0 and self.bar_color[1] != 180:
             self.bar_color[1] = self.bar_color[1] + 1
-            if self.bar_color[1] == 255:
+            if self.bar_color[1] == 180:
                 self.color_change = 1
         elif self.color_change == 1 and self.bar_color[1] != 0:
             self.bar_color[1] -= 1
