@@ -132,6 +132,7 @@ class Game:
             pass
         elif self.player.dead:
             self.level = self.scene.level
+            pg.mixer.stop()
             pass;
         else:
             Setup.camera_offset = self.player.update(delta)
