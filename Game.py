@@ -105,13 +105,14 @@ class Game:
         if self.paused == True:
             self.level = self.PauseMenu.level
             pass
+        elif self.player.dead:
+            self.level = self.scene.level
+            pass;
         else:
             Setup.camera_offset = self.player.update(delta)
             Setup.camera_offset.x = max(0, min(Setup.camera_offset.x, MAP_WIDTH - SCREEN_WIDTH))
             Setup.camera_offset.y = max(0, min(Setup.camera_offset.y, MAP_HEIGHT - SCREEN_HEIGHT))
-            if self.player.dead:
-                self.level = self.scene.level
-
+            
             for i, enemy in enumerate(self.enemies):
                 enemy.update(delta, self.player)
                 if enemy.dead:
@@ -223,7 +224,7 @@ class Game:
             self.fadeT.update()
             self.fadeT.draw()
 
-        if (self.fadeT.transparency >= 255):
+        if (self.fadeT.transparency >= 255 and self.player.dead == False):
             self.Transition.fade = False
             self.next_level = self.level + 1
             self.level = -4
