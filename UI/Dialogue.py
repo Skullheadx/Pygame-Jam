@@ -50,7 +50,7 @@ class DialogueUI:
                     X, Y = get_display_point((self.dialogue_list[self.char][2][0], self.dialogue_list[self.char][2][1]))
 
                     # print(get_display_point((X, Y)))
-                    print(get_camera_offset()[0] + SCREEN_WIDTH/2, get_camera_offset()[1] + SCREEN_HEIGHT/2)
+                    # print(get_camera_offset()[0] + SCREEN_WIDTH/2, get_camera_offset()[1] + SCREEN_HEIGHT/2)
             except:
                 pass;
             try:
