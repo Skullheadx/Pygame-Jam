@@ -239,6 +239,15 @@ class Game:
             if self.level == 4:
                 self.bosshealthBar.update()
 
+            if self.level == 86:
+                print(self.player.position)
+                if self.player.position[0] > 6750 and self.player.position[1] >= 1500:
+                    self.player.has_pet = True
+
+            if self.player.has_pet == True:
+                pass
+                #update pet
+
         # self.pet.update(delta, self.player, self.camera_pos)
 
     def draw(self, surf):
@@ -425,3 +434,7 @@ class Game:
         if self.player.dead:
             self.scene.update()
             self.scene.draw()
+
+        if self.player.has_pet == True:
+            pass
+            #draw pet
