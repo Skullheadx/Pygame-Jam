@@ -39,7 +39,7 @@ class Enemy(Actor):
 
         # self.health = 0 # for debugging without getting killed
         if is_jeff:
-            self.health /= 2
+            self.health *= 2
             self.run_gif = Image.open("Assets/enemy/Jeff_RUn-export.gif")
             self.run_frames = []
             for i in range(self.run_gif.n_frames):
@@ -72,10 +72,10 @@ class Enemy(Actor):
         self.display = self.run_frames[math.floor(self.current_frame)]
         self.state = "RUN"
         
-    def update(self, delta, target=None):
+    def update(self, delta, target=None, r=750):
         super().update(delta)
         if not self.attacked and target is not None and self.stun_time == 0:
-            self.follow_target(target, follow_range=750,stop_dist=target.width/2+self.weapon.width)
+            self.follow_target(target, follow_range=r,stop_dist=target.width/2+self.weapon.width)
             if not target.attacked and get_display_rect(self.weapon.get_collision_rect()).colliderect(
                     get_display_rect(target.get_collision_rect())):
                 if self.state != "ATTACK":
@@ -97,10 +97,10 @@ class Enemy(Actor):
         
         if self.state == "RUN":
             frame = math.floor(self.current_frame)
-            if self.velocity.x > 0:
+            if self.velocity.x >= 0:
                 self.display = self.run_frames[math.floor(frame)]
                 self.display_offsets["enemy"] = pg.Vector2(-30, -35)
-            elif self.velocity.x <= 0:
+            elif self.velocity.x < 0:
                 self.display = pg.transform.flip(self.run_frames[math.floor(frame)], True, False)
                 self.display_offsets["enemy"] = pg.Vector2(-90, -35)
             if frame % 4 == 0 and self.on_ground:
