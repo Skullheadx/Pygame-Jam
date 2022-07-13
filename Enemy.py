@@ -291,7 +291,8 @@ class King(Actor):
                     self.ranged_attack.append(RangedAttack(target.position + pg.Vector2(0,-400),self.arrow_collision_mask, self.arrow_collision_layer))
                     self.attack_cooldown = random.randint(5,10) * 1000
                 else:
-                    print("Summon Skeles!")
+                    self.skeleton_attack = True
+                    self.attack_cooldown = random.randint(5,10) * 1000
 
 
             # else:
