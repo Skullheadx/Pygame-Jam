@@ -26,6 +26,8 @@ class Menu:
         except:
             pass;
         
+        has_pet = False;
+        
     def update(self, delta):
         for ev in pg.event.get(pg.MOUSEBUTTONDOWN):
             if ev.type == pg.MOUSEBUTTONDOWN:

@@ -16,8 +16,10 @@ delta = 1000//fps
 # scene = TransitionScene()
 scene = Menu()
 old_level = 0
-level = 1
+level = 2
 next_level = 0
+
+has_snake = True;
 
 # final_level = 6
 
@@ -52,6 +54,17 @@ while Setup.is_running:
         next_level = scene.next_level
     except:
         next_level = 0
+
+    if level == 1:
+        try:
+            has_snake = scene.has_pet
+        except:
+            pass;
+    elif(1 < level < 5):
+        try:
+            scene.has_pet = has_snake
+        except:
+            pass;
 
     scene.update(delta)
     scene.draw(screen)
