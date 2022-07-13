@@ -55,4 +55,4 @@ class Credits:
     def menuFunctions(self, num):
         match num:
             case 0:
-                self.level = 6
+                self.level = 5
