@@ -9,7 +9,7 @@ class PhysicsBody:
     friction = Actor.friction
     invincibility_time = 150
 
-    def __init__(self, pos, vel, width, height, colour, collision_layer, collision_mask, goon_skin=True):
+    def __init__(self, pos, vel, width, height, colour, collision_layer, collision_mask, goon_skin=True, is_jeff = False):
         self.position = pg.Vector2(pos)
         self.velocity = pg.Vector2(vel)
         self.width, self.height = height, width
@@ -22,6 +22,7 @@ class PhysicsBody:
         self.movable = True
         self.attacked = False
         self.invincibility_frames = self.invincibility_time
+        self.was_beaten = False
 
         collision_layer.add(self)  # the layer the actor is on for collisions
         self.collision_layer = collision_layer
@@ -34,6 +35,9 @@ class PhysicsBody:
         if goon_skin:
             self.display = pg.transform.scale(pg.image.load("Assets/enemy/Goon_Death.png"), (200,200))
             self.offset = pg.Vector2(-50,-65)
+        elif is_jeff:
+            self.display = pg.transform.scale(pg.image.load("Assets/enemy/Jeff_Death.png"), (200,200))
+            self.offset = pg.Vector2(-50,-160)
         else:
             self.display = pg.transform.scale(pg.image.load("Assets/skeleton/SKELETON.png"), (50,50))
             self.offset = pg.Vector2(0, 10)
@@ -54,6 +58,7 @@ class PhysicsBody:
         self.push(direction, 2, -1)
         self.attacked = True
         self.invincibility_frames = self.invincibility_time
+        self.was_beaten = True
 
     def push(self, direction, strength=1, y=-1):
         self.velocity += pg.Vector2(direction * strength, y)
