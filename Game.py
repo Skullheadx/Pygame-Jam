@@ -62,7 +62,9 @@ class Game:
         if(level == 1):
             self.pet = Pet([6852, 1500], self.collision_layer["pet"], [self.collision_layer["world"]])
         else:
-            self.pet = Pet(self.player.position, self.collision_layer["pet"], [self.collision_layer["world"]])
+            self.pet = Pet(self.player.position - [100000, 100000], self.collision_layer["pet"], [self.collision_layer["world"]])
+
+        print(self.player.position)
 
         self.has_pet = False
         if jeff_position is not None:
