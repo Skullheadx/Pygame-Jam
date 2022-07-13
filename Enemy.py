@@ -148,7 +148,7 @@ class Skeleton(Actor):
         self.direction = -1
         self.prev_direction = self.direction
 
-        # self.health = 0 # for debugging without getting killed
+        self.health = 75 # for debugging without getting killed
 
         self.weapon = Sword(self.position, (0, 0), self.width, -1)
 

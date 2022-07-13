@@ -165,6 +165,8 @@ class Game:
                                                   self.collision_layer["body"],
                                                   [self.collision_layer["world"], self.collision_layer["body"]], goon_skin=False)
                     self.collision_layer["body"].add(self.king)
+                    for enemy in self.skeletons:
+                        enemy.dead = True
 
             for particle in particles:
                 particle.update(delta)
@@ -195,8 +197,8 @@ class Game:
         surf.blit(self.sky, (0, 0))
 
         if (self.level == 4):
-            print(get_camera_offset())
-            if self.king is not None:
+            # print(get_camera_offset())
+            if self.king is not None and isinstance(self.king, King):
                 if self.king.skeleton_attack == True:
                     for i in range(random.randint(1, 2)):
                         if(len(self.skeleton_spawn_coords) < 2):
