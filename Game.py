@@ -258,12 +258,10 @@ class Game:
         if self.king is not None and isinstance(self.king, PhysicsBody):
             self.Transition.update()
             self.Transition.draw(surf, self.player.position, self.portal_position)
-            print('a')
             if(self.portal_position[1] < 3150):
                 lst = list(self.portal_position)
-                lst[1] += 2
+                lst[1] += 10
                 self.portal_position = tuple(lst)
-                print('b')
                 # print(get_camera_offset(), getWorldCoords(0, 0))
         
         if (self.player.position[1] > 10000):
