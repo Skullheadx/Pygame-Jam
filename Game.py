@@ -14,7 +14,7 @@ from Player import Player
 from Setup import *
 from Spike import Spike
 from UI.Dialogue import DialogueUI
-from UI.HealthBar import HealthBar
+from UI.HealthBar import BossHealthBar, HealthBar
 from UI.PotionUI import PotionUI
 from World import World
 from RangedAttack import RangedAttack
@@ -72,6 +72,7 @@ class Game:
         # self.dashMeter = DashMeter(self.player.dashCooldown)
         self.healthBar = HealthBar()
         self.potionUI = PotionUI()
+        self.bosshealthBar = BossHealthBar()
         self.level = level
         self.scene.level = self.level
 
@@ -209,6 +210,9 @@ class Game:
                     if isinstance(particle, Cloud):
                         del Setup.particles[Setup.particles.index(particle)]
 
+            if self.level == 4:
+                self.bosshealthBar.update()
+
         # self.pet.update(delta, self.player, self.camera_pos)
 
     def draw(self, surf):
@@ -334,6 +338,8 @@ class Game:
         # self.dashMeter.draw(surf)
         self.healthBar.draw(surf, self.player.health)
         self.potionUI.draw(surf, self.player.potion_bag, self.player.potion_cooldown)
+        if self.level == 4:
+            self.bosshealthBar.draw(surf, self.king.health)
         # print(self.player.get_collision_rect())s
         # Debug Lines. DO NOT CROSS THEM!
         # pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(SCREEN_WIDTH, -Setup.camera_offset.y), 10)
