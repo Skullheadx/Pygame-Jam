@@ -430,7 +430,8 @@ class EditorBlock:
 
     def draw(self, surf):
         display_rect = self.get_display_rect()
-        surf.blit(pg.transform.scale(self.texture, display_rect.size), display_rect)
+        if display_rect.colliderect(screen_rect):
+            surf.blit(pg.transform.scale(self.texture, display_rect.size), display_rect)
 
     def show_hitbox(self, surf, collision_layer):
         if collision_layer == self.collision_layer:

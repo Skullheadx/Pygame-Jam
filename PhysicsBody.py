@@ -28,9 +28,11 @@ class PhysicsBody:
         self.collision_mask = collision_mask  # the layer the actor detects collisions against
 
         if goon_skin:
-            self.display = pg.image.load("Assets/enemy/Pirate_Goon.png")
+            self.display = pg.transform.scale(pg.image.load("Assets/enemy/Goon_Death.png"), (200,200))
+            self.offset = pg.Vector2(-50,-65)
         else:
-            self.display = pg.image.load("Assets/skeleton/SKELETON.png")
+            self.display = pg.transform.scale(pg.image.load("Assets/skeleton/SKELETON.png"), (100,100))
+            self.offset = pg.Vector2(0,-self.display.get_height()/2)
 
     def update(self, delta, test=None, test2=None):
         if self.on_ground:
@@ -98,5 +100,6 @@ class PhysicsBody:
 
     def draw(self, surf):
         # print(self.position, self.velocity)
-        pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=8)
-        surf.blit(self.display,get_display_rect(self.get_collision_rect()))
+        # pg.draw.rect(surf, self.colour, get_display_rect(self.get_collision_rect()), border_radius=8)
+        surf.blit(self.display,get_display_rect(self.get_collision_rect()).topleft + self.offset)
+        # surf.blit(self.display,get_display_rect(self.get_collision_rect()))

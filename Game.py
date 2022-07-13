@@ -22,7 +22,7 @@ class Game:
 
     def __init__(self, level):
         self.collision_layer = {"none": set(), "world": set(), "player": set(), "enemy": set(), "pet": set(),
-                                "body": set(), "potion": set(), "spike": set()}
+                                "body": set(), "potion": set(), "spike": set(), "arrow":set()}
 
 
         # self.load_world(level)
@@ -43,21 +43,23 @@ class Game:
                              [self.collision_layer["enemy"], self.collision_layer["world"]],
                              [self.collision_layer["enemy"], self.collision_layer["body"]],
                              self.collision_layer["potion"],
-                             self.collision_layer["spike"])
+                             self.collision_layer["spike"],
+                             self.collision_layer["arrow"])
         # self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
         self.enemies = [Enemy(pos, self.collision_layer["enemy"],
                               [self.collision_layer["player"], self.collision_layer["world"],
                                self.collision_layer["enemy"]]) for pos in
                         enemy_positions]
+        self.skeletons = [Skeleton(pos, self.collision_layer["enemy"],
+                                   [self.collision_layer["player"], self.collision_layer["world"],
+                                    self.collision_layer["enemy"]]) for pos in
+                          skele_positions]
         if king_position is not None:
-            self.skeletons = [Skeleton(pos, self.collision_layer["enemy"],
-                                  [self.collision_layer["player"], self.collision_layer["world"],
-                                   self.collision_layer["enemy"]]) for pos in
-                                    skele_positions]
             self.king = King(king_position, self.collision_layer["enemy"],
-                                  [self.collision_layer["player"], self.collision_layer["world"],
-                                   self.collision_layer["enemy"]] )
-
+                             [self.collision_layer["player"], self.collision_layer["world"],
+                              self.collision_layer["enemy"]],(self.collision_layer["world"], self.collision_layer["arrow"]))
+        else:
+            self.king = None
 
         self.scene = EndScreen()
         # self.dashMeter = DashMeter(self.player.dashCooldown)
@@ -88,6 +90,7 @@ class Game:
             for particle in Setup.particles:
                 if isinstance(particle, Cloud):
                     del Setup.particles[Setup.particles.index(particle)]
+
         self.sky = pg.image.load("Assets/world/sky_level_background.png").convert()
 
         try:
@@ -110,12 +113,12 @@ class Game:
             pg.mixer.music.play(-1)
         except:
             pass;
-        self.test = RangedAttack((1650,1250),self.collision_layer["world"])
+        # self.test = RangedAttack((1650,1250),self.collision_layer["world"], self.collision_layer["arrow"])
 
     # def load_world(self, level):
 
     def update(self, delta):
-        self.test.update(delta)
+        # self.test.update(delta)
         if self.paused == True:
             self.level = self.PauseMenu.level
             pass
@@ -145,9 +148,10 @@ class Game:
                                                   [self.collision_layer["world"], self.collision_layer["body"]], goon_skin=False)
                     self.collision_layer["enemy"].remove(enemy)
                     self.collision_layer["body"].add(self.skeletons[i])
-            self.king.update(delta, self.player)
-            if self.king.dead:
-                print("You win!")
+            if self.king is not None:
+                self.king.update(delta, self.player)
+                if self.king.dead:
+                    print("You win!")
 
             for particle in particles:
                 particle.update(delta)
@@ -204,7 +208,7 @@ class Game:
             if self.seen_text[0] or self.player.position.x > 3000:
                 self.seen_text[0] = True
                 self.dialogue.draw(surf, self.player, "These goons must be guarding something!", 10, 1)
-                self.dialogue.draw(surf, self.player, "It may just be what I am looking for...", 7, 2)
+                self.dialogue.draw(surf, self.player, "It may just be what I am looking for...", 10, 2)
             if self.seen_text[1] or (self.player.position.y > 2500 and self.player.position.x > 6000):
                 self.seen_text[0] = False
                 self.seen_text[1] = True
@@ -216,7 +220,8 @@ class Game:
         for enemy in self.skeletons:
             enemy.draw(surf)
 
-        self.king.draw(surf)
+        if self.king is not None:
+            self.king.draw(surf)
         self.player.draw(surf)
 
         # self.dialogue.draw(surf, self.player, "Next dimension, next portal...", 4, 1)
@@ -239,9 +244,6 @@ class Game:
         # self.dashMeter.draw(surf)
         self.healthBar.draw(surf, self.player.health)
         self.potionUI.draw(surf, self.player.potion_bag, self.player.potion_cooldown)
-
-        self.test.draw(surf)
-
         # print(self.player.get_collision_rect())s
         # Debug Lines. DO NOT CROSS THEM!
         # pg.draw.line(surf, (255, 0, 0), -Setup.camera_offset, pg.Vector2(SCREEN_WIDTH, -Setup.camera_offset.y), 10)
