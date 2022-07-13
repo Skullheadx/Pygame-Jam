@@ -23,6 +23,7 @@ from RangedAttack import RangedAttack
 
 class Game:
     cloud_density = 1 / 100000
+    saved_jeff = False
 
     def __init__(self, level):
         self.collision_layer = {"none": set(), "world": set(), "player": set(), "enemy": set(), "pet": set(),
@@ -34,7 +35,7 @@ class Game:
 
         self.world = World(self.collision_layer)
 
-        enemy_positions, player_position, self.portal_position, heal_positions, spike_positions, self.skele_positions, king_position = self.world.load_world(
+        enemy_positions, player_position, self.portal_position, heal_positions, spike_positions, self.skele_positions, king_position, jeff_position = self.world.load_world(
             level)
 
         for i in heal_positions:
@@ -51,6 +52,12 @@ class Game:
         else:
             self.king = None
             self.treasure = None
+        if jeff_position is not None:
+            self.jeff = Enemy(jeff_position, self.collision_layer["enemy"],
+                              [self.collision_layer["player"], self.collision_layer["world"],
+                               self.collision_layer["enemy"]],is_jeff=True)
+        else:
+            self.jeff = None
         self.player = Player(player_position, self.collision_layer["player"],
                              [self.collision_layer["enemy"], self.collision_layer["world"]],
                              [self.collision_layer["enemy"], self.collision_layer["body"]],
@@ -196,6 +203,17 @@ class Game:
                                                         [self.collision_layer["world"], self.collision_layer["body"]],
                                                         goon_skin=False)
                         self.collision_layer["body"].add(self.skeletons[i])
+            if self.jeff is not None:
+                self.jeff.update(delta, self.player)
+                if self.jeff.dead:
+                    self.collision_layer["enemy"].remove(self.jeff)
+                    self.jeff = PhysicsBody(self.jeff.position, self.jeff.velocity, self.jeff.width / 2,
+                                            self.jeff.height / 4,
+                                            self.jeff.colour,
+                                            self.collision_layer["body"],
+                                            [self.collision_layer["world"], self.collision_layer["body"]],
+                                            goon_skin=False, is_jeff=True)
+                    self.collision_layer["body"].add(self.jeff)
 
             for particle in particles:
                 particle.update(delta)
@@ -207,6 +225,9 @@ class Game:
 
             self.world.update(delta)
             self.fade = self.Transition.fade
+
+            if self.level == 3 and self.fade and isinstance(self.jeff, PhysicsBody) and not self.jeff.was_beaten:
+                self.saved_jeff = True
 
             if self.level in [2, 5]:
                 for particle in Setup.particles:
@@ -312,6 +333,37 @@ class Game:
                 self.seen_text[1] = True
                 self.dialogue.draw(surf, self.player, "This treasure is pennies compared to what I'm after...", 10, 3)
                 self.dialogue.draw(surf, self.player, "But this portal will bring me one dimension closer!", 10, 4)
+        elif self.level == 2:
+            if self.seen_text[0] or self.player.position.x > 16500:
+                self.seen_text[0] = True
+                self.dialogue.draw(surf, self.player, "More of them!?", 10, 1)
+                self.dialogue.draw(surf, self.player, "They must be looking for the Realm of Secrets too...", 10, 2)
+            if self.seen_text[1] or (self.player.position.y > 8500 and self.player.position.x > 18000):
+                self.seen_text[0] = False
+                self.seen_text[1] = True
+                self.dialogue.draw(surf, self.player, "Shoot! They got to the portal already!", 10, 3)
+                self.dialogue.draw(surf, self.player, "I can't let those goons get another second ahead of me.", 10, 4)
+        elif self.level == 3:
+            if self.seen_text[5] or self.player.position.x > 13000:
+                self.seen_text[5] = True
+                self.dialogue.draw(surf, self.player, "I suppose you are the captain...", 3, 1)
+                self.dialogue.draw(surf, self.jeff, "That's me. And the treasure is MINE!", 5,2)
+            if self.seen_text[6] or isinstance(self.jeff, PhysicsBody):
+                # self.seen_text[5] = False
+                self.seen_text[6] = True
+                self.dialogue.draw(surf, self.jeff, "Noooo! Please don't kill me!", 3, 3)
+                self.dialogue.draw(surf, self.player, "...", 5, 4)
+        elif self.level == 4:
+            # print(self.player.position)
+            if self.seen_text[7] or self.player.position.x > 2000:
+                self.seen_text[7] = True
+                self.dialogue.draw(surf, self.player, "Here it is... The greatest treasure of all time and space...", 10, 1)
+                if self.jeff is not None:
+                    self.dialogue.draw(surf, self.jeff, "We're here to help!", 5, 3)
+            if self.seen_text[8] or self.player.position.x > 5000:
+                self.seen_text[8] = True
+                self.seen_text[7] = False
+                self.dialogue.draw(surf, self.king, "I am the Bone King! The protector of this dimension and NONE shall pass!", 20,2)
 
         for enemy in self.enemies:
             enemy.draw(surf)
@@ -320,6 +372,8 @@ class Game:
 
         if self.king is not None:
             self.king.draw(surf)
+        if self.jeff is not None:
+            self.jeff.draw(surf)
         self.player.draw(surf)
 
         # self.dialogue.draw(surf, self.player, "Next dimension, next portal...", 4, 1)
