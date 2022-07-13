@@ -52,12 +52,7 @@ class Game:
         else:
             self.king = None
             self.treasure = None
-        if jeff_position is not None:
-            self.jeff = Enemy(jeff_position, self.collision_layer["enemy"],
-                              [self.collision_layer["player"], self.collision_layer["world"],
-                               self.collision_layer["enemy"]],is_jeff=True)
-        else:
-            self.jeff = None
+
         self.player = Player(player_position, self.collision_layer["player"],
                              [self.collision_layer["enemy"], self.collision_layer["world"]],
                              [self.collision_layer["enemy"], self.collision_layer["body"]],
@@ -69,6 +64,15 @@ class Game:
         else:
             self.pet = Pet(self.player.position, self.collision_layer["pet"], [self.collision_layer["world"]])
         self.has_pet = False
+        if jeff_position is not None:
+            self.jeff = Enemy(jeff_position, self.collision_layer["enemy"],
+                              [self.collision_layer["player"], self.collision_layer["world"],
+                               self.collision_layer["enemy"]],is_jeff=True)
+            self.jeff_target = [self.player]
+        else:
+            self.jeff = None
+        # self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
+        self.pet = Pet(center, self.collision_layer["pet"], [self.collision_layer["world"]])
         self.enemies = [Enemy(pos, self.collision_layer["enemy"],
                               [self.collision_layer["player"], self.collision_layer["world"],
                                self.collision_layer["enemy"]]) for pos in
@@ -77,6 +81,13 @@ class Game:
                                    [self.collision_layer["player"], self.collision_layer["world"],
                                     self.collision_layer["enemy"]]) for pos in
                           self.skele_positions]
+        self.allies = [Enemy(self.player.position + pg.Vector2(-150,-200), self.collision_layer["pet"],
+                              [self.collision_layer["pet"], self.collision_layer["world"],
+                               self.collision_layer["enemy"]]) for i in
+                        range(1)]
+        for ally in self.allies:
+            ally.stun_time = 10000
+            ally.weapon.damage = -10
 
 
 
@@ -87,8 +98,14 @@ class Game:
         self.bosshealthBar = BossHealthBar()
         self.level = level
         self.scene.level = self.level
+        if self.level == 4 and self.saved_jeff:
+            self.jeff_target = self.skeletons
+            self.jeff = Enemy(self.player.position + pg.Vector2(-50, -500), self.collision_layer["pet"],
+                              [self.collision_layer["pet"], self.collision_layer["world"],
+                               self.collision_layer["enemy"]],is_jeff=True)
+            self.jeff.stun_time = 10000
+            self.jeff.weapon.damage = -10
 
-        
         self.Transition = Transition()
         self.fade = self.Transition.fade
         self.fadeT = fade()
@@ -172,6 +189,19 @@ class Game:
                     if enemy in self.collision_layer["enemy"]:
                         self.collision_layer["enemy"].remove(enemy)
                     self.collision_layer["body"].add(self.enemies[i])
+            if self.saved_jeff:
+                for i, enemy in enumerate(self.allies):
+                    min_distance = 100000000
+                    target = None
+                    for skele in self.skeletons:
+                        if isinstance(skele, PhysicsBody):
+                            continue
+                        if min_distance > (skele.position - enemy.position).length_squared():
+                            min_distance = (skele.position - enemy.position).length_squared()
+                            target = skele
+                    if self.king is not None and (self.king.position - enemy.position).length_squared() < min_distance:
+                        target = self.king
+                    enemy.update(delta, target, 10000000)
             for i, enemy in enumerate(self.skeletons):
                 enemy.update(delta, self.player)
                 if enemy.dead:
@@ -207,16 +237,31 @@ class Game:
                                                         goon_skin=False)
                         self.collision_layer["body"].add(self.skeletons[i])
             if self.jeff is not None:
-                self.jeff.update(delta, self.player)
-                if self.jeff.dead:
-                    self.collision_layer["enemy"].remove(self.jeff)
-                    self.jeff = PhysicsBody(self.jeff.position, self.jeff.velocity, self.jeff.width,
-                                            self.jeff.height,
-                                            self.jeff.colour,
-                                            self.collision_layer["body"],
-                                            [self.collision_layer["world"], self.collision_layer["body"]],
-                                            goon_skin=False, is_jeff=True)
-                    self.collision_layer["body"].add(self.jeff)
+                # if isinstance(self.jeff_target[0], Skeleton):
+
+                if self.jeff_target[0] == self.player:
+                    self.jeff.update(delta, self.player)
+                    if self.jeff.dead:
+                        self.collision_layer["enemy"].remove(self.jeff)
+                        self.jeff = PhysicsBody(self.jeff.position, self.jeff.velocity, self.jeff.width,
+                                                self.jeff.height,
+                                                self.jeff.colour,
+                                                self.collision_layer["body"],
+                                                [self.collision_layer["world"], self.collision_layer["body"]],
+                                                goon_skin=False, is_jeff=True)
+                        self.collision_layer["body"].add(self.jeff)
+                else:
+                    min_distance = 100000000
+                    target = None
+                    for skele in self.skeletons:
+                        if isinstance(skele, PhysicsBody):
+                            continue
+                        if min_distance > (skele.position - self.jeff.position).length_squared():
+                            min_distance = (skele.position - self.jeff.position).length_squared()
+                            target = skele
+                    if (self.king.position - self.jeff.position).length_squared() < min_distance:
+                        target = self.king
+                    self.jeff.update(delta, target, 10000000)
 
             for particle in particles:
                 particle.update(delta)
@@ -232,7 +277,8 @@ class Game:
             if self.level == 3 and self.fade:
                 if self.jeff.position.y < 10000 and (isinstance(self.jeff, PhysicsBody) and not self.jeff.was_beaten):
                     self.saved_jeff = True
-                    print('good')
+                else:
+                    self.saved_jeff = False
 
             if self.level in [2, 5]:
                 for particle in Setup.particles:
@@ -362,25 +408,33 @@ class Game:
         elif self.level == 3:
             if self.seen_text[5] or self.player.position.x > 13000:
                 self.seen_text[5] = True
-                self.dialogue.draw(surf, self.player, "I suppose you are the captain...", 3, 1)
-                self.dialogue.draw(surf, self.jeff, "That's me. And the treasure is MINE!", 5,2)
+                self.dialogue.draw(surf, self.player, "I suppose you are the captain...", 5, 1)
+                self.dialogue.draw(surf, self.jeff, "That's me. And the treasure is MINE!", 7,2)
             if self.seen_text[6] or isinstance(self.jeff, PhysicsBody):
                 # self.seen_text[5] = False
                 self.seen_text[6] = True
-                self.dialogue.draw(surf, self.jeff, "Noooo! Please don't kill me!", 3, 3)
+                self.dialogue.draw(surf, self.jeff, "Noooo! Please don't kill me!", 5, 3)
                 self.dialogue.draw(surf, self.player, "...", 5, 4)
         elif self.level == 4:
             # print(self.player.position)
-            if self.seen_text[7] or self.player.position.x > 2000:
+            if self.seen_text[7] or True:
                 self.seen_text[7] = True
-                self.dialogue.draw(surf, self.player, "Here it is... The greatest treasure of all time and space...", 10, 1)
                 if self.jeff is not None:
-                    self.dialogue.draw(surf, self.jeff, "We're here to help!", 5, 3)
+                    self.dialogue.draw(surf, self.jeff, "You didn't kill us... So we'll help you.", 5, 0, 1890, 3350)
+                self.dialogue.draw(surf, self.player, "Here it is... The greatest treasure of all time and space...", 5, 1)
             if self.seen_text[8] or self.player.position.x > 5000:
                 self.seen_text[8] = True
-                self.seen_text[7] = False
                 self.dialogue.draw(surf, self.king, "I am the Bone King! The protector of this dimension and NONE shall pass!", 20,2)
+            if self.seen_text[9] or isinstance(self.king, PhysicsBody):
+                self.seen_text[9] = True
+                if self.jeff is not None:
+                    self.dialogue.draw(surf, self.jeff, "We have won! Go through the portal... the honour is yours", 20,2)
 
+
+
+        if self.saved_jeff:
+            for enemy in self.allies:
+                enemy.draw(surf)
         for enemy in self.enemies:
             enemy.draw(surf)
         for enemy in self.skeletons:
