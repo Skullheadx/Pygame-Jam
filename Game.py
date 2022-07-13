@@ -142,7 +142,7 @@ class Game:
                                                   [self.collision_layer["world"], self.collision_layer["body"]], goon_skin=False)
                     self.collision_layer["enemy"].remove(enemy)
                     self.collision_layer["body"].add(self.skeletons[i])
-            self.king.update(delta)
+            self.king.update(delta, self.player)
             if self.king.dead:
                 print("You win!")
 
